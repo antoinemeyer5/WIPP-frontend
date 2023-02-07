@@ -55,8 +55,8 @@
             <div *ngIf="!imagesCollection.importMethod || imagesCollection.importMethod == 'UPLOADED'">
               Uploaded
             </div>
-            <div *ngIf="imagesCollection.importMethod == 'BACKEND_IMPORT'">
-              Backend import from local folder
+            <div *ngIf="imagesCollection.importMethod == 'BACKEND_IMPORT'" ngbTooltip="Backend import folder">
+              {{imagesCollection.sourceBackendImport}}
             </div>
           </ng-template>
 
@@ -417,7 +417,7 @@
     <ng-container matColumnDef="actions">
       <th mat-header-cell *matHeaderCellDef>Actions</th>
       <td mat-cell *matCellDef="let row">
-        <a [href]="row._links.self.href"
+        <a (click)="openDownload(row._links.self.href)"
            ngbTooltip="Download file"
            placement="left"
            class="btn btn-light">

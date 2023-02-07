@@ -19,6 +19,7 @@ import {InlineEditorModule} from '@qontu/ngx-inline-editor';
 import {
   ImagesCollectionTemplateComponent
 } from './images-collection-template/images-collection-template.component';
+import { ImagesCollectionBatchImportComponent } from './images-collection-batch-import/images-collection-batch-import.component';
 
 @NgModule({
   imports: [
@@ -38,12 +39,15 @@ import {
     InlineEditorModule,
     MatCheckboxModule
   ],
-  entryComponents: [ImagesCollectionNewComponent],
+  entryComponents: [
+    ImagesCollectionNewComponent,
+    ImagesCollectionBatchImportComponent],
   declarations: [
     ImagesCollectionDetailComponent,
     ImagesCollectionListComponent,
     ImagesCollectionNewComponent,
-    ImagesCollectionTemplateComponent
+    ImagesCollectionTemplateComponent,
+    ImagesCollectionBatchImportComponent
   ]
 })
 export class ImagesCollectionModule { }

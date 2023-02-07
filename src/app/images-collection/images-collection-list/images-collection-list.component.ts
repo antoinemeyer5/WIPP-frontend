@@ -10,6 +10,7 @@ import {ImagesCollectionNewComponent} from '../images-collection-new/images-coll
 import {Router} from '@angular/router';
 import {ModalErrorComponent} from '../../modal-error/modal-error.component';
 import {KeycloakService} from '../../services/keycloak/keycloak.service'
+import {ImagesCollectionBatchImportComponent} from '../images-collection-batch-import/images-collection-batch-import.component';
 
 @Component({
   selector: 'app-images-collection-list',
@@ -159,6 +160,11 @@ export class ImagesCollectionListComponent implements OnInit, OnDestroy {
     }, (reason) => {
       console.log('dismissed');
     });
+  }
+
+  createBatchImport() {
+    const modalRef = this.modalService.open(ImagesCollectionBatchImportComponent, {size: 'lg'});
+    modalRef.componentInstance.modalReference = modalRef;
   }
 
   ngOnDestroy() {
