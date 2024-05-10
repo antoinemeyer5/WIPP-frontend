@@ -203,6 +203,10 @@ export class ImagesCollectionService implements DataService<ImagesCollection, Pa
     return this.http.post<ImagesCollection>(this.imagesCollectionsUrl, imagesCollection);
   }
 
+  batchImportImagesCollections(configuration: any): Observable<String> {
+    return this.http.post<any>(`${this.imagesCollectionsUrl}/batch-import`, configuration);
+  }
+
   deleteImagesCollection(imagesCollection: ImagesCollection) {
     return this.http.delete<ImagesCollection>(imagesCollection._links.self.href);
   }

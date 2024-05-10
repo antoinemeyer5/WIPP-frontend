@@ -1,12 +1,19 @@
 <h3 class="wipp-title">Images Collections</h3>
 
 <div *ngIf="canCreate()" class="row">
-  <div class="col-md-3">
-    <button class="btn btn-primary wipp-btn wipp-btn-new" (click)="createNew();">
-      <i class="fas fa-plus-circle">
-        <p>New images collection</p>
-      </i>
-    </button>
+  <div class="col-md-6">
+    <div class="btn-toolbar">
+      <button class="btn btn-primary wipp-btn wipp-btn-new" (click)="createNew();">
+        <i class="fas fa-plus-circle">
+          <p>New single images collection</p>
+        </i>
+      </button>
+      <button class="btn btn-primary wipp-btn wipp-btn-new" (click)="createBatchImport();">
+        <i class="fas fa-folder-open">
+          <p>Batch import multiple collections</p>
+        </i>
+      </button>
+    </div>
   </div>
 </div>
 

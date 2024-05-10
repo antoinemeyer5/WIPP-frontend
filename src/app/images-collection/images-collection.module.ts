@@ -22,6 +22,7 @@ import {
 import {NgxSpinnerModule} from 'ngx-spinner';
 import {DataViewModule} from 'primeng/dataview';
 import {DropdownModule} from 'primeng/dropdown';
+import { ImagesCollectionBatchImportComponent } from './images-collection-batch-import/images-collection-batch-import.component';
 
 @NgModule({
   imports: [
@@ -44,12 +45,15 @@ import {DropdownModule} from 'primeng/dropdown';
     DataViewModule,
     DropdownModule
   ],
-  entryComponents: [ImagesCollectionNewComponent],
+  entryComponents: [
+    ImagesCollectionNewComponent,
+    ImagesCollectionBatchImportComponent],
   declarations: [
     ImagesCollectionDetailComponent,
     ImagesCollectionListComponent,
     ImagesCollectionNewComponent,
-    ImagesCollectionTemplateComponent
+    ImagesCollectionTemplateComponent,
+    ImagesCollectionBatchImportComponent
   ]
 })
 export class ImagesCollectionModule { }
