@@ -3,6 +3,11 @@
 @import '~@fortawesome/fontawesome-free/css/all.min.css';
 @import '~@angular/material/prebuilt-themes/indigo-pink.css';
 @import '~@qontu/ngx-inline-editor/themes/bootstrap.css';
+@import '~@recogito/annotorious-openseadragon/dist/annotorious.min.css';
+@import "~primeicons/primeicons.css";
+@import "~primeng/resources/themes/nova-light/theme.css";
+@import "~primeng/resources/primeng.min.css";
+
 
 html, body { height: 100%; }
 body { margin: 0; font-family: 'Roboto', sans-serif; }

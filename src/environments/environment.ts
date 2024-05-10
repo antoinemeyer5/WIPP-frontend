@@ -11,7 +11,8 @@ export const environment = {
     url: 'http://localhost:8081/auth',
     realm: 'WIPP',
     clientId: 'wipp-public-client'
-  }
+  },
+  iipRootUrl: 'http://localhost:8082/fcgi-bin/iipsrv.fcgi'
 };
 
 /*

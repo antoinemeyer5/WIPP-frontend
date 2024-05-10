@@ -18,8 +18,8 @@
       <div class="row" *ngIf="stitchingVector._links && stitchingVector._links.statistics">
         <div class="col-md-12">
           <b>Statistics file: </b>
-          <a [href]="stitchingVector._links.statistics.href"
-             ngbTooltip="Download"
+          <a (click)="openDownload(stitchingVector._links.statistics.href)"
+             ngbTooltip="Download statistics file"
              placement="left">
             Download
           </a>

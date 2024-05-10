@@ -1,4 +1,4 @@
-<h3 class="wipp-title">Pyramid Visualization</h3>
+<h3 class="wipp-title">Multichannel Visualization</h3>
 
 <div class="row">
   <div class="col-md-3">
@@ -101,7 +101,8 @@
           <thead>
           <tr>
             <th class="table-column-40p vert-align">Layer label</th>
-            <th class="table-column-40p vert-align">Pyramid</th>
+            <th class="table-column-40p vert-align">Images</th>
+            <th class="table-column-40p vert-align">Config</th>
             <!--TODO: add ppm info (metadata not handled in pyramid building yet) -->
             <!--<th class="vert-align">Pixels / meter</th>-->
             <th class="wip-icon-button-column vert-align" *ngIf="canEdit()"></th>
@@ -111,10 +112,11 @@
           <tr *ngFor="let layer of layersGroup.layers">
             <td class="vert-align">{{layer.label}}</td>
             <td class="vert-align">
-              <a routerLink="/pyramids/{{layer.pyramid?.id}}">
+              <a routerLink="/images-collection/{{layer.pyramid?.id}}">
                 {{layer.pyramid?.name}}
-              </a>
+              </a><span *ngIf="layer.filenamePattern"> - {{layer.filenamePattern}}</span>
             </td>
+            <td class="vert-align">{{layer.displayConfig | json}}</td>
             <!--TODO: add ppm info (metadata not handled in pyramid building yet) -->
             <!--<td class="vert-align">{{layer.ppm}}</td>-->
             <td class="vert-align" *ngIf="canEdit()">
@@ -138,9 +140,22 @@
                      [inputFormatter]="formatter"
                      [resultFormatter]="formatter"
                      (selectItem)="pyramidSelected(layersGroup)"
-                     placeholder="Start typing a pyramid name..."
+                     placeholder="Start typing a collection name..."
                      [(ngModel)]="layersGroup.newLayer.pyramid"
                      required>
+              <input type="text" class="form-control" required
+                     [(ngModel)]="layersGroup.newLayer.filenamePattern"
+                     placeholder="Filename pattern (e.g. image-{ttt}.ome.tif"
+              >
+            </td>
+            <td class="vert-align" *ngIf="canEdit()">
+              <div class="filter-container">
+                <div style="position:relative">
+                  <p-dropdown [options]="contrastOptions"  placeholder="Adjust Contrast" [(ngModel)]="layersGroup.newLayer.contrastField" [style]="{'min-width':'140px','display':'inline-block'}"></p-dropdown>
+                  <p-dropdown [options]="colorMapOptions"  placeholder="Colormap" [(ngModel)]="layersGroup.newLayer.colorMapField" [style]="{'min-width':'140px','display':'inline-block'}"></p-dropdown>
+                  <p-dropdown [options]="invertOptions"  placeholder="Invert" [(ngModel)]="layersGroup.newLayer.invertField" [style]="{'min-width':'140px','display':'inline-block'}"></p-dropdown>
+                </div>
+              </div>
             </td>
             <!--TODO: add ppm info (metadata not handled in pyramid building yet) -->
             <!--<td class="vert-align">-->
@@ -183,5 +198,4 @@
 
   </tbody>
 </table>
-
 <wippWdzt [manifest]="manifest"></wippWdzt>

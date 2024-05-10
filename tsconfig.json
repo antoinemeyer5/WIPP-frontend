@@ -17,5 +17,7 @@
       "es2017",
       "dom"
     ]
-  }
+  },
+  "exclude": ["node_modules"],
+  "typeAcquisition": { "enable": true }
 }

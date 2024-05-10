@@ -6,6 +6,9 @@ import {map} from 'rxjs/operators';
 import {Job} from '../job/job';
 import {PaginatedPyramid, Pyramid} from './pyramid';
 import {DataService} from '../data-service';
+import {ImagesCollection} from '../images-collection/images-collection';
+import 'rxjs/add/observable/of';
+
 
 @Injectable({
   providedIn: 'root'
@@ -145,6 +148,38 @@ export class PyramidService implements DataService<Pyramid, PaginatedPyramid> {
         map( data => {
           return manifest;
         }));
+  }
+
+  getPyramidIiifManifest(pyramid: ImagesCollection, layer: any): any {
+    console.log(layer);
+    const contrastParam = layer.contrastField ? layer.contrastField : '1';
+    const colorMapParam = layer.colorMapField ? ('&CMP=' + layer.colorMapField) : '';
+    const invertParam = layer.invertField ? layer.invertField : '';
+    const filenamePattern = layer.filenamePattern;
+    const manifest = {
+      'layersGroups': [{
+        'id': pyramid.id,
+        'name': pyramid.name,
+        'layers': [{
+          'id': pyramid.id,
+          'name': pyramid.name,
+          'baseUrl': environment.iipRootUrl
+            + '?CNT='
+            + contrastParam
+            + colorMapParam
+            + invertParam
+            + '&IIIF='
+            + pyramid.id + '/images',
+          'framesPrefix': 'image_',
+          'framesSuffix': '.ome.tif/info.json',
+          // 'framesOffset': -1,
+          'openOnFrame': 1,
+          'numberOfFrames': 50,
+          'paddingSize': 1
+        }]
+      }]
+    };
+    return Observable.of(manifest);
   }
 
   getPyramidTimeSlices(pyramid: Pyramid, params): Observable<any> {

@@ -19,6 +19,9 @@ import {InlineEditorModule} from '@qontu/ngx-inline-editor';
 import {
   ImagesCollectionTemplateComponent
 } from './images-collection-template/images-collection-template.component';
+import {NgxSpinnerModule} from 'ngx-spinner';
+import {DataViewModule} from 'primeng/dataview';
+import {DropdownModule} from 'primeng/dropdown';
 
 @NgModule({
   imports: [
@@ -36,7 +39,10 @@ import {
     MatRadioModule,
     ReactiveFormsModule,
     InlineEditorModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    NgxSpinnerModule,
+    DataViewModule,
+    DropdownModule
   ],
   entryComponents: [ImagesCollectionNewComponent],
   declarations: [

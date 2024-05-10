@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, NgModule, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, NgModule, NgZone, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {auditTime, catchError, map, mergeMap, switchMap} from 'rxjs/operators';
 import * as Flow from '@flowjs/flow.js';
@@ -13,11 +13,15 @@ import {MetadataFile} from '../metadata-file';
 import {InlineEditorModule} from '@qontu/ngx-inline-editor';
 import {JobDetailComponent} from '../../job/job-detail/job-detail.component';
 import {Job} from '../../job/job';
-import urljoin from 'url-join';
+import urljoin = require('url-join');
 import {AppConfigService} from '../../app-config.service';
 import {KeycloakService} from '../../services/keycloak/keycloak.service';
 import {ModalErrorComponent} from '../../modal-error/modal-error.component';
 import {ConfirmDialogService} from '../../confirm-dialog/confirm-dialog.service';
+import {NgxSpinnerService} from 'ngx-spinner';
+import OpenSeadragon = require('openseadragon');
+import {SelectItem} from 'primeng/api';
+import {environment} from '../../../environments/environment';
 
 @Component({
   selector: 'app-images-collection-detail',
@@ -33,14 +37,27 @@ export class ImagesCollectionDetailComponent implements OnInit, AfterViewInit {
   flowHolder: Flow.IFlow;
   imagesCollection: ImagesCollection = new ImagesCollection();
   images: Observable<Image[]>;
+  imagesTest: Image[];
   metadataFiles: Observable<MetadataFile[]>;
   sourceJob: Job = null;
-  showNotes = false;
+  showNotes = true;
   editNotes = false;
   imageCollectionNotes;
 
-  displayedColumnsImages: string[] = ['index', 'fileName', 'fileSize', 'actions'];
+  displayedColumnsImages: string[] = ['index', 'thumbnail', 'fileName', 'fileSize', 'actions'];
   displayedColumnsMetadata: string[] = ['index', 'fileName', 'fileSize', 'actions'];
+
+  sortOptions: SelectItem[];
+  sortField: string;
+
+  colorMapOptions: SelectItem[];
+  colorMapField: string;
+
+  contrastOptions: SelectItem[];
+  contrastField: string;
+
+  invertOptions: SelectItem[];
+  invertField: string;
 
   pageSizeOptions: number[] = [10, 25, 50, 100];
   imagesParamsChange: BehaviorSubject<{ index: number, size: number, sort: string }>;
@@ -55,6 +72,8 @@ export class ImagesCollectionDetailComponent implements OnInit, AfterViewInit {
   goToPageMetadataFiles;
   imageCollectionId = this.route.snapshot.paramMap.get('id');
   sourceCatalogLink = '';
+
+  iipRootUrl: string = environment.iipRootUrl;
 
   @ViewChild('browseBtn') browseBtn: ElementRef;
   @ViewChild('browseDirBtn') browseDirBtn: ElementRef;
@@ -74,7 +93,9 @@ export class ImagesCollectionDetailComponent implements OnInit, AfterViewInit {
     private imagesCollectionService: ImagesCollectionService,
     private appConfigService: AppConfigService,
     private keycloakService: KeycloakService,
-    private confirmDialogService: ConfirmDialogService
+    private confirmDialogService: ConfirmDialogService,
+    private spinner: NgxSpinnerService,
+    private ngZone: NgZone
     ) {
     this.imagesParamsChange = new BehaviorSubject({
       index: 0,
@@ -145,6 +166,34 @@ export class ImagesCollectionDetailComponent implements OnInit, AfterViewInit {
         return {Authorization: `Bearer ${self.keycloakService.getKeycloakAuth().token}`};
       }
     });
+    this.sortOptions = [
+      { label: 'Name (asc)', value: 'fileName,asc' },
+      { label: 'Name (desc)', value: 'fileName,desc' },
+      { label: 'Size (asc)', value: 'fileSize,asc' },
+      { label: 'Size (desc)', value: 'fileSize,desc' }
+    ];
+    this.colorMapOptions = [
+      { label: 'NONE', value: '' },
+      { label: 'GREY', value: 'GREY' },
+      { label: 'JET', value: 'JET' },
+      { label: 'COLD', value: 'COLD' },
+      { label: 'HOT', value: 'HOT' },
+      { label: 'RED', value: 'RED' },
+      { label: 'GREEN', value: 'GREEN' },
+      { label: 'BLUE', value: 'BLUE' }
+    ];
+    this.contrastOptions = [
+      { label: 'NONE', value: '1' },
+      { label: 'STRETCH', value: 'ST' },
+      { label: 'EQUALIZATION', value: 'EQ' },
+      { label: 'x2', value: '2' },
+      { label: 'x10', value: '10' },
+      { label: 'x100', value: '100' }
+    ];
+    this.invertOptions = [
+      { label: 'NO', value: '' },
+      { label: 'YES', value: '&INV' }
+    ];
     this.$throttleRefresh.pipe(
       auditTime(1000),
       switchMap(() => this.refresh()))
@@ -177,8 +226,18 @@ export class ImagesCollectionDetailComponent implements OnInit, AfterViewInit {
         if (this.imagesCollection.sourceCatalog) {
           this.sourceCatalogLink = urljoin(this.appConfigService.getConfig().catalogUiUrl, this.imagesCollection.sourceCatalog);
         }
+        this.imageCollectionNotes = this.imagesCollection.notes;
         this.getImages();
         this.getMetadataFiles();
+        const params = {
+          pageIndex: 0,
+          size: 12,
+          sort: "fileName,asc"
+        };
+        this.imagesCollectionService.getImages(this.imagesCollection, params).subscribe(val => {
+          this.resultsLengthImages = val.page.totalElements;
+          this.imagesTest = val.data;
+        });
         if (this.imagesCollection.numberImportingImages !== 0) {
           this.$throttleRefresh.next();
         }
@@ -356,7 +415,7 @@ export class ImagesCollectionDetailComponent implements OnInit, AfterViewInit {
     const metadataFilesUploadUrl = this.imagesCollectionService.getMetadataFilesUrl(this.imagesCollection);
 
     this.flowHolder.opts.target = function (file) {
-      const imagesExtensions = ['tif', 'tiff', 'jpg', 'jpeg', 'png'];
+      const imagesExtensions = ['tif', 'tiff', 'jpg', 'jpeg', 'png', 'mrc', 'dm4', 'svs'];
       const isImage = imagesExtensions.indexOf(
         file.getExtension()) >= 0;
       return isImage ? imagesUploadUrl : metadataFilesUploadUrl;
@@ -463,4 +522,49 @@ export class ImagesCollectionDetailComponent implements OnInit, AfterViewInit {
       window.location.href = downloadUrl['url']);
   }
 
+  openDeepZoomImage(wdztContent, image: Image): void {
+    var dzModal = this.modalService.open(wdztContent, {ariaLabelledBy: 'modal-basic-title'});
+    const viewerosd = this.ngZone.runOutsideAngular(() => {
+      const contrastParam = this.contrastField ? this.contrastField : '1';
+      const colorMapParam = this.colorMapField ? ('&CMP=' + this.colorMapField) : '';
+      const invertParam = this.invertField ? this.invertField : '';
+      var viewer = OpenSeadragon({
+        id: 'openseadragon-img',
+        prefixUrl: "https://cdn.jsdelivr.net/npm/openseadragon@4.1/build/openseadragon/images/",
+        tileSources: [
+          this.iipRootUrl
+          + '?CNT='
+          + contrastParam
+          + colorMapParam
+          + invertParam
+          + '&IIIF='
+          + this.imagesCollection.id + '/images/' + image.fileName + '/info.json'
+        ]
+      });
+    });
+    dzModal.result.then(
+      (result) => {
+        console.log(result);
+      },
+      (reason) => {
+        console.log(reason);
+      },
+    );
+  }
+
+  loadData(event) {
+    const sortField = event.sortField ? event.sortField : 'fileName,asc';
+    const params = {
+      pageIndex: event.first / event.rows,
+      size: event.rows,
+      sort: sortField
+    };
+    this.imagesCollectionService.getImages(this.imagesCollection, params).subscribe(val =>
+      this.imagesTest = val.data
+    );
+  }
+
+  ngOnDestroy() {
+    this.modalService.dismissAll();
+  }
 }

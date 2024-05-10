@@ -8,5 +8,6 @@ export const environment = {
     url: '@KEYCLOAK_URL_VALUE@',
     realm: 'WIPP',
     clientId: 'wipp-public-client'
-  }
+  },
+  iipRootUrl: '@IIP_URL_VALUE@'
 };

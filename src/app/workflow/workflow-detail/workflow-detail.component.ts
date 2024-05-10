@@ -12,7 +12,7 @@ import {FormProperty, PropertyGroup} from 'ngx-schema-form/lib/model/formpropert
 import {ModalErrorComponent} from '../../modal-error/modal-error.component';
 import {NgxSpinnerService} from 'ngx-spinner';
 import {AppConfigService} from '../../app-config.service';
-import urljoin from 'url-join';
+import urlJoin = require('url-join');
 import {JobService} from '../../job/job.service';
 import {dataMap} from '../../data-service';
 import {WorkflowNewComponent} from '../workflow-new/workflow-new.component';
@@ -97,17 +97,17 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     this.argoUiBaseUrl = this.appConfigService.getConfig().argoUiBaseUrl;
     this.workflowService.getWorkflow(this.workflowId).subscribe(workflow => {
       this.workflow = workflow;
+      this.pluginService.getAllPluginsOrderedByName()
+        .subscribe(plugins => {
+          this.pluginList = plugins.plugins;
+          this.generateSchema(this.pluginList);
+          this.resetForm();
+          this.getJobs();
+        });
       this.updateArgoUrl();
     }, error => {
       this.router.navigate(['/404']);
     });
-    this.pluginService.getAllPluginsOrderedByName()
-      .subscribe(plugins => {
-        this.pluginList = plugins.plugins;
-        this.generateSchema(this.pluginList);
-        this.resetForm();
-        this.getJobs();
-      });
   }
 
   resetForm() {
@@ -546,7 +546,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
 
   updateArgoUrl() {
     if (this.workflow.generatedName) {
-      this.argoUiLink = urljoin(this.argoUiBaseUrl, this.workflow.generatedName);
+      this.argoUiLink = urlJoin(this.argoUiBaseUrl, this.workflow.generatedName);
     }
   }
 

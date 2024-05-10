@@ -9,6 +9,7 @@ import {WdztModule} from '../wdzt/wdzt.module';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {MatFormFieldModule, MatInputModule, MatPaginatorModule, MatSortModule, MatTableModule, MatCheckboxModule} from '@angular/material';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {DropdownModule} from 'primeng/dropdown';
 
 @NgModule({
   imports: [
@@ -23,6 +24,7 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
     MatCheckboxModule,
     PyramidVisualizationRoutingModule,
     WdztModule,
+    DropdownModule,
     NgbModule.forRoot()
   ],
   entryComponents: [
