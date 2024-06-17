@@ -1,0 +1,82 @@
+<h3 class="wipp-title">Quickview Dashboard</h3>
+
+<!--<div class="container">-->
+  <div class="row">
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-header text-center">
+          <b>Latest Images Collections</b> (<a routerLink="/images-collections">go to full list</a>)
+        </div>
+        <table class="table">
+          <thead>
+          <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Creation date</th>
+            <th scope="col">Owner</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let coll of imagesCollections">
+            <td>
+              <a routerLink="/images-collection/{{coll.id}}">{{coll.name}}</a>
+            </td>
+            <td>{{ coll.creationDate | date }}</td>
+            <td>{{ coll.owner }}</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-header text-center">
+          <b>Latest Visualizations</b> (<a routerLink="/pyramid-visualizations">go to full list</a>)
+        </div>
+        <table class="table">
+          <thead>
+          <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Creation date</th>
+            <th scope="col">Owner</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let vis of visualizations">
+            <td>
+              <a routerLink="/pyramid-visualizations/{{vis.id}}">{{vis.name}}</a>
+              </td>
+              <td>{{ vis.creationDate | date }}</td>
+              <td>{{ vis.owner }}</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-header text-center">
+          <b>Latest Workflows</b> (<a routerLink="/workflows">go to full list</a>)
+        </div>
+        <table class="table">
+          <thead>
+          <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Creation date</th>
+            <th scope="col">Owner</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let workflow of workflows">
+            <td>
+              <a routerLink="/workflows/detail/{{workflow.id}}">{{workflow.name}}</a>
+            </td>
+            <td>{{ workflow.creationDate | date }}</td>
+            <td>{{ workflow.owner }}</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+<!--</div>-->

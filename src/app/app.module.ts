@@ -31,6 +31,7 @@ import {PyramidAnnotationModule} from './pyramid-annotation/pyramid-annotation.m
 import { GenericDataModule } from './generic-data/generic-data.module';
 import {ConfirmDialogService} from './confirm-dialog/confirm-dialog.service';
 import {ConfirmDialogModule} from './confirm-dialog/confirm-dialog.module';
+import {HomeModule} from './home/home.module';
 
 @NgModule({
   declarations: [
@@ -42,6 +43,7 @@ import {ConfirmDialogModule} from './confirm-dialog/confirm-dialog.module';
   imports: [
     BrowserModule,
     HttpClientModule,
+    HomeModule,
     ImagesCollectionModule,
     StitchingVectorModule,
     PyramidAnnotationModule,

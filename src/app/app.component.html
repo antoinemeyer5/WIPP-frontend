@@ -1,9 +1,9 @@
 <header>
-  <div id="logo">
+  <div id="logo" *ngIf="router.url === '/home'">
     <img src="assets/img/logo-wipp.png">
   </div>
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="#">
+    <a class="navbar-brand" routerLink="/home">
       <i class="fas fa-home">
         <p>WIPP</p>
       </i>

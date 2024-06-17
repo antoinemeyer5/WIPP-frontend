@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { environment} from '../environments/environment';
 import {AppConfigService} from './app-config.service';
 import {KeycloakService} from './services/keycloak/keycloak.service';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -17,7 +18,7 @@ export class AppComponent {
   apiDocsLink = environment.apiRootUrl + '/swagger-ui/index.html';
   displayApiDocsLink = !environment.production;
 
-  constructor(private appConfigService: AppConfigService, private keycloak: KeycloakService) {
+  constructor(private appConfigService: AppConfigService, private keycloak: KeycloakService, private router: Router) {
     this.jupyterNotebooksLink = this.appConfigService.getConfig().jupyterNotebooksUrl;
   }
 
