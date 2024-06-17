@@ -55,7 +55,7 @@ export class TensorflowModelListComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log('Tensrflow model component!!!');
+    console.log('Tensorflow model component!!!');
     console.log(this.tensorflowModels);
     this.getTensorflowModels();
   }

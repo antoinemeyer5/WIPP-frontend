@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
-import {environment} from '../../environments/environment';
-import {Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
-import {PaginatedTensorflowModels, TensorboardLogs, TensorflowModel} from './tensorflow-model';
-import {Job} from '../job/job';
-import {DataService} from '../data-service';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { environment } from '../../environments/environment';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { PaginatedTensorflowModels, TensorboardLogs, TensorflowModel } from './tensorflow-model';
+import { Job } from '../job/job';
+import { DataService } from '../data-service';
 
 @Injectable({
   providedIn: 'root'

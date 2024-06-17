@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { WorkflowListComponent } from './workflow-list/workflow-list.component';
-import {MatInputModule, MatPaginatorModule, MatSortModule, MatTableModule} from '@angular/material';
-import {WorkflowRoutingModule} from './workflow-routing.module';
+import { MatInputModule, MatPaginatorModule, MatSortModule, MatTableModule} from '@angular/material';
+import { WorkflowRoutingModule} from './workflow-routing.module';
 import { WorkflowDetailComponent } from './workflow-detail/workflow-detail.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';

@@ -1,6 +1,6 @@
-import {Component, OnInit} from '@angular/core';
-import {DynamicComponent} from '../../dynamic-content/dynamic.component';
-import {TensorflowModelService} from '../tensorflow-model.service';
+import { Component, OnInit } from '@angular/core';
+import { DynamicComponent } from '../../dynamic-content/dynamic.component';
+import { TensorflowModelService } from '../tensorflow-model.service';
 
 
 @Component({
