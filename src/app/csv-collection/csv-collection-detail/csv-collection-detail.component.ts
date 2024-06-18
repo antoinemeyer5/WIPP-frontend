@@ -13,7 +13,7 @@ import * as Flow from '@flowjs/flow.js';
 import {auditTime, catchError, map, switchMap} from 'rxjs/operators';
 import {BytesPipe, NgMathPipesModule} from 'angular-pipes';
 import {InlineEditorModule} from '@qontu/ngx-inline-editor';
-import {MatPaginator} from '@angular/material';
+import { MatPaginator } from '@angular/material/paginator';
 import {Csv} from '../csv';
 import {ModalErrorComponent} from '../../modal-error/modal-error.component';
 

@@ -1,8 +1,10 @@
 import {Component, NgModule, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ImagesCollectionService} from '../images-collection.service';
 import {ImagesCollection} from '../images-collection';
-import {MatTableModule, MatTableDataSource, MatPaginator, MatSort} from '@angular/material';
-import {MatTable} from '@angular/material';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
+import { MatTableModule, MatTableDataSource } from '@angular/material/table';
+import { MatTable } from '@angular/material/table';
 import {BehaviorSubject, combineLatest, Observable, of as observableOf} from 'rxjs';
 import {catchError, map, switchMap} from 'rxjs/operators';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
