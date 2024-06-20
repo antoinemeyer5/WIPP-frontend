@@ -1,6 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Directive as  } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
+@()
+@Directive()
 @Component({
   selector: 'app-forbidden-access',
   templateUrl: './forbidden-access.component.html',

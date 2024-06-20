@@ -1,4 +1,4 @@
-import {Component, NgModule, OnInit, ViewChild} from '@angular/core';
+import { Component, NgModule, OnInit, ViewChild, Directive as  } from '@angular/core';
 import {PyramidAnnotation} from '../pyramid-annotation';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
@@ -8,6 +8,8 @@ import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {catchError, map, switchMap} from 'rxjs/operators';
 import {BehaviorSubject, Observable, of as observableOf} from 'rxjs';
 
+@()
+@Directive()
 @Component({
   selector: 'app-pyramid-annotation-list',
   templateUrl: './pyramid-annotation-list.component.html',

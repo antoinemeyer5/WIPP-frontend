@@ -1,10 +1,12 @@
-import {Component, Input, OnInit} from '@angular/core';
+import { Component, Input, OnInit, Directive as  } from '@angular/core';
 import {ImagesCollection, ImagesCollectionImportMethod} from '../images-collection';
 import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 import {AppConfigService} from '../../app-config.service';
 import {ImagesCollectionService} from '../images-collection.service';
 import {Router} from '@angular/router';
 
+@()
+@Directive()
 @Component({
   selector: 'app-images-collection-batch-import',
   templateUrl: './images-collection-batch-import.component.html',

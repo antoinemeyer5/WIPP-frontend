@@ -1,4 +1,4 @@
-import {Component, NgModule, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import { Component, NgModule, OnDestroy, OnInit, ViewChild, Directive as  } from '@angular/core';
 import {ImagesCollectionService} from '../images-collection.service';
 import {ImagesCollection} from '../images-collection';
 import { MatPaginator } from '@angular/material/paginator';
@@ -14,6 +14,8 @@ import {ModalErrorComponent} from '../../modal-error/modal-error.component';
 import {KeycloakService} from '../../services/keycloak/keycloak.service'
 import {ImagesCollectionBatchImportComponent} from '../images-collection-batch-import/images-collection-batch-import.component';
 
+@()
+@Directive()
 @Component({
   selector: 'app-images-collection-list',
   templateUrl: './images-collection-list.component.html',

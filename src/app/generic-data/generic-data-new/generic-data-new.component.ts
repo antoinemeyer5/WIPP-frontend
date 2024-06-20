@@ -1,9 +1,11 @@
-import {Component, OnInit, Input} from '@angular/core';
+import { Component, OnInit, Input, Directive as  } from '@angular/core';
 import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {GenericData} from '../generic-data'
 import {GenericDataService} from '../generic-data.service'
 import {Router} from '@angular/router';
 
+@()
+@Directive()
 @Component({
   selector: 'app-generic-data-new',
   templateUrl: './generic-data-new.component.html',

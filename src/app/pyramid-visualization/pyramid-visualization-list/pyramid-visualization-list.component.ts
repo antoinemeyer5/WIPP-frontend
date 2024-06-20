@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import { Component, OnInit, ViewChild, Directive as  } from '@angular/core';
 import {BehaviorSubject, Observable, of as observableOf} from 'rxjs';
 import {Visualization} from '../visualization';
 import { MatPaginator } from '@angular/material/paginator';
@@ -11,6 +11,8 @@ import {PyramidVisualizationNewComponent} from '../pyramid-visualization-new/pyr
 import {KeycloakService} from '../../services/keycloak/keycloak.service'
 
 
+@()
+@Directive()
 @Component({
   selector: 'app-pyramid-visualization-list',
   templateUrl: './pyramid-visualization-list.component.html',

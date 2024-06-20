@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, NgModule, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, NgModule, OnInit, ViewChild, Directive as  } from '@angular/core';
 import {Job} from '../../job/job';
 import {AppConfigService} from '../../app-config.service';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -14,6 +14,8 @@ import {auditTime, catchError, map, switchMap} from 'rxjs/operators';
 import {BytesPipe, NgMathPipesModule} from 'angular-pipes';
 import { MatPaginator } from '@angular/material/paginator';
 
+@()
+@Directive()
 @Component({
   selector: 'app-generic-data-detail',
   templateUrl: './generic-data-detail.component.html',

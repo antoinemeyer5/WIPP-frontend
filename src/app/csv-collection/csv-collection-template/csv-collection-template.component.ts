@@ -1,7 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Directive as  } from '@angular/core';
 import {DynamicComponent} from '../../dynamic-content/dynamic.component';
 import {CsvCollectionService} from '../csv-collection.service';
 
+@()
+@Directive()
 @Component({
   selector: 'app-csv-collection-template',
   template:

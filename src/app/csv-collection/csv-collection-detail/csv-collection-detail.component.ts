@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, NgModule, OnInit, ViewChild} from '@angular/core';
+import { AfterViewInit, Component, ElementRef, NgModule, OnInit, ViewChild, Directive as  } from '@angular/core';
 import {Job} from '../../job/job';
 import {ActivatedRoute, Router} from '@angular/router';
 import {NgbModal, NgbModule} from '@ng-bootstrap/ng-bootstrap';
@@ -16,6 +16,8 @@ import { MatPaginator } from '@angular/material/paginator';
 import {Csv} from '../csv';
 import {ModalErrorComponent} from '../../modal-error/modal-error.component';
 
+@()
+@Directive()
 @Component({
   selector: 'app-csv-collection-detail',
   templateUrl: './csv-collection-detail.component.html',

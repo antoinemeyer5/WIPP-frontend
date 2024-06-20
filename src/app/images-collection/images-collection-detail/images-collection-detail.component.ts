@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, NgModule, NgZone, OnInit, ViewChild} from '@angular/core';
+import { AfterViewInit, Component, ElementRef, NgModule, NgZone, OnInit, ViewChild, Directive as  } from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {auditTime, catchError, map, mergeMap, switchMap} from 'rxjs/operators';
 import * as Flow from '@flowjs/flow.js';
@@ -24,6 +24,8 @@ import OpenSeadragon from 'openseadragon';
 import {SelectItem} from 'primeng/api';
 import {environment} from '../../../environments/environment';
 
+@()
+@Directive()
 @Component({
   selector: 'app-images-collection-detail',
   templateUrl: './images-collection-detail.component.html',

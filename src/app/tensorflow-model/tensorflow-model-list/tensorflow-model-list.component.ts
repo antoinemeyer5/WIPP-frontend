@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import { Component, OnInit, ViewChild, Directive as  } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import {BehaviorSubject, Observable, of as observableOf} from 'rxjs';
@@ -6,6 +6,8 @@ import {TensorflowModel} from '../tensorflow-model';
 import {TensorflowModelService} from '../tensorflow-model.service';
 import {catchError, map, switchMap} from 'rxjs/operators';
 
+@()
+@Directive()
 @Component({
   selector: 'app-tensorflow-model-list',
   templateUrl: './tensorflow-model-list.component.html',

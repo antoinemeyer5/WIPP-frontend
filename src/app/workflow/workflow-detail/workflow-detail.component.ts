@@ -1,4 +1,4 @@
-import {Component, Injector, Input, OnDestroy, OnInit} from '@angular/core';
+import { Component, Injector, Input, OnDestroy, OnInit, Directive as  } from '@angular/core';
 import {PluginService} from '../../plugin/plugin.service';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {WorkflowService} from '../workflow.service';
@@ -19,6 +19,8 @@ import {WorkflowNewComponent} from '../workflow-new/workflow-new.component';
 import {KeycloakService} from '../../services/keycloak/keycloak.service';
 
 
+@()
+@Directive()
 @Component({
   selector: 'app-workflow-detail',
   templateUrl: './workflow-detail.component.html',

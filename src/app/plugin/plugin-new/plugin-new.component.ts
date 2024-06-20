@@ -1,8 +1,10 @@
-import {Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild, Directive as  } from '@angular/core';
 import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 import {PluginService} from '../plugin.service';
 import {Router} from '@angular/router';
 
+@()
+@Directive()
 @Component({
   selector: 'app-plugin-new',
   templateUrl: './plugin-new.component.html',
