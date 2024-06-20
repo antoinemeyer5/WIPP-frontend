@@ -40,7 +40,7 @@ import {HomeModule} from './home/home.module';
   declarations: [
     AppComponent,
     PageNotFoundComponent,
-    UnknownDynamicComponent,
+    // UnknownDynamicComponent,
     ForbiddenAccessComponent
   ],
   imports: [

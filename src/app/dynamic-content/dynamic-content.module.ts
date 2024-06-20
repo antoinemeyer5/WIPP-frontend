@@ -18,7 +18,7 @@ import {GenericDataTemplateComponent} from '../generic-data/generic-data-templat
     CommonModule,
   ],
   declarations: [
-    DynamicContentComponent],
+    DynamicContentComponent, UnknownDynamicComponent],
   entryComponents: [
     UnknownDynamicComponent,
     ImagesCollectionTemplateComponent,

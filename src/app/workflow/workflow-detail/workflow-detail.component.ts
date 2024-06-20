@@ -12,7 +12,7 @@ import {FormProperty, PropertyGroup} from 'ngx-schema-form/lib/model/formpropert
 import {ModalErrorComponent} from '../../modal-error/modal-error.component';
 import {NgxSpinnerService} from 'ngx-spinner';
 import {AppConfigService} from '../../app-config.service';
-import urlJoin = require('url-join');
+import urlJoin from 'url-join';
 import {JobService} from '../../job/job.service';
 import {dataMap} from '../../data-service';
 import {WorkflowNewComponent} from '../workflow-new/workflow-new.component';

@@ -15,7 +15,6 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { ImagesCollectionNewComponent } from './images-collection-new/images-collection-new.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {InlineEditorModule} from '@qontu/ngx-inline-editor';
 import {
   ImagesCollectionTemplateComponent
 } from './images-collection-template/images-collection-template.component';
@@ -39,7 +38,6 @@ import { ImagesCollectionBatchImportComponent } from './images-collection-batch-
     MatInputModule,
     MatRadioModule,
     ReactiveFormsModule,
-    InlineEditorModule,
     MatCheckboxModule,
     NgxSpinnerModule,
     DataViewModule,

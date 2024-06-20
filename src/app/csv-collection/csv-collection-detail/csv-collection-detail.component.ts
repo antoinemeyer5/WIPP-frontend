@@ -12,7 +12,6 @@ import {BehaviorSubject, Observable, of as observableOf, Subject} from 'rxjs';
 import * as Flow from '@flowjs/flow.js';
 import {auditTime, catchError, map, switchMap} from 'rxjs/operators';
 import {BytesPipe, NgMathPipesModule} from 'angular-pipes';
-import {InlineEditorModule} from '@qontu/ngx-inline-editor';
 import { MatPaginator } from '@angular/material/paginator';
 import {Csv} from '../csv';
 import {ModalErrorComponent} from '../../modal-error/modal-error.component';
@@ -24,7 +23,7 @@ import {ModalErrorComponent} from '../../modal-error/modal-error.component';
 })
 
 @NgModule({
-  imports: [NgbModule, NgMathPipesModule, BytesPipe, InlineEditorModule]
+  imports: [NgbModule, NgMathPipesModule, BytesPipe]
 })
 export class CsvCollectionDetailComponent implements OnInit, AfterViewInit {
 
@@ -154,7 +153,7 @@ export class CsvCollectionDetailComponent implements OnInit, AfterViewInit {
   }
   initFlow(): void {
     this.flowHolder.assignBrowse([this.browseBtn.nativeElement], false, false, {'accept': '.csv'});
-    
+
     const id = this.route.snapshot.paramMap.get('id');
     const csvUploadUrl = this.csvCollectionService.getCsvUrl(this.csvCollection);
     this.flowHolder.opts.target = csvUploadUrl;

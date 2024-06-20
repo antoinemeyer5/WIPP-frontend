@@ -54,11 +54,12 @@
       <dl class="row">
         <dt class="col-md-4">Name:</dt>
         <dd class="col-md-8">
-          <inline-editor  *ngIf="canEdit()" type="text" [(ngModel)]="imagesCollection.name"
-                         (onSave)="updateCollectionName($event)" size="20"
-                         name="editableImageCollectionName">
-            {{imagesCollection.name}}
-          </inline-editor>
+          {{imagesCollection.name}}
+<!--          <inline-editor  *ngIf="canEdit()" type="text" [(ngModel)]="imagesCollection.name"-->
+<!--                         (onSave)="updateCollectionName($event)" size="20"-->
+<!--                         name="editableImageCollectionName">-->
+<!--            {{imagesCollection.name}}-->
+<!--          </inline-editor>-->
           <ng-container *ngIf="!canEdit()">{{imagesCollection.name}}</ng-container>
         </dd>
 

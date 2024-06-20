@@ -11,16 +11,16 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import {BehaviorSubject, from, Observable, of as observableOf, Subject} from 'rxjs';
 import {MetadataFile} from '../metadata-file';
-import {InlineEditorModule} from '@qontu/ngx-inline-editor';
 import {JobDetailComponent} from '../../job/job-detail/job-detail.component';
 import {Job} from '../../job/job';
-import urljoin = require('url-join');
+import urljoin from 'url-join';
 import {AppConfigService} from '../../app-config.service';
 import {KeycloakService} from '../../services/keycloak/keycloak.service';
 import {ModalErrorComponent} from '../../modal-error/modal-error.component';
 import {ConfirmDialogService} from '../../confirm-dialog/confirm-dialog.service';
 import {NgxSpinnerService} from 'ngx-spinner';
-import OpenSeadragon = require('openseadragon');
+//import OpenSeadragon = require('openseadragon');
+import OpenSeadragon from 'openseadragon';
 import {SelectItem} from 'primeng/api';
 import {environment} from '../../../environments/environment';
 
@@ -31,7 +31,7 @@ import {environment} from '../../../environments/environment';
 })
 
 @NgModule({
-  imports: [NgbModule, NgMathPipesModule, BytesPipe, InlineEditorModule]
+  imports: [NgbModule, NgMathPipesModule, BytesPipe]
 })
 export class ImagesCollectionDetailComponent implements OnInit, AfterViewInit {
 
