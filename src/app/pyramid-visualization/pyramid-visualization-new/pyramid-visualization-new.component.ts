@@ -1,9 +1,7 @@
-import { Component, Input, OnInit, Directive as  } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import {Visualization} from '../visualization';
 import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 
-@()
-@Directive()
 @Component({
   selector: 'app-pyramid-visualization-new',
   templateUrl: './pyramid-visualization-new.component.html',

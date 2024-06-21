@@ -1,11 +1,9 @@
-import { Component, ElementRef, OnInit, ViewChild, Directive as  } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {StitchingVector} from '../stitching-vector';
 import {StitchingVectorService} from '../stitching-vector.service';
 import {Router} from '@angular/router';
 
-@()
-@Directive()
 @Component({
   selector: 'app-stitching-vector-new',
   templateUrl: './stitching-vector-new.component.html',

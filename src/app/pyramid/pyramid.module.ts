@@ -19,7 +19,7 @@ import {PyramidTemplateComponent} from './pyramid-template/pyramid-template.comp
 @NgModule({
   imports: [
     CommonModule,
-    NgbModule.forRoot(),
+    NgbModule,
     NgMathPipesModule,
     PyramidRoutingModule,
     MatProgressSpinnerModule,

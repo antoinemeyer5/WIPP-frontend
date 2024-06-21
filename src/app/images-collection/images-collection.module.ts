@@ -6,7 +6,7 @@ import {ImagesCollectionListComponent} from './images-collection-list/images-col
 import {NgMathPipesModule} from 'angular-pipes';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatLabel, MatFormFieldModule } from '@angular/material/form-field';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -26,7 +26,7 @@ import { ImagesCollectionBatchImportComponent } from './images-collection-batch-
 @NgModule({
   imports: [
     CommonModule,
-    NgbModule.forRoot(),
+    NgbModule,
     NgMathPipesModule,
     ImagesCollectionRoutingModule,
     MatProgressSpinnerModule,
@@ -43,9 +43,6 @@ import { ImagesCollectionBatchImportComponent } from './images-collection-batch-
     DataViewModule,
     DropdownModule
   ],
-  entryComponents: [
-    ImagesCollectionNewComponent,
-    ImagesCollectionBatchImportComponent],
   declarations: [
     ImagesCollectionDetailComponent,
     ImagesCollectionListComponent,

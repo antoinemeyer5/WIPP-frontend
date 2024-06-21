@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, NgModule, NgZone, OnInit, ViewChild, Directive as  } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, NgModule, NgZone, OnInit, ViewChild } from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {auditTime, catchError, map, mergeMap, switchMap} from 'rxjs/operators';
 import * as Flow from '@flowjs/flow.js';
@@ -19,13 +19,10 @@ import {KeycloakService} from '../../services/keycloak/keycloak.service';
 import {ModalErrorComponent} from '../../modal-error/modal-error.component';
 import {ConfirmDialogService} from '../../confirm-dialog/confirm-dialog.service';
 import {NgxSpinnerService} from 'ngx-spinner';
-//import OpenSeadragon = require('openseadragon');
 import OpenSeadragon from 'openseadragon';
 import {SelectItem} from 'primeng/api';
 import {environment} from '../../../environments/environment';
 
-@()
-@Directive()
 @Component({
   selector: 'app-images-collection-detail',
   templateUrl: './images-collection-detail.component.html',

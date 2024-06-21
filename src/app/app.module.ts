@@ -68,7 +68,7 @@ import {HomeModule} from './home/home.module';
     MatProgressSpinnerModule,
     FormsModule,
     MatCheckboxModule,
-    NgbModule.forRoot()
+    NgbModule
   ],
   providers: [
     AppConfigService,

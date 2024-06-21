@@ -1,9 +1,7 @@
-import { Component, Input, OnInit, Directive as  } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 import {Workflow} from '../workflow';
 
-@()
-@Directive()
 @Component({
   selector: 'app-workflow-new',
   templateUrl: './workflow-new.component.html',

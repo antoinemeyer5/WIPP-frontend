@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, Directive as  } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {PluginService} from '../plugin.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Plugin} from '../plugin';
@@ -6,8 +6,6 @@ import {animate, state, style, transition, trigger} from '@angular/animations';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {KeycloakService} from '../../services/keycloak/keycloak.service';
 
-
-@Directive()
 @Component({
   selector: 'app-plugin-detail',
   templateUrl: './plugin-detail.component.html',

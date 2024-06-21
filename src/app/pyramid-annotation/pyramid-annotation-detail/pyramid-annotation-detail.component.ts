@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, Directive as  } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import {ActivatedRoute} from '@angular/router';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
@@ -10,8 +10,6 @@ import {TimeSlice} from '../timeSlice';
 import {KeycloakService} from '../../services/keycloak/keycloak.service';
 import {saveAs} from 'file-saver';
 
-@()
-@Directive()
 @Component({
   selector: 'app-pyramid-annotation-detail',
   templateUrl: './pyramid-annotation-detail.component.html',

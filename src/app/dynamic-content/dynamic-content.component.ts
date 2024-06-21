@@ -1,9 +1,7 @@
-import { Component, ComponentFactoryResolver, ComponentRef, Input, OnDestroy, OnInit, Type, ViewChild, ViewContainerRef, Directive as  } from '@angular/core';
+import { Component, ComponentFactoryResolver, ComponentRef, Input, OnDestroy, OnInit, Type, ViewChild, ViewContainerRef } from '@angular/core';
 import {UnknownDynamicComponent} from './unknown-dynamic.component';
 import {DynamicComponent} from './dynamic.component';
 
-@()
-@Directive()
 @Component({
   selector: 'app-dynamic-content',
   template: '<div>\n' +
@@ -16,7 +14,7 @@ export class DynamicContentComponent implements OnInit, OnDestroy {
   container: ViewContainerRef;
 
   @Input()
-  type: string
+  type: string;
 
   @Input()
   idData: string;

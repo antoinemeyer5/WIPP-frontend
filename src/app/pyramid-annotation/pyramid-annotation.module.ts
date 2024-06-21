@@ -23,7 +23,7 @@ import {FormsModule} from '@angular/forms';
     MatSortModule,
     MatTableModule,
     MatInputModule,
-    NgbModule.forRoot(),
+    NgbModule,
     FormsModule
   ]
 })

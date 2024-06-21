@@ -1,4 +1,4 @@
-import { Component, OnInit, Directive as  } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {Job} from '../../job/job';
 import {ActivatedRoute, Router} from '@angular/router';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
@@ -9,8 +9,6 @@ import {AppConfigService} from '../../app-config.service';
 import urljoin from 'url-join';
 import {KeycloakService} from '../../services/keycloak/keycloak.service';
 
-@()
-@Directive()
 @Component({
   selector: 'app-tensorflow-model-detail',
   templateUrl: './tensorflow-model-detail.component.html',
@@ -67,7 +65,7 @@ export class TensorflowModelDetailComponent implements OnInit {
         console.log('dismissed');
       });
   }
-  
+
   makePublicTensorflowModel(): void {
     this.tensorflowModelService.makePublicTensorflowModel(
       this.tensorflowModel).subscribe(tensorflowModel => {

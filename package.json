@@ -24,9 +24,9 @@
     "@angular/router": "^10.2.5",
     "@flowjs/flow.js": "^2.14.1",
     "@fortawesome/fontawesome-free": "^5.3.1",
-    "@ng-bootstrap/ng-bootstrap": "^4.2.1",
+    "@ng-bootstrap/ng-bootstrap": "^8.0.4",
     "@recogito/annotorious-openseadragon": "^2.7.17",
-    "@swimlane/ngx-graph": "^7.1.2",
+    "@swimlane/ngx-graph": "^7.2.0",
     "@types/flowjs": "0.0.31",
     "@types/marked": "^0.6.5",
     "@types/prismjs": "^1.16.0",
@@ -50,8 +50,8 @@
     "ngx-spinner": "^7.2.0",
     "notebookjs": "^0.4.2",
     "openseadragon": "^3.1.0",
-    "primeicons": "^1.0.0",
-    "primeng": "^8.1.1",
+    "primeicons": "^4.1.0",
+    "primeng": "^11.0.0",
     "prismjs": "^1.17.1",
     "react": "^16.8.6",
     "rxjs": "^6.6.7",
@@ -84,7 +84,7 @@
     "protractor": "~7.0.0",
     "ts-node": "~5.0.1",
     "tslint": "~6.1.0",
-    "typescript": "^4.0.8"
+    "typescript": "3.9"
   },
   "husky": {
     "hooks": {

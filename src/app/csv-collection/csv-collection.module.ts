@@ -24,13 +24,10 @@ import {NgMathPipesModule} from 'angular-pipes';
     MatTableModule,
     MatFormFieldModule,
     MatInputModule,
-    NgbModule.forRoot(),
+    NgbModule,
     FormsModule,
     MatCheckboxModule,
     NgMathPipesModule
-  ],
-  entryComponents: [
-    CsvCollectionNewComponent
   ],
   declarations: [
     CsvCollectionListComponent,

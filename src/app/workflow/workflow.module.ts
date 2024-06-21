@@ -31,7 +31,7 @@ import {NgxSpinnerModule} from 'ngx-spinner';
     FormsModule,
     ReactiveFormsModule,
     DynamicContentModule,
-    NgbModule.forRoot(),
+    NgbModule,
     SchemaFormModule.forRoot(),
     NgxGraphModule,
     NgxSpinnerModule

@@ -1,4 +1,4 @@
-import { Component, OnInit, Directive as  } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {ImagesCollection} from '../images-collection/images-collection';
 import {ImagesCollectionService} from '../images-collection/images-collection.service';
 import {Visualization} from '../pyramid-visualization/visualization';
@@ -6,8 +6,6 @@ import {Workflow} from '../workflow/workflow';
 import {WorkflowService} from '../workflow/workflow.service';
 import {PyramidVisualizationService} from '../pyramid-visualization/pyramid-visualization.service';
 
-@()
-@Directive()
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',

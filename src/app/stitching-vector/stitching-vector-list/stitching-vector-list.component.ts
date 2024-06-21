@@ -1,4 +1,4 @@
-import { Component, NgModule, OnDestroy, OnInit, ViewChild, Directive as  } from '@angular/core';
+import { Component, NgModule, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTable, MatTableDataSource, MatTableModule } from '@angular/material/table';
@@ -10,8 +10,6 @@ import {catchError, map, switchMap} from 'rxjs/operators';
 import {BehaviorSubject, Observable, of as observableOf} from 'rxjs';
 import {KeycloakService} from '../../services/keycloak/keycloak.service'
 
-@()
-@Directive()
 @Component({
   selector: 'app-stitching-vector-list',
   templateUrl: './stitching-vector-list.component.html',

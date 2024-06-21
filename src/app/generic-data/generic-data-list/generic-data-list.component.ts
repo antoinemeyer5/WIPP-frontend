@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild, Directive as  } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import {BehaviorSubject, Observable, of as observableOf} from 'rxjs';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
@@ -10,8 +10,6 @@ import { GenericDataNewComponent } from '../generic-data-new/generic-data-new.co
 import {Router} from '@angular/router';
 import {KeycloakService} from '../../services/keycloak/keycloak.service';
 
-@()
-@Directive()
 @Component({
   selector: 'app-generic-data-list',
   templateUrl: './generic-data-list.component.html',

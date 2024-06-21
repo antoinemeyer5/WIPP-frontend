@@ -1,10 +1,8 @@
-import { Component, Input, NgModule, OnInit, Directive as  } from '@angular/core';
+import { Component, Input, NgModule, OnInit } from '@angular/core';
 import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {ImagesCollection, ImagesCollectionImportMethod} from '../images-collection';
 import {AppConfigService} from '../../app-config.service';
 
-@()
-@Directive()
 @Component({
   selector: 'app-images-collection-new',
   templateUrl: './images-collection-new.component.html',

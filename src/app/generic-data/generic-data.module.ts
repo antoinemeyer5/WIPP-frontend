@@ -29,9 +29,6 @@ import { FormsModule } from '@angular/forms';
     FormsModule,
     NgMathPipesModule
   ],
-  entryComponents: [
-    GenericDataNewComponent
-  ],
   declarations: [
     GenericDataListComponent,
     GenericDataDetailComponent,

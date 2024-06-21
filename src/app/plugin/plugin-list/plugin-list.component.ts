@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild, Directive as  } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {Plugin} from '../plugin';
 import {PluginService} from '../plugin.service';
@@ -7,12 +7,9 @@ import { MatSort } from '@angular/material/sort';
 import {catchError, map, switchMap} from 'rxjs/operators';
 import {BehaviorSubject, Observable, of as observableOf} from 'rxjs';
 import {SelectionModel} from '@angular/cdk/collections';
-import {ActivatedRoute, Router} from '@angular/router';
 import {PluginNewComponent} from '../plugin-new/plugin-new.component';
 import {KeycloakService} from '../../services/keycloak/keycloak.service';
 
-
-@Directive()
 @Component({
   selector: 'app-plugin-list',
   templateUrl: './plugin-list.component.html',

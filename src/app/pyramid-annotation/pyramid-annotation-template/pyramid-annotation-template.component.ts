@@ -1,9 +1,7 @@
-import { Component, OnInit, Directive as  } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {PyramidAnnotationService} from '../pyramid-annotation.service';
 import {DynamicComponent} from '../../dynamic-content/dynamic.component';
 
-@()
-@Directive()
 @Component({
   selector: 'app-pyramid-annotation-template',
   template:

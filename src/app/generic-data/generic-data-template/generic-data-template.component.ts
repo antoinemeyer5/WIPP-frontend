@@ -1,9 +1,7 @@
-import { Component, OnInit, Directive as  } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {DynamicComponent} from '../../dynamic-content/dynamic.component';
 import {GenericDataService} from '../generic-data.service';
 
-@()
-@Directive()
 @Component({
   selector: 'app-generic-data-template',
   template:

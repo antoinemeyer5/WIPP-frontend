@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, Directive as  } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import {JobDetailComponent} from '../../job/job-detail/job-detail.component';
 import {catchError, map, startWith, switchMap} from 'rxjs/operators';
 import {StitchingVectorService} from '../stitching-vector.service';
@@ -11,8 +11,6 @@ import {merge, of as observableOf} from 'rxjs';
 import {TimeSlice} from '../timeSlice';
 import {KeycloakService} from '../../services/keycloak/keycloak.service';
 
-@()
-@Directive()
 @Component({
   selector: 'app-stitching-vector-detail',
   templateUrl: './stitching-vector-detail.component.html',

@@ -30,13 +30,8 @@ import {DropdownModule} from 'primeng/dropdown';
     PyramidVisualizationRoutingModule,
     WdztModule,
     DropdownModule,
-    NgbModule.forRoot()
+    NgbModule
   ],
-  entryComponents: [
-    PyramidVisualizationNewComponent,
-    PyramidVisualizationHelpComponent
-  ]
-  ,
   declarations: [
     PyramidVisualizationListComponent,
     PyramidVisualizationDetailComponent,

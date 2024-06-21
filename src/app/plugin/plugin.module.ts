@@ -16,7 +16,7 @@ import {NgxJsonViewerModule} from 'ngx-json-viewer';
 @NgModule({
   imports: [
     CommonModule,
-    NgbModule.forRoot(),
+    NgbModule,
     PluginRoutingModule,
     MatPaginatorModule,
     MatTableModule,
@@ -29,9 +29,6 @@ import {NgxJsonViewerModule} from 'ngx-json-viewer';
   declarations: [
     PluginListComponent,
     PluginDetailComponent,
-    PluginNewComponent
-  ],
-  entryComponents: [
     PluginNewComponent
   ]
 })

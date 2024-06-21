@@ -8,9 +8,6 @@ import {ConfirmDialogComponent} from './confirm-dialog.component';
   ],
   declarations: [
     ConfirmDialogComponent],
-  entryComponents: [
-    ConfirmDialogComponent
-  ],
   exports: [
     ConfirmDialogComponent
   ]

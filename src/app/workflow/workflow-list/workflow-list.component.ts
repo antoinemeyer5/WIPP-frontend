@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, Directive as  } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import {WorkflowService} from '../workflow.service';
@@ -10,8 +10,6 @@ import {Router} from '@angular/router';
 import {WorkflowNewComponent} from '../workflow-new/workflow-new.component';
 import {KeycloakService} from '../../services/keycloak/keycloak.service';
 
-@()
-@Directive()
 @Component({
   selector: 'app-workflow-list',
   templateUrl: './workflow-list.component.html',

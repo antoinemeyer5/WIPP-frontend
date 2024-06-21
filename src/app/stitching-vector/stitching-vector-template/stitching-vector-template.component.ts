@@ -1,10 +1,7 @@
-import { Component, OnInit, Directive as  } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {DynamicComponent} from '../../dynamic-content/dynamic.component';
 import {StitchingVectorService} from '../stitching-vector.service';
 
-
-@()
-@Directive()
 @Component({
   selector: 'app-stitching-vector-template',
   template:

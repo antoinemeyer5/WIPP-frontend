@@ -16,7 +16,7 @@ import {NgxSpinnerModule} from 'ngx-spinner';
 @NgModule({
   imports: [
     CommonModule,
-    NgbModule.forRoot(),
+    NgbModule,
     NotebookRoutingModule,
     MatPaginatorModule,
     MatTableModule,

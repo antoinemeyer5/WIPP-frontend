@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, Directive as  } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 import {Job} from '../job';
 import {JobService} from '../job.service';
@@ -10,8 +10,6 @@ export interface IdHash {
   [nameId: string]: string;
 }
 
-@()
-@Directive()
 @Component({
   selector: 'app-job-detail',
   templateUrl: './job-detail.component.html',

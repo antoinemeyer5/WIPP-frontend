@@ -23,7 +23,7 @@ import {ModalErrorComponent} from '../modal-error/modal-error.component';
 @NgModule({
   imports: [
     CommonModule,
-    NgbModule.forRoot(),
+    NgbModule,
     NgMathPipesModule,
     StitchingVectorRoutingModule,
     MatProgressSpinnerModule,

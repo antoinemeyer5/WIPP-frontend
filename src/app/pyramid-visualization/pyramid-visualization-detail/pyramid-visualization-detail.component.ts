@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild, Directive as  } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import {forkJoin, Observable, of} from 'rxjs';
 import {debounceTime, distinctUntilChanged, map, switchMap} from 'rxjs/operators';
 import {Visualization} from '../visualization';
@@ -12,8 +12,6 @@ import {KeycloakService} from '../../services/keycloak/keycloak.service'
 import {ImagesCollectionService} from '../../images-collection/images-collection.service';
 import {SelectItem} from 'primeng/api';
 
-@()
-@Directive()
 @Component({
   selector: 'app-pyramid-visualization-detail',
   templateUrl: './pyramid-visualization-detail.component.html',

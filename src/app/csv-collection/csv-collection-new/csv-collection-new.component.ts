@@ -1,11 +1,9 @@
-import { Component, ElementRef, OnInit, ViewChild, Input, Directive as  } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, Input } from '@angular/core';
 import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {CsvCollection} from '../csv-collection';
 import {CsvCollectionService} from '../csv-collection.service';
 import {Router} from '@angular/router';
 
-@()
-@Directive()
 @Component({
   selector: 'app-csv-collection-new',
   templateUrl: './csv-collection-new.component.html',

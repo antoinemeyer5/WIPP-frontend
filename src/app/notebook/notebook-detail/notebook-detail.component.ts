@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, Renderer2, ViewChild, Directive as  } from '@angular/core';
+import { Component, ElementRef, OnInit, Renderer2, ViewChild } from '@angular/core';
 import {Notebook} from '../notebook';
 import {ActivatedRoute, Router} from '@angular/router';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
@@ -22,8 +22,6 @@ import {NgxSpinnerService} from 'ngx-spinner';
 import {ModalErrorComponent} from '../../modal-error/modal-error.component';
 import {PlatformLocation} from '@angular/common';
 
-@()
-@Directive()
 @Component({
   selector: 'app-notebook-detail',
   templateUrl: './notebook-detail.component.html',
