@@ -1,8 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, MatSort } from '@angular/material';
 import { BehaviorSubject, Observable, of as observableOf } from 'rxjs';
-import { AIModel } from '../ai-model';
-import { AIModelService } from '../ai-model.service';
+import { AiModel } from '../ai-model';
+import { AiModelService } from '../ai-model.service';
 import { catchError, map, switchMap } from 'rxjs/operators';
 
 @Component({
@@ -10,9 +10,9 @@ import { catchError, map, switchMap } from 'rxjs/operators';
   templateUrl: './ai-model-list.component.html',
   styleUrls: ['./ai-model-list.component.css']
 })
-export class AIModelListComponent implements OnInit {
+export class AiModelListComponent implements OnInit {
   displayedColumns: string[] = ['name', 'creationDate', 'owner', 'publiclyShared'];
-  aiModels: Observable<AIModel[]>;
+  AiModels: Observable<AiModel[]>;
 
   resultsLength = 0;
   pageSize = 10;
@@ -23,7 +23,7 @@ export class AIModelListComponent implements OnInit {
   @ViewChild(MatSort) sort: MatSort;
 
   constructor(
-    private aiModelService: AIModelService) {
+    private AiModelService: AiModelService) {
     this.paramsChange = new BehaviorSubject({
       index: 0,
       size: this.pageSize,
@@ -56,13 +56,13 @@ export class AIModelListComponent implements OnInit {
 
   ngOnInit() {
     console.log('AI model component!!!');
-    console.log(this.aiModels);
-    this.getAIModels();
+    console.log(this.AiModels);
+    this.getAiModels();
   }
 
-  getAIModels(): void {
+  getAiModels(): void {
     const paramsObservable = this.paramsChange.asObservable();
-    this.aiModels = paramsObservable.pipe(
+    this.AiModels = paramsObservable.pipe(
       switchMap((page) => {
         const params = {
           pageIndex: page.index,
@@ -70,7 +70,7 @@ export class AIModelListComponent implements OnInit {
           sort: page.sort
         };
         if (page.filter) {
-          return this.aiModelService.getByNameContainingIgnoreCase(params, page.filter).pipe(
+          return this.AiModelService.getByNameContainingIgnoreCase(params, page.filter).pipe(
             map((paginatedResult) => {
               this.resultsLength = paginatedResult.page.totalElements;
               return paginatedResult.data;
@@ -80,7 +80,7 @@ export class AIModelListComponent implements OnInit {
             })
           );
         }
-        return this.aiModelService.get(params).pipe(
+        return this.AiModelService.get(params).pipe(
           map((paginatedResult) => {
             this.resultsLength = paginatedResult.page.totalElements;
             return paginatedResult.data;

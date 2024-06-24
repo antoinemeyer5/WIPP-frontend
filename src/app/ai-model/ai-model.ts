@@ -1,4 +1,4 @@
-export class AIModel {
+export class AiModel {
   id: string;
   name: string;
   owner: string;
@@ -9,9 +9,9 @@ export class AIModel {
   _links: any;
 }
 
-export interface PaginatedAIModels {
+export interface PaginatedAiModels {
   page: any;
-  data: AIModel[];
+  data: AiModel[];
   _links: any;
 }
 

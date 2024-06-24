@@ -16,7 +16,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { StitchingVectorModule } from './stitching-vector/stitching-vector.module';
 import { PyramidModule } from './pyramid/pyramid.module';
-import { AIModelModule } from './ai-model/ai-model.module';
+import { AiModelModule } from './ai-model/ai-model.module';
 import { CsvCollectionModule } from './csv-collection/csv-collection.module';
 import { UnknownDynamicComponent } from './dynamic-content/unknown-dynamic.component';
 import { NotebookModule } from './notebook/notebook.module';
@@ -31,7 +31,6 @@ import { PyramidAnnotationModule } from './pyramid-annotation/pyramid-annotation
 import { GenericDataModule } from './generic-data/generic-data.module';
 import { ConfirmDialogService } from './confirm-dialog/confirm-dialog.service';
 import { ConfirmDialogModule } from './confirm-dialog/confirm-dialog.module';
-import { AiModelCardsModule } from './ai-modelcards/ai-modelcards.module';
 
 @NgModule({
   declarations: [
@@ -44,12 +43,11 @@ import { AiModelCardsModule } from './ai-modelcards/ai-modelcards.module';
     BrowserModule,
     HttpClientModule,
     ImagesCollectionModule,
-    AiModelCardsModule,
     StitchingVectorModule,
     PyramidAnnotationModule,
     PyramidModule,
     PyramidVisualizationModule,
-    AIModelModule,
+    AiModelModule,
     CsvCollectionModule,
     NotebookModule,
     GenericDataModule,

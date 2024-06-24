@@ -1,52 +1,55 @@
-import {Component, OnInit} from '@angular/core';
-import {Job} from '../../job/job';
-import {ActivatedRoute, Router} from '@angular/router';
-import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
-import {AIModelService} from '../ai-model.service';
-import {TensorboardLogs, AIModel} from '../ai-model';
-import {JobDetailComponent} from '../../job/job-detail/job-detail.component';
-import {AppConfigService} from '../../app-config.service';
+import { Component, OnInit } from '@angular/core';
+import { Job } from '../../job/job';
+import { ActivatedRoute, Router } from '@angular/router';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { AiModelService } from '../ai-model.service';
+import { TensorboardLogs, AiModel } from '../ai-model';
+// import { ModelCard } from '../model-card';
+import { JobDetailComponent } from '../../job/job-detail/job-detail.component';
+import { AppConfigService } from '../../app-config.service';
 import urljoin from 'url-join';
-import {KeycloakService} from '../../services/keycloak/keycloak.service';
+import { KeycloakService } from '../../services/keycloak/keycloak.service';
 
 @Component({
   selector: 'app-ai-model-detail',
   templateUrl: './ai-model-detail.component.html',
   styleUrls: ['./ai-model-detail.component.css']
 })
-export class AIModelDetailComponent implements OnInit {
+export class AiModelDetailComponent implements OnInit {
 
-  aiModel: AIModel = new AIModel();
+  AiModel: AiModel = new AiModel();
   tensorboardLogs: TensorboardLogs = null;
   tensorboardLink = '';
   job: Job = null;
-  aiModelId = this.route.snapshot.paramMap.get('id');
+  AiModelId = this.route.snapshot.paramMap.get('id');
+  // this.modelCard = new ModelCard();
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private modalService: NgbModal,
     private appConfigService: AppConfigService,
-    private aiModelService: AIModelService,
+    private AiModelService: AiModelService,
     private keycloakService: KeycloakService) {
   }
 
   ngOnInit() {
     this.tensorboardLink = urljoin(this.appConfigService.getConfig().tensorboardUrl, '#scalars&regexInput=');
-    this.aiModelService.getById(this.aiModelId)
-      .subscribe(aiModel => {
-        this.aiModel = aiModel;
+    this.AiModelService.getById(this.AiModelId)
+      .subscribe(AiModel => {
+        this.AiModel = AiModel;
         this.getTensorboardLogsAndJob();
       }, error => {
         this.router.navigate(['/404']);
       });
+    // this.modelCard = service.getModelCardByAiModel(this.AiModel);
   }
 
   getTensorboardLogsAndJob() {
-    if (this.aiModel._links['sourceJob']) {
-      this.aiModelService.getJob(this.aiModel._links['sourceJob']['href']).subscribe(job => {
+    if (this.AiModel._links['sourceJob']) {
+      this.AiModelService.getJob(this.AiModel._links['sourceJob']['href']).subscribe(job => {
         this.job = job;
-        this.aiModelService.getTensorboardLogsByJob(this.job.id).subscribe(res => {
+        this.AiModelService.getTensorboardLogsByJob(this.job.id).subscribe(res => {
           this.tensorboardLogs = res;
           console.log(this.tensorboardLogs);
           this.tensorboardLink = this.tensorboardLink + this.tensorboardLogs.name;
@@ -66,19 +69,19 @@ export class AIModelDetailComponent implements OnInit {
       });
   }
   
-  makePublicAIModel(): void {
-    this.aiModelService.makePublicAIModel(
-      this.aiModel).subscribe(aiModel => {
-      this.aiModel = aiModel;
+  makePublicAiModel(): void {
+    this.AiModelService.makePublicAiModel(
+      this.AiModel).subscribe(AiModel => {
+      this.AiModel = AiModel;
     });
   }
 
   canEdit(): boolean {
-    return this.keycloakService.canEdit(this.aiModel);
+    return this.keycloakService.canEdit(this.AiModel);
   }
 
   openDownload(url: string) {
-    this.aiModelService.startDownload(url).subscribe(downloadUrl =>
+    this.AiModelService.startDownload(url).subscribe(downloadUrl =>
       window.location.href = downloadUrl['url']);
   }
 }

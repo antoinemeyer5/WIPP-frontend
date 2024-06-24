@@ -1,13 +1,13 @@
-import { AIModelModule } from './ai-model.module';
+import { AiModelModule } from './ai-model.module';
 
-describe('AIModelModule', () => {
-  let aiModelModule: AIModelModule;
+describe('AiModelModule', () => {
+  let AiModelModule: AiModelModule;
 
   beforeEach(() => {
-    aiModelModule = new AIModelModule();
+    AiModelModule = new AiModelModule();
   });
 
   it('should create an instance', () => {
-    expect(aiModelModule).toBeTruthy();
+    expect(AiModelModule).toBeTruthy();
   });
 });

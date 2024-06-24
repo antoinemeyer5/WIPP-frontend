@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AIModelDetailComponent } from './ai-model-detail.component';
+import { AiModelDetailComponent } from './ai-model-detail.component';
 
-describe('AIModelDetailComponent', () => {
-  let component: AIModelDetailComponent;
-  let fixture: ComponentFixture<AIModelDetailComponent>;
+describe('AiModelDetailComponent', () => {
+  let component: AiModelDetailComponent;
+  let fixture: ComponentFixture<AiModelDetailComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AIModelDetailComponent ]
+      declarations: [ AiModelDetailComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(AIModelDetailComponent);
+    fixture = TestBed.createComponent(AiModelDetailComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

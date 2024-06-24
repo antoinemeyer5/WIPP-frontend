@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { DynamicComponent } from '../../dynamic-content/dynamic.component';
-import { AIModelService } from '../ai-model.service';
+import { AiModelService } from '../ai-model.service';
 
 
 @Component({
@@ -8,15 +8,15 @@ import { AIModelService } from '../ai-model.service';
   template:
     '<a routerLink="/ai-models/{{idData}}">{{text}}</a>'
 })
-export class AIModelTemplateComponent extends DynamicComponent implements OnInit {
+export class AiModelTemplateComponent extends DynamicComponent implements OnInit {
 
-  constructor(private aiModelService: AIModelService) { super(); }
+  constructor(private AiModelService: AiModelService) { super(); }
 
-  static key = 'aimodeltemplatecomponent';
+  static key = 'AiModeltemplatecomponent';
 
   ngOnInit() {
       if (this.idData) {
-      this.aiModelService.getById(this.idData).subscribe(result => {
+      this.AiModelService.getById(this.idData).subscribe(result => {
         this.text = result.name;
       });
     }

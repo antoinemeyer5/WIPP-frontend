@@ -1,21 +1,26 @@
 <h3 class="wipp-title">Ai Model Detail</h3>
 
 <div>
+  <p>Model Card</p>
+  <p>{{}}</p>
+</div>
+
+<div>
   <div class="row">
     <div class="col-md-9">
       <dl class="row">
 
         <dt class="col-md-4">Framework: </dt>
-        <dd class="col-md-8">{{aiModel.framework}}</dd>
+        <dd class="col-md-8">{{AiModel.framework}}</dd>
 
         <dt class="col-md-4">Name: </dt>
-        <dd class="col-md-8">{{aiModel.name}}</dd>
+        <dd class="col-md-8">{{AiModel.name}}</dd>
 
         <dt class="col-md-4">Creation Date: </dt>
-        <dd class="col-md-8">{{aiModel.creationDate | date}}</dd>
+        <dd class="col-md-8">{{AiModel.creationDate | date}}</dd>
 
         <dt class="col-md-4">Owner:</dt>
-        <dd class="col-md-8">{{aiModel.owner}}</dd>
+        <dd class="col-md-8">{{AiModel.owner}}</dd>
 
         <dt class="col-md-4">Training job: </dt>
         <dd class="col-md-8">
@@ -38,7 +43,7 @@
         <ng-template #not_applicable>N/A</ng-template>
         <dt class="col-md-4">Visibility:</dt>
         <dd class="col-md-8">
-          <div *ngIf="aiModel.publiclyShared; else privateData">Public</div>
+          <div *ngIf="AiModel.publiclyShared; else privateData">Public</div>
         </dd>
         <ng-template #privateData>Private</ng-template>
       </dl>
@@ -46,17 +51,17 @@
 
     <div class="col-md-3 text-right">
       <button
-        (click)="openDownload(aiModel._links.download.href)"
+        (click)="openDownload(AiModel._links.download.href)"
         ngbTooltip="Download as zip"
         placement="left"
         class="btn btn-light">
                   <span
                     aria-hidden="true"><i class="fa fa-download"></i></span>
       </button>
-      <button *ngIf="!aiModel.publiclyShared && canEdit()" type="button"
+      <button *ngIf="!AiModel.publiclyShared && canEdit()" type="button"
               ngbTooltip="Make AI model public"
               placement="left"
-              class="btn btn-light" (click)="makePublicAIModel();">
+              class="btn btn-light" (click)="makePublicAiModel();">
         <span class="fa fa-users"
               aria-hidden="true"></span>
       </button>

@@ -3,25 +3,25 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { PaginatedAIModels, TensorboardLogs, AIModel } from './ai-model';
+import { PaginatedAiModels, TensorboardLogs, AiModel } from './ai-model';
 import { Job } from '../job/job';
 import { DataService } from '../data-service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class AIModelService implements DataService<AIModel, PaginatedAIModels> {
+export class AiModelService implements DataService<AiModel, PaginatedAiModels> {
 
-  private aiModelUrl = environment.apiRootUrl + '/aiModels';
+  private AiModelUrl = environment.apiRootUrl + '/AiModels';
   private tensorboardLogsUrl = environment.apiRootUrl + '/tensorboardLogs';
 
   constructor(private http: HttpClient) { }
 
-  getById(id: string): Observable<AIModel> {
-    return this.http.get<AIModel>(`${this.aiModelUrl}/${id}`);
+  getById(id: string): Observable<AiModel> {
+    return this.http.get<AiModel>(`${this.AiModelUrl}/${id}`);
   }
 
-  get(params): Observable<PaginatedAIModels> {
+  get(params): Observable<PaginatedAiModels> {
     const httpOptions = {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
       params: {}
@@ -33,14 +33,14 @@ export class AIModelService implements DataService<AIModel, PaginatedAIModels> {
       const httpParams = new HttpParams().set('page', page).set('size', size).set('sort', sort);
       httpOptions.params = httpParams;
     }
-    return this.http.get<any>(this.aiModelUrl, httpOptions).pipe(
+    return this.http.get<any>(this.AiModelUrl, httpOptions).pipe(
       map((result: any) => {
-        result.data = result._embedded.aiModels;
+        result.data = result._embedded.AiModels;
         return result;
       }));
   }
 
-  getByNameContainingIgnoreCase(params, name): Observable<PaginatedAIModels> {
+  getByNameContainingIgnoreCase(params, name): Observable<PaginatedAiModels> {
     const httpOptions = {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
       params: {}
@@ -53,9 +53,9 @@ export class AIModelService implements DataService<AIModel, PaginatedAIModels> {
       httpParams = httpParams.set('page', page).set('size', size).set('sort', sort);
     }
     httpOptions.params = httpParams;
-    return this.http.get<any>(this.aiModelUrl + '/search/findByNameContainingIgnoreCase', httpOptions).pipe(
+    return this.http.get<any>(this.AiModelUrl + '/search/findByNameContainingIgnoreCase', httpOptions).pipe(
       map((result: any) => {
-        result.data = result._embedded.aiModels;
+        result.data = result._embedded.AiModels;
         return result;
       }));
   }
@@ -77,12 +77,12 @@ export class AIModelService implements DataService<AIModel, PaginatedAIModels> {
       }));
   }
 
-  makePublicAIModel(aiModel: AIModel): Observable<AIModel> {
+  makePublicAiModel(AiModel: AiModel): Observable<AiModel> {
     const httpOptions = {
       headers: new HttpHeaders({'Content-Type': 'application/json'}),
       params: {}
     };
-    return this.http.patch<AIModel>(`${this.aiModelUrl}/${aiModel.id}`, {publiclyShared: true}, httpOptions);
+    return this.http.patch<AiModel>(`${this.AiModelUrl}/${AiModel.id}`, {publiclyShared: true}, httpOptions);
   }
 
   startDownload(url: string): Observable<string> {

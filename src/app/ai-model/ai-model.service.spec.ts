@@ -1,15 +1,15 @@
 import { TestBed, inject } from '@angular/core/testing';
 
-import { AIModelService } from './ai-model.service';
+import { AiModelService } from './ai-model.service';
 
-describe('AIModelService', () => {
+describe('AiModelService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [AIModelService]
+      providers: [AiModelService]
     });
   });
 
-  it('should be created', inject([AIModelService], (service: AIModelService) => {
+  it('should be created', inject([AiModelService], (service: AiModelService) => {
     expect(service).toBeTruthy();
   }));
 });
