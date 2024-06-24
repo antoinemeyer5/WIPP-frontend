@@ -17,11 +17,11 @@ import { KeycloakService } from '../../services/keycloak/keycloak.service';
 })
 export class AiModelDetailComponent implements OnInit {
 
-  AiModel: AiModel = new AiModel();
+  aiModel: AiModel = new AiModel();
   tensorboardLogs: TensorboardLogs = null;
   tensorboardLink = '';
   job: Job = null;
-  AiModelId = this.route.snapshot.paramMap.get('id');
+  aiModelId = this.route.snapshot.paramMap.get('id');
   // this.modelCard = new ModelCard();
 
   constructor(
@@ -29,27 +29,27 @@ export class AiModelDetailComponent implements OnInit {
     private router: Router,
     private modalService: NgbModal,
     private appConfigService: AppConfigService,
-    private AiModelService: AiModelService,
+    private aiModelService: AiModelService,
     private keycloakService: KeycloakService) {
   }
 
   ngOnInit() {
     this.tensorboardLink = urljoin(this.appConfigService.getConfig().tensorboardUrl, '#scalars&regexInput=');
-    this.AiModelService.getById(this.AiModelId)
-      .subscribe(AiModel => {
-        this.AiModel = AiModel;
+    this.aiModelService.getById(this.aiModelId)
+      .subscribe(aiModel => {
+        this.aiModel = aiModel;
         this.getTensorboardLogsAndJob();
       }, error => {
         this.router.navigate(['/404']);
       });
-    // this.modelCard = service.getModelCardByAiModel(this.AiModel);
+    // this.modelCard = service.getModelCardByaiModel(this.aiModel);
   }
 
   getTensorboardLogsAndJob() {
-    if (this.AiModel._links['sourceJob']) {
-      this.AiModelService.getJob(this.AiModel._links['sourceJob']['href']).subscribe(job => {
+    if (this.aiModel._links['sourceJob']) {
+      this.aiModelService.getJob(this.aiModel._links['sourceJob']['href']).subscribe(job => {
         this.job = job;
-        this.AiModelService.getTensorboardLogsByJob(this.job.id).subscribe(res => {
+        this.aiModelService.getTensorboardLogsByJob(this.job.id).subscribe(res => {
           this.tensorboardLogs = res;
           console.log(this.tensorboardLogs);
           this.tensorboardLink = this.tensorboardLink + this.tensorboardLogs.name;
@@ -70,18 +70,18 @@ export class AiModelDetailComponent implements OnInit {
   }
   
   makePublicAiModel(): void {
-    this.AiModelService.makePublicAiModel(
-      this.AiModel).subscribe(AiModel => {
-      this.AiModel = AiModel;
+    this.aiModelService.makePublicAiModel(
+      this.aiModel).subscribe(aiModel => {
+      this.aiModel = aiModel;
     });
   }
 
   canEdit(): boolean {
-    return this.keycloakService.canEdit(this.AiModel);
+    return this.keycloakService.canEdit(this.aiModel);
   }
 
   openDownload(url: string) {
-    this.AiModelService.startDownload(url).subscribe(downloadUrl =>
+    this.aiModelService.startDownload(url).subscribe(downloadUrl =>
       window.location.href = downloadUrl['url']);
   }
 }
