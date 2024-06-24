@@ -16,7 +16,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { StitchingVectorModule } from './stitching-vector/stitching-vector.module';
 import { PyramidModule } from './pyramid/pyramid.module';
-import { TensorflowModelModule } from './tensorflow-model/tensorflow-model.module';
+import { AIModelModule } from './ai-model/ai-model.module';
 import { CsvCollectionModule } from './csv-collection/csv-collection.module';
 import { UnknownDynamicComponent } from './dynamic-content/unknown-dynamic.component';
 import { NotebookModule } from './notebook/notebook.module';
@@ -49,7 +49,7 @@ import { AiModelCardsModule } from './ai-modelcards/ai-modelcards.module';
     PyramidAnnotationModule,
     PyramidModule,
     PyramidVisualizationModule,
-    TensorflowModelModule,
+    AIModelModule,
     CsvCollectionModule,
     NotebookModule,
     GenericDataModule,

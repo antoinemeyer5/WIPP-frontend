@@ -3,25 +3,25 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { PaginatedTensorflowModels, TensorboardLogs, TensorflowModel } from './tensorflow-model';
+import { PaginatedAIModels, TensorboardLogs, AIModel } from './ai-model';
 import { Job } from '../job/job';
 import { DataService } from '../data-service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class TensorflowModelService implements DataService<TensorflowModel, PaginatedTensorflowModels> {
+export class AIModelService implements DataService<AIModel, PaginatedAIModels> {
 
-  private tensorflowModelUrl = environment.apiRootUrl + '/tensorflowModels';
+  private aiModelUrl = environment.apiRootUrl + '/aiModels';
   private tensorboardLogsUrl = environment.apiRootUrl + '/tensorboardLogs';
 
   constructor(private http: HttpClient) { }
 
-  getById(id: string): Observable<TensorflowModel> {
-    return this.http.get<TensorflowModel>(`${this.tensorflowModelUrl}/${id}`);
+  getById(id: string): Observable<AIModel> {
+    return this.http.get<AIModel>(`${this.aiModelUrl}/${id}`);
   }
 
-  get(params): Observable<PaginatedTensorflowModels> {
+  get(params): Observable<PaginatedAIModels> {
     const httpOptions = {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
       params: {}
@@ -33,14 +33,14 @@ export class TensorflowModelService implements DataService<TensorflowModel, Pagi
       const httpParams = new HttpParams().set('page', page).set('size', size).set('sort', sort);
       httpOptions.params = httpParams;
     }
-    return this.http.get<any>(this.tensorflowModelUrl, httpOptions).pipe(
+    return this.http.get<any>(this.aiModelUrl, httpOptions).pipe(
       map((result: any) => {
-        result.data = result._embedded.tensorflowModels;
+        result.data = result._embedded.aiModels;
         return result;
       }));
   }
 
-  getByNameContainingIgnoreCase(params, name): Observable<PaginatedTensorflowModels> {
+  getByNameContainingIgnoreCase(params, name): Observable<PaginatedAIModels> {
     const httpOptions = {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
       params: {}
@@ -53,9 +53,9 @@ export class TensorflowModelService implements DataService<TensorflowModel, Pagi
       httpParams = httpParams.set('page', page).set('size', size).set('sort', sort);
     }
     httpOptions.params = httpParams;
-    return this.http.get<any>(this.tensorflowModelUrl + '/search/findByNameContainingIgnoreCase', httpOptions).pipe(
+    return this.http.get<any>(this.aiModelUrl + '/search/findByNameContainingIgnoreCase', httpOptions).pipe(
       map((result: any) => {
-        result.data = result._embedded.tensorflowModels;
+        result.data = result._embedded.aiModels;
         return result;
       }));
   }
@@ -77,12 +77,12 @@ export class TensorflowModelService implements DataService<TensorflowModel, Pagi
       }));
   }
 
-  makePublicTensorflowModel(tensorflowModel: TensorflowModel): Observable<TensorflowModel> {
+  makePublicAIModel(aiModel: AIModel): Observable<AIModel> {
     const httpOptions = {
       headers: new HttpHeaders({'Content-Type': 'application/json'}),
       params: {}
     };
-    return this.http.patch<TensorflowModel>(`${this.tensorflowModelUrl}/${tensorflowModel.id}`, {publiclyShared: true}, httpOptions);
+    return this.http.patch<AIModel>(`${this.aiModelUrl}/${aiModel.id}`, {publiclyShared: true}, httpOptions);
   }
 
   startDownload(url: string): Observable<string> {

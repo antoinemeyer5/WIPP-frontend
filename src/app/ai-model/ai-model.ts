@@ -1,16 +1,17 @@
-export class TensorflowModel {
+export class AIModel {
   id: string;
   name: string;
+  owner: string;
+  machineLearningLibraries: string;
   creationDate: Date;
   sourceJob: string;
-  owner: string;
   publiclyShared: boolean = true;
   _links: any;
 }
 
-export interface PaginatedTensorflowModels {
+export interface PaginatedAIModels {
   page: any;
-  data: TensorflowModel[];
+  data: AIModel[];
   _links: any;
 }
 

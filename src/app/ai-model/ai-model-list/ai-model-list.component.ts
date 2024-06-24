@@ -1,18 +1,18 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {MatPaginator, MatSort} from '@angular/material';
-import {BehaviorSubject, Observable, of as observableOf} from 'rxjs';
-import {TensorflowModel} from '../tensorflow-model';
-import {TensorflowModelService} from '../tensorflow-model.service';
-import {catchError, map, switchMap} from 'rxjs/operators';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { MatPaginator, MatSort } from '@angular/material';
+import { BehaviorSubject, Observable, of as observableOf } from 'rxjs';
+import { AIModel } from '../ai-model';
+import { AIModelService } from '../ai-model.service';
+import { catchError, map, switchMap } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-tensorflow-model-list',
-  templateUrl: './tensorflow-model-list.component.html',
-  styleUrls: ['./tensorflow-model-list.component.css']
+  selector: 'app-ai-model-list',
+  templateUrl: './ai-model-list.component.html',
+  styleUrls: ['./ai-model-list.component.css']
 })
-export class TensorflowModelListComponent implements OnInit {
+export class AIModelListComponent implements OnInit {
   displayedColumns: string[] = ['name', 'creationDate', 'owner', 'publiclyShared'];
-  tensorflowModels: Observable<TensorflowModel[]>;
+  aiModels: Observable<AIModel[]>;
 
   resultsLength = 0;
   pageSize = 10;
@@ -23,7 +23,7 @@ export class TensorflowModelListComponent implements OnInit {
   @ViewChild(MatSort) sort: MatSort;
 
   constructor(
-    private tensorflowModelService: TensorflowModelService) {
+    private aiModelService: AIModelService) {
     this.paramsChange = new BehaviorSubject({
       index: 0,
       size: this.pageSize,
@@ -55,14 +55,14 @@ export class TensorflowModelListComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log('Tensorflow model component!!!');
-    console.log(this.tensorflowModels);
-    this.getTensorflowModels();
+    console.log('AI model component!!!');
+    console.log(this.aiModels);
+    this.getAIModels();
   }
 
-  getTensorflowModels(): void {
+  getAIModels(): void {
     const paramsObservable = this.paramsChange.asObservable();
-    this.tensorflowModels = paramsObservable.pipe(
+    this.aiModels = paramsObservable.pipe(
       switchMap((page) => {
         const params = {
           pageIndex: page.index,
@@ -70,7 +70,7 @@ export class TensorflowModelListComponent implements OnInit {
           sort: page.sort
         };
         if (page.filter) {
-          return this.tensorflowModelService.getByNameContainingIgnoreCase(params, page.filter).pipe(
+          return this.aiModelService.getByNameContainingIgnoreCase(params, page.filter).pipe(
             map((paginatedResult) => {
               this.resultsLength = paginatedResult.page.totalElements;
               return paginatedResult.data;
@@ -80,7 +80,7 @@ export class TensorflowModelListComponent implements OnInit {
             })
           );
         }
-        return this.tensorflowModelService.get(params).pipe(
+        return this.aiModelService.get(params).pipe(
           map((paginatedResult) => {
             this.resultsLength = paginatedResult.page.totalElements;
             return paginatedResult.data;

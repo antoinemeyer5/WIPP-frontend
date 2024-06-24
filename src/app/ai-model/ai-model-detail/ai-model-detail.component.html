@@ -1,17 +1,21 @@
-<h3 class="wipp-title">Tensorflow Model Detail</h3>
+<h3 class="wipp-title">Ai Model Detail</h3>
 
 <div>
   <div class="row">
     <div class="col-md-9">
       <dl class="row">
+
+        <dt class="col-md-4">Framework: </dt>
+        <dd class="col-md-8">{{aiModel.framework}}</dd>
+
         <dt class="col-md-4">Name: </dt>
-        <dd class="col-md-8">{{tensorflowModel.name}}</dd>
+        <dd class="col-md-8">{{aiModel.name}}</dd>
 
         <dt class="col-md-4">Creation Date: </dt>
-        <dd class="col-md-8">{{tensorflowModel.creationDate | date}}</dd>
+        <dd class="col-md-8">{{aiModel.creationDate | date}}</dd>
 
         <dt class="col-md-4">Owner:</dt>
-        <dd class="col-md-8">{{tensorflowModel.owner}}</dd>
+        <dd class="col-md-8">{{aiModel.owner}}</dd>
 
         <dt class="col-md-4">Training job: </dt>
         <dd class="col-md-8">
@@ -34,7 +38,7 @@
         <ng-template #not_applicable>N/A</ng-template>
         <dt class="col-md-4">Visibility:</dt>
         <dd class="col-md-8">
-          <div *ngIf="tensorflowModel.publiclyShared; else privateData">Public</div>
+          <div *ngIf="aiModel.publiclyShared; else privateData">Public</div>
         </dd>
         <ng-template #privateData>Private</ng-template>
       </dl>
@@ -42,17 +46,17 @@
 
     <div class="col-md-3 text-right">
       <button
-        (click)="openDownload(tensorflowModel._links.download.href)"
+        (click)="openDownload(aiModel._links.download.href)"
         ngbTooltip="Download as zip"
         placement="left"
         class="btn btn-light">
                   <span
                     aria-hidden="true"><i class="fa fa-download"></i></span>
       </button>
-      <button *ngIf="!tensorflowModel.publiclyShared && canEdit()" type="button"
-              ngbTooltip="Make Tensorflow model public"
+      <button *ngIf="!aiModel.publiclyShared && canEdit()" type="button"
+              ngbTooltip="Make AI model public"
               placement="left"
-              class="btn btn-light" (click)="makePublicTensorflowModel();">
+              class="btn btn-light" (click)="makePublicAIModel();">
         <span class="fa fa-users"
               aria-hidden="true"></span>
       </button>
