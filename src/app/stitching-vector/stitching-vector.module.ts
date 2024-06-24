@@ -21,27 +21,26 @@ import {ModalErrorComponent} from '../modal-error/modal-error.component';
 
 
 @NgModule({
-  imports: [
-    CommonModule,
-    NgbModule,
-    NgMathPipesModule,
-    StitchingVectorRoutingModule,
-    MatProgressSpinnerModule,
-    MatPaginatorModule,
-    MatTableModule,
-    MatSortModule,
-    MatFormFieldModule,
-    MatInputModule,
-    FormsModule,
-    MatCheckboxModule
-  ],
-  entryComponents: [StitchingVectorNewComponent, ModalErrorComponent],
-  declarations: [
-    StitchingVectorDetailComponent,
-    StitchingVectorListComponent,
-    StitchingVectorNewComponent,
-    ModalErrorComponent,
-    StitchingVectorTemplateComponent
-  ]
+    imports: [
+        CommonModule,
+        NgbModule,
+        NgMathPipesModule,
+        StitchingVectorRoutingModule,
+        MatProgressSpinnerModule,
+        MatPaginatorModule,
+        MatTableModule,
+        MatSortModule,
+        MatFormFieldModule,
+        MatInputModule,
+        FormsModule,
+        MatCheckboxModule
+    ],
+    declarations: [
+        StitchingVectorDetailComponent,
+        StitchingVectorListComponent,
+        StitchingVectorNewComponent,
+        ModalErrorComponent,
+        StitchingVectorTemplateComponent
+    ]
 })
 export class StitchingVectorModule { }

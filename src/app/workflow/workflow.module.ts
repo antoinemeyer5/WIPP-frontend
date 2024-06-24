@@ -21,33 +21,31 @@ import {DynamicContentModule} from '../dynamic-content/dynamic-content.module';
 import {NgxSpinnerModule} from 'ngx-spinner';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    WorkflowRoutingModule,
-    MatPaginatorModule,
-    MatSortModule,
-    MatTableModule,
-    MatInputModule,
-    FormsModule,
-    ReactiveFormsModule,
-    DynamicContentModule,
-    NgbModule,
-    SchemaFormModule.forRoot(),
-    NgxGraphModule,
-    NgxSpinnerModule
-  ],
-  entryComponents: [SearchWidgetComponent, WorkflowNewComponent, JobDetailComponent],
-  declarations: [
-    WorkflowListComponent,
-    WorkflowDetailComponent,
-    SearchWidgetComponent,
-    JobDetailComponent,
-    WorkflowNewComponent],
-
-
-  providers: [{
-    provide: WidgetRegistry,
-    useClass: WidgetsRegistry
-  }],
+    imports: [
+        CommonModule,
+        WorkflowRoutingModule,
+        MatPaginatorModule,
+        MatSortModule,
+        MatTableModule,
+        MatInputModule,
+        FormsModule,
+        ReactiveFormsModule,
+        DynamicContentModule,
+        NgbModule,
+        SchemaFormModule.forRoot(),
+        NgxGraphModule,
+        NgxSpinnerModule
+    ],
+    declarations: [
+        WorkflowListComponent,
+        WorkflowDetailComponent,
+        SearchWidgetComponent,
+        JobDetailComponent,
+        WorkflowNewComponent
+    ],
+    providers: [{
+            provide: WidgetRegistry,
+            useClass: WidgetsRegistry
+        }]
 })
 export class WorkflowModule { }

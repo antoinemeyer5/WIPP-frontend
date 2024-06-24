@@ -14,25 +14,14 @@ import {GenericDataTemplateComponent} from '../generic-data/generic-data-templat
 
 
 @NgModule({
-  imports: [
-    CommonModule,
-  ],
-  declarations: [
-    DynamicContentComponent, UnknownDynamicComponent],
-  entryComponents: [
-    UnknownDynamicComponent,
-    ImagesCollectionTemplateComponent,
-    PyramidTemplateComponent,
-    StitchingVectorTemplateComponent,
-    PyramidAnnotationTemplateComponent,
-    TensorflowModelTemplateComponent,
-    TensorboardLogsTemplateComponent,
-    CsvCollectionTemplateComponent,
-    NotebookTemplateComponent,
-    GenericDataTemplateComponent
-  ],
-  exports: [
-    DynamicContentComponent
-  ]
+    imports: [
+        CommonModule,
+    ],
+    declarations: [
+        DynamicContentComponent, UnknownDynamicComponent
+    ],
+    exports: [
+        DynamicContentComponent
+    ]
 })
 export class DynamicContentModule { }
