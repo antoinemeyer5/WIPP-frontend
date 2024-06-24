@@ -30,7 +30,7 @@ export class KeycloakService {
                     '/realms/' +
                     environment.keycloak.realm +
                     '/account';
-                    resolve();
+                    resolve(null);
                 })
                 .error(() => {
                     reject();
