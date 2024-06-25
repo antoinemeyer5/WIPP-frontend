@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import {BehaviorSubject, Observable, of as observableOf} from 'rxjs';
 import {Visualization} from '../visualization';
-import { MatPaginator } from '@angular/material/paginator';
+import { MatLegacyPaginator as MatPaginator } from '@angular/material/legacy-paginator';
 import { MatSort } from '@angular/material/sort';
 import {Router} from '@angular/router';
 import {PyramidVisualizationService} from '../pyramid-visualization.service';

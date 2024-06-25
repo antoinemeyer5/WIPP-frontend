@@ -12,7 +12,7 @@ import {BehaviorSubject, Observable, of as observableOf, Subject} from 'rxjs';
 import * as Flow from '@flowjs/flow.js';
 import {auditTime, catchError, map, switchMap} from 'rxjs/operators';
 import {BytesPipe, NgMathPipesModule} from 'angular-pipes';
-import { MatPaginator } from '@angular/material/paginator';
+import { MatLegacyPaginator as MatPaginator } from '@angular/material/legacy-paginator';
 import {Csv} from '../csv';
 import {ModalErrorComponent} from '../../modal-error/modal-error.component';
 

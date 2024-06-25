@@ -1,7 +1,7 @@
 import { Component, NgModule, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { MatPaginator } from '@angular/material/paginator';
+import { MatLegacyPaginator as MatPaginator } from '@angular/material/legacy-paginator';
 import { MatSort } from '@angular/material/sort';
-import { MatTable, MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { MatLegacyTable as MatTable, MatLegacyTableDataSource as MatTableDataSource, MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import {StitchingVector} from '../stitching-vector';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {StitchingVectorNewComponent} from '../stitching-vector-new/stitching-vector-new.component';

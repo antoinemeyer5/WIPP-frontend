@@ -1,8 +1,8 @@
-import { version } from '../../package.json';
+import packageInfo from '../../package.json';
 
 export const environment = {
   production: true,
-  version: version,
+  version: packageInfo.version,
   apiRootUrl: '/api',
   keycloak: {
     url: '@KEYCLOAK_URL_VALUE@',

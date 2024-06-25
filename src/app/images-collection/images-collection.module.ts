@@ -5,14 +5,14 @@ import {ImagesCollectionDetailComponent} from './images-collection-detail/images
 import {ImagesCollectionListComponent} from './images-collection-list/images-collection-list.component';
 import {NgMathPipesModule} from 'angular-pipes';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatPaginatorModule } from '@angular/material/paginator';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatRadioModule } from '@angular/material/radio';
+import { MatLegacyCheckboxModule as MatCheckboxModule } from '@angular/material/legacy-checkbox';
+import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
+import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
+import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/material/legacy-paginator';
+import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
+import { MatLegacyRadioModule as MatRadioModule } from '@angular/material/legacy-radio';
 import { MatSortModule } from '@angular/material/sort';
-import { MatTableModule } from '@angular/material/table';
+import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import { ImagesCollectionNewComponent } from './images-collection-new/images-collection-new.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {

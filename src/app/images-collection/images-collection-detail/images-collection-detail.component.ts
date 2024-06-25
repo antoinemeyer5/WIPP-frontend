@@ -7,7 +7,7 @@ import {BytesPipe, NgMathPipesModule} from 'angular-pipes';
 import {ImagesCollectionService} from '../images-collection.service';
 import {ImagesCollection} from '../images-collection';
 import {Image} from '../image';
-import { MatPaginator } from '@angular/material/paginator';
+import { MatLegacyPaginator as MatPaginator } from '@angular/material/legacy-paginator';
 import { MatSort } from '@angular/material/sort';
 import {BehaviorSubject, from, Observable, of as observableOf, Subject} from 'rxjs';
 import {MetadataFile} from '../metadata-file';

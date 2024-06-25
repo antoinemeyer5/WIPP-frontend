@@ -1,8 +1,8 @@
 import { Component, NgModule, OnInit, ViewChild } from '@angular/core';
 import {PyramidAnnotation} from '../pyramid-annotation';
-import { MatPaginator } from '@angular/material/paginator';
+import { MatLegacyPaginator as MatPaginator } from '@angular/material/legacy-paginator';
 import { MatSort } from '@angular/material/sort';
-import { MatTable, MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { MatLegacyTable as MatTable, MatLegacyTableDataSource as MatTableDataSource, MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import {PyramidAnnotationService} from '../pyramid-annotation.service';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {catchError, map, switchMap} from 'rxjs/operators';

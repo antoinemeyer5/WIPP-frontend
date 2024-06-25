@@ -5,10 +5,10 @@ import { PyramidAnnotationListComponent } from './pyramid-annotation-list/pyrami
 import {PyramidAnnotationRoutingModule} from './pyramid-annotation-routing.module';
 import { PyramidAnnotationDetailComponent } from './pyramid-annotation-detail/pyramid-annotation-detail.component';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
-import { MatInputModule } from '@angular/material/input';
-import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
+import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/material/legacy-paginator';
 import { MatSortModule } from '@angular/material/sort';
-import { MatTableModule } from '@angular/material/table';
+import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import {FormsModule} from '@angular/forms';
 
 @NgModule({

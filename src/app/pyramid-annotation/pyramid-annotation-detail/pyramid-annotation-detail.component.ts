@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatPaginator } from '@angular/material/paginator';
+import { MatLegacyPaginator as MatPaginator } from '@angular/material/legacy-paginator';
 import {ActivatedRoute} from '@angular/router';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {merge, of as observableOf} from 'rxjs';

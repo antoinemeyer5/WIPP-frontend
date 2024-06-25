@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import {BehaviorSubject, Observable, of as observableOf} from 'rxjs';
-import { MatPaginator } from '@angular/material/paginator';
+import { MatLegacyPaginator as MatPaginator } from '@angular/material/legacy-paginator';
 import { MatSort } from '@angular/material/sort';
 import {catchError, map, switchMap} from 'rxjs/operators';
 import {CsvCollection} from '../csv-collection';
