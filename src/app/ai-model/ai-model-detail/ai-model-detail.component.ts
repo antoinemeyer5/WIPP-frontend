@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AiModelService } from '../ai-model.service';
 import { TensorboardLogs, AiModel } from '../ai-model';
-// import { ModelCard } from '../model-card';
+import { ModelCard } from '../model-card';
 import { JobDetailComponent } from '../../job/job-detail/job-detail.component';
 import { AppConfigService } from '../../app-config.service';
 import urljoin from 'url-join';
@@ -22,7 +22,7 @@ export class AiModelDetailComponent implements OnInit {
   tensorboardLink = '';
   job: Job = null;
   aiModelId = this.route.snapshot.paramMap.get('id');
-  // this.modelCard = new ModelCard();
+  modelCard = new ModelCard();
 
   constructor(
     private route: ActivatedRoute,
@@ -42,7 +42,13 @@ export class AiModelDetailComponent implements OnInit {
       }, error => {
         this.router.navigate(['/404']);
       });
-    // this.modelCard = service.getModelCardByaiModel(this.aiModel);
+    // loads the ModelCard associated with the model
+    this.aiModelService.getModelCard(this.aiModelId)
+      .subscribe(modelCard => {
+        this.modelCard = modelCard;
+      }, error => {
+        this.router.navigate(['/404']);
+      });
   }
 
   getTensorboardLogsAndJob() {

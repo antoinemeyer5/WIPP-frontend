@@ -6,13 +6,15 @@ import { map } from 'rxjs/operators';
 import { PaginatedAiModels, TensorboardLogs, AiModel } from './ai-model';
 import { Job } from '../job/job';
 import { DataService } from '../data-service';
+import { ModelCard } from './model-card';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AiModelService implements DataService<AiModel, PaginatedAiModels> {
 
-  private AiModelUrl = environment.apiRootUrl + '/AiModels';
+  private AiModelUrl = environment.apiRootUrl + '/aiModels';
+  private ModelCardUrl = environment.apiRootUrl + '/modelCards';
   private tensorboardLogsUrl = environment.apiRootUrl + '/tensorboardLogs';
 
   constructor(private http: HttpClient) { }
@@ -87,5 +89,13 @@ export class AiModelService implements DataService<AiModel, PaginatedAiModels> {
 
   startDownload(url: string): Observable<string> {
     return this.http.get<string>(url);
+  }
+
+  getModelCard(aiModelId: string): Observable<ModelCard> {
+    const httpOptions = {
+      headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
+      params: new HttpParams().set('aiModelId', aiModelId)
+    };
+    return this.http.get<ModelCard>(this.ModelCardUrl + '/search/findByAiModelId', httpOptions);
   }
 }
