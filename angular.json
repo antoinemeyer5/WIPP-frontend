@@ -69,18 +69,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "WIPP-frontend:build"
+            "buildTarget": "WIPP-frontend:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "WIPP-frontend:build:production"
+              "buildTarget": "WIPP-frontend:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "WIPP-frontend:build"
+            "buildTarget": "WIPP-frontend:build"
           }
         },
         "test": {
