@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import {ImagesCollectionRoutingModule} from './images-collection-routing.module';
 import {ImagesCollectionDetailComponent} from './images-collection-detail/images-collection-detail.component';
 import {ImagesCollectionListComponent} from './images-collection-list/images-collection-list.component';
-import {NgMathPipesModule} from 'angular-pipes';
+import {NgBytesPipeModule} from 'angular-pipes';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -27,7 +27,6 @@ import { ImagesCollectionBatchImportComponent } from './images-collection-batch-
   imports: [
     CommonModule,
     NgbModule,
-    NgMathPipesModule,
     ImagesCollectionRoutingModule,
     MatProgressSpinnerModule,
     MatPaginatorModule,
@@ -41,7 +40,8 @@ import { ImagesCollectionBatchImportComponent } from './images-collection-batch-
     MatCheckboxModule,
     NgxSpinnerModule,
     DataViewModule,
-    DropdownModule
+    DropdownModule,
+    NgBytesPipeModule
   ],
   declarations: [
     ImagesCollectionDetailComponent,

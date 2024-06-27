@@ -13,7 +13,7 @@ import { CsvCollectionTemplateComponent } from './csv-collection-template/csv-co
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import { CsvCollectionNewComponent } from './csv-collection-new/csv-collection-new.component';
 import { FormsModule } from '@angular/forms';
-import {NgMathPipesModule} from 'angular-pipes';
+import {NgBytesPipeModule} from 'angular-pipes';
 
 @NgModule({
   imports: [
@@ -27,7 +27,7 @@ import {NgMathPipesModule} from 'angular-pipes';
     NgbModule,
     FormsModule,
     MatCheckboxModule,
-    NgMathPipesModule
+    NgBytesPipeModule
   ],
   declarations: [
     CsvCollectionListComponent,
