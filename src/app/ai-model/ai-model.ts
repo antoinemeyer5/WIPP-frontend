@@ -1,6 +1,7 @@
 export class AiModel {
   id: string;
   name: string;
+  framework: string;
   owner: string;
   machineLearningLibraries: string;
   creationDate: Date;

@@ -11,8 +11,8 @@ import { catchError, map, switchMap } from 'rxjs/operators';
   styleUrls: ['./ai-model-list.component.css']
 })
 export class AiModelListComponent implements OnInit {
-  displayedColumns: string[] = ['name', 'creationDate', 'owner', 'publiclyShared'];
-  AiModels: Observable<AiModel[]>;
+  displayedColumns: string[] = ['name', 'framework', 'creationDate', 'owner', 'publiclyShared'];
+  aiModels: Observable<AiModel[]>;
 
   resultsLength = 0;
   pageSize = 10;
@@ -23,7 +23,7 @@ export class AiModelListComponent implements OnInit {
   @ViewChild(MatSort) sort: MatSort;
 
   constructor(
-    private AiModelService: AiModelService) {
+    private aiModelService: AiModelService) {
     this.paramsChange = new BehaviorSubject({
       index: 0,
       size: this.pageSize,
@@ -55,14 +55,12 @@ export class AiModelListComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log('AI model component!!!');
-    console.log(this.AiModels);
     this.getAiModels();
   }
 
   getAiModels(): void {
     const paramsObservable = this.paramsChange.asObservable();
-    this.AiModels = paramsObservable.pipe(
+    this.aiModels = paramsObservable.pipe(
       switchMap((page) => {
         const params = {
           pageIndex: page.index,
@@ -70,20 +68,20 @@ export class AiModelListComponent implements OnInit {
           sort: page.sort
         };
         if (page.filter) {
-          return this.AiModelService.getByNameContainingIgnoreCase(params, page.filter).pipe(
+          return this.aiModelService.getByNameContainingIgnoreCase(params, page.filter).pipe(
             map((paginatedResult) => {
               this.resultsLength = paginatedResult.page.totalElements;
-              return paginatedResult.data;
+              return paginatedResult['_embedded'].aiModels;
             }),
             catchError(() => {
               return observableOf([]);
             })
           );
         }
-        return this.AiModelService.get(params).pipe(
+        return this.aiModelService.get(params).pipe(
           map((paginatedResult) => {
             this.resultsLength = paginatedResult.page.totalElements;
-            return paginatedResult.data;
+            return paginatedResult['_embedded'].aiModels;
           }),
           catchError(() => {
             return observableOf([]);

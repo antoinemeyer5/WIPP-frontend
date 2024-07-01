@@ -36,7 +36,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     stitchingVector: [],
     pyramidAnnotation: [],
     pyramid: [],
-    tensorflowModel: [],
+    aiModel: [],
     tensorboardLogs: [],
     csvCollection: [],
     notebook: [],
@@ -145,7 +145,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
             type === 'stitchingVector' ||
             type === 'pyramid' ||
             type === 'pyramidAnnotation' ||
-            type === 'tensorflowModel' ||
+            type === 'aiModel' ||
             type === 'csvCollection' ||
             type === 'notebook' ||
             type == 'genericData') {
@@ -281,7 +281,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
             case 'stitchingVector':
             case  'pyramidAnnotation':
             case 'pyramid':
-            case 'tensorflowModel':
+            case 'aiModel':
             case 'csvCollection':
             case 'notebook':
             case 'genericData':
@@ -536,7 +536,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
       stitchingVector: [],
       pyramidAnnotation: [],
       pyramid: [],
-      tensorflowModel: [],
+      aiModel: [],
       tensorboardLogs: [],
       csvCollection: [],
       notebook: [],

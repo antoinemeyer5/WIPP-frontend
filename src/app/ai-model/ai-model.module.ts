@@ -17,7 +17,8 @@ import { TensorboardLogsTemplateComponent } from './ai-model-template/tensorboar
     MatFormFieldModule,
     MatInputModule
   ],
-  declarations: [AiModelListComponent,
+  declarations: [
+    AiModelListComponent,
     AiModelDetailComponent,
     AiModelTemplateComponent,
     TensorboardLogsTemplateComponent
