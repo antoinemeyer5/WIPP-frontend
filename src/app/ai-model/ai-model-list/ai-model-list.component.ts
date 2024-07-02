@@ -71,7 +71,7 @@ export class AiModelListComponent implements OnInit {
           return this.aiModelService.getByNameContainingIgnoreCase(params, page.filter).pipe(
             map((paginatedResult) => {
               this.resultsLength = paginatedResult.page.totalElements;
-              return paginatedResult['_embedded'].aiModels;
+              return paginatedResult.data;
             }),
             catchError(() => {
               return observableOf([]);
@@ -81,7 +81,7 @@ export class AiModelListComponent implements OnInit {
         return this.aiModelService.get(params).pipe(
           map((paginatedResult) => {
             this.resultsLength = paginatedResult.page.totalElements;
-            return paginatedResult['_embedded'].aiModels;
+            return paginatedResult.data;
           }),
           catchError(() => {
             return observableOf([]);

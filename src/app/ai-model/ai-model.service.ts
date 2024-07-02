@@ -37,7 +37,7 @@ export class AiModelService implements DataService<AiModel, PaginatedAiModels> {
     }
     return this.http.get<any>(this.AiModelUrl, httpOptions).pipe(
       map((result: any) => {
-        result.data = result._embedded.AiModels;
+        result.data = result._embedded.aiModels;
         return result;
       }));
   }
@@ -57,7 +57,7 @@ export class AiModelService implements DataService<AiModel, PaginatedAiModels> {
     httpOptions.params = httpParams;
     return this.http.get<any>(this.AiModelUrl + '/search/findByNameContainingIgnoreCase', httpOptions).pipe(
       map((result: any) => {
-        result.data = result._embedded.AiModels;
+        result.data = result._embedded.aiModels;
         return result;
       }));
   }
@@ -96,6 +96,6 @@ export class AiModelService implements DataService<AiModel, PaginatedAiModels> {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
       params: new HttpParams().set('aiModelId', aiModelId)
     };
-    return this.http.get<ModelCard>(this.ModelCardUrl + '/search/findByAiModelId', httpOptions);
+    return this.http.get<ModelCard>(`${this.ModelCardUrl}/search/findModelCardByAiModelId`, httpOptions);
   }
 }

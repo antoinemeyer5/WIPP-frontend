@@ -2,11 +2,12 @@
 // `ng build ---prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 import { version } from '../../package.json';
+import { apiRootUrl } from '../assets/config/config.json';
 
 export const environment = {
   production: false,
   version: version,
-  apiRootUrl: 'http://localhost:8080/api',
+  apiRootUrl: apiRootUrl,
   keycloak: {
     url: 'http://localhost:8081',
     realm: 'WIPP',

@@ -1,11 +1,8 @@
-<h3 class="wipp-title">Ai Model Detail</h3>
+<h3 class="wipp-title">AI Model: {{aiModel.name}}</h3>
 
 <div>
-  <p>Model Card</p>
-  <p>{{modelCard.name}}</p>
-</div>
 
-<div>
+  <h4>Details</h4>
   <div class="row">
     <div class="col-md-9">
       <dl class="row">
@@ -67,4 +64,74 @@
       </button>
     </div>
   </div>
+
+  <h4>Plots</h4>
+  <div class="row">
+    <p>TODO</p>
+  </div>
+
+  <h4>Model Card</h4>
+  <div class="row">
+    <div class="col-md-9">
+      <dl class="row">
+
+        <dt class="col-md-4">ID:</dt>
+        <dd class="col-md-8">{{modelCard.id}}</dd>
+
+        <dt class="col-md-4">AiModel ID:</dt>
+        <dd class="col-md-8">{{modelCard.aiModelId}}</dd>
+
+        <dt class="col-md-4">Name:</dt>
+        <dd class="col-md-8">{{modelCard.name}}</dd>
+
+        <dt class="col-md-4">Author:</dt>
+        <dd class="col-md-8">{{ modelCard.author ? modelCard.author : "Empty" }}</dd>
+
+        <dt class="col-md-4">Version:</dt>
+        <dd class="col-md-8">{{modelCard.version}}</dd>
+
+        <dt class="col-md-4">Framework:</dt>
+        <dd class="col-md-8">{{modelCard.framework}}</dd>
+
+        <!--<p>Type: {{}}</p>-->
+
+        <dt class="col-md-4">Date:</dt>
+        <dd class="col-md-8">{{modelCard.date}}</dd>
+
+        <dt class="col-md-4">Description:</dt>
+        <dd class="col-md-8">{{modelCard.description}}</dd>
+
+        <!--<p>Documentation: {{}}</p>-->
+
+        <!--<p>License: {{}}</p>-->
+
+        <!--<p>Contact: {{}}</p>-->
+
+        <dt class="col-md-4">Citation:</dt>
+        <dd class="col-md-8">{{ modelCard.citation ? modelCard.citation : "Empty" }}</dd>
+
+        <!--<p>Inputs: {{}}</p>-->
+
+        <!--<p>Outputs: {{}}</p>-->
+
+        <!--<p>TrainingData: {{}}</p>-->
+      </dl>
+    </div>
+
+    <div class="col-md-3 text-right">
+      <!--DL FOR TENSOR-->
+      <button class="btn btn-light">
+        TENSOR <i class="fa fa-download"></i>
+      </button>
+      <!--DL FOR HUGGING-->
+      <button class="btn btn-light">
+        HUGGING <i class="fa fa-download"></i>
+      </button>
+      <!--DL FOR BIOIMAGEIO-->
+      <button class="btn btn-light">
+        BIOIMAGEIO <i class="fa fa-download"></i>
+      </button>
+    </div>
+  </div>
+
 </div>

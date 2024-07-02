@@ -22,7 +22,7 @@ export class AiModelDetailComponent implements OnInit {
   tensorboardLink = '';
   job: Job = null;
   aiModelId = this.route.snapshot.paramMap.get('id');
-  modelCard = new ModelCard();
+  modelCard: ModelCard = new ModelCard();
 
   constructor(
     private route: ActivatedRoute,

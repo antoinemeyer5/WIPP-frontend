@@ -1,9 +1,8 @@
 export class AiModel {
   id: string;
   name: string;
-  framework: string;
   owner: string;
-  machineLearningLibraries: string;
+  framework: string;
   creationDate: Date;
   sourceJob: string;
   publiclyShared: boolean = true;
