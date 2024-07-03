@@ -121,17 +121,21 @@
     </div>
 
     <div class="col-md-3 text-right">
-      <button (click)="exportModelCardTensorflow(modelCard.id)" class="btn btn-light">
-        TENSORFLOW <i class="fa fa-download"></i>
+      
+      <select name="platforms" id="platforms">
+        <option value="TENSORFLOW" selected="selected">TENSORFLOW</option>
+        <option value="HUGGINGFACE">HUGGINGFACE</option>
+        <option value="BIOIMAGEIO">BIOIMAGEIO</option>
+      </select>
+
+      <button (click)="previewModelCard(modelCard.id)" class="btn btn-light">
+        <i class="fa fa-eye"></i>
       </button>
 
-      <button (click)="exportModelCardHuggingface(modelCard.id)" class="btn btn-light">
-        HUGGINGFACE <i class="fa fa-download"></i>
+      <button (click)="exportModelCard(modelCard.id)" class="btn btn-light">
+        <i class="fa fa-download"></i>
       </button>
-
-      <button (click)="exportModelCardBioimageio(modelCard.id)" class="btn btn-light">
-        BIOIMAGEIO <i class="fa fa-download"></i>
-      </button>
+      
     </div>
   </div>
 
