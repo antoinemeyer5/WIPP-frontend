@@ -9,6 +9,7 @@ import { JobDetailComponent } from '../../job/job-detail/job-detail.component';
 import { AppConfigService } from '../../app-config.service';
 import urljoin from 'url-join';
 import { KeycloakService } from '../../services/keycloak/keycloak.service';
+import { HttpResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-ai-model-detail',
@@ -55,11 +56,13 @@ export class AiModelDetailComponent implements OnInit {
     if (this.aiModel._links['sourceJob']) {
       this.aiModelService.getJob(this.aiModel._links['sourceJob']['href']).subscribe(job => {
         this.job = job;
+        /*
         this.aiModelService.getTensorboardLogsByJob(this.job.id).subscribe(res => {
           this.tensorboardLogs = res;
           console.log(this.tensorboardLogs);
           this.tensorboardLink = this.tensorboardLink + this.tensorboardLogs.name;
         });
+        */
       });
     }
   }
@@ -76,10 +79,9 @@ export class AiModelDetailComponent implements OnInit {
   }
   
   makePublicAiModel(): void {
-    this.aiModelService.makePublicAiModel(
-      this.aiModel).subscribe(aiModel => {
-      this.aiModel = aiModel;
-    });
+    this.aiModelService
+      .makePublicAiModel(this.aiModel)
+      .subscribe(aiModel => { this.aiModel = aiModel; });
   }
 
   canEdit(): boolean {
@@ -87,7 +89,30 @@ export class AiModelDetailComponent implements OnInit {
   }
 
   openDownload(url: string) {
-    this.aiModelService.startDownload(url).subscribe(downloadUrl =>
-      window.location.href = downloadUrl['url']);
+    this.aiModelService
+      .startDownload(url)
+      .subscribe(downloadUrl => window.location.href = downloadUrl['url']);
+  }
+
+  /***** Model Card Methods *****/
+
+  exportModelCardTensorflow(id: string): void {
+    this.aiModelService
+      .downloadTensorflow(id)
+      .subscribe((response: HttpResponse<Blob>) => {
+        // get file name
+        const contentDisposition = response.headers.get('content-disposition');
+        const filename: string = contentDisposition.split('; filename="')[1].split('.json')[0].trim();
+        // save
+        saveAs(response.body, filename);
+      });
+  }
+
+  exportModelCardHuggingface(id: string): void {
+    alert("todo hug");
+  }
+
+  exportModelCardBioimageio(id: string): void {
+    alert("todo bio");
   }
 }

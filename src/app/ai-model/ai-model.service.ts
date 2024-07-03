@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams, HttpResponse } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -91,6 +91,8 @@ export class AiModelService implements DataService<AiModel, PaginatedAiModels> {
     return this.http.get<string>(url);
   }
 
+  /***** Model Card Services *****/
+
   getModelCard(aiModelId: string): Observable<ModelCard> {
     const httpOptions = {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
@@ -98,4 +100,13 @@ export class AiModelService implements DataService<AiModel, PaginatedAiModels> {
     };
     return this.http.get<ModelCard>(`${this.ModelCardUrl}/search/findModelCardByAiModelId`, httpOptions);
   }
+
+  downloadTensorflow(id: string): Observable<HttpResponse<Blob>> {
+    return this.http.get(`${this.ModelCardUrl}/${id}/export/tensorflow`, { observe: 'response', responseType: 'blob' });
+  }
+
+  // todo
+
+  // todo
+
 }

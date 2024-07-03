@@ -65,10 +65,12 @@
     </div>
   </div>
 
+  <!--
   <h4>Plots</h4>
   <div class="row">
     <p>TODO</p>
   </div>
+  -->
 
   <h4>Model Card</h4>
   <div class="row">
@@ -85,7 +87,7 @@
         <dd class="col-md-8">{{modelCard.name}}</dd>
 
         <dt class="col-md-4">Author:</dt>
-        <dd class="col-md-8">{{ modelCard.author ? modelCard.author : "Empty" }}</dd>
+        <dd class="col-md-8">{{ modelCard.author ? modelCard.author : "null" }}</dd>
 
         <dt class="col-md-4">Version:</dt>
         <dd class="col-md-8">{{modelCard.version}}</dd>
@@ -108,7 +110,7 @@
         <!--<p>Contact: {{}}</p>-->
 
         <dt class="col-md-4">Citation:</dt>
-        <dd class="col-md-8">{{ modelCard.citation ? modelCard.citation : "Empty" }}</dd>
+        <dd class="col-md-8">{{ modelCard.citation ? modelCard.citation : "null" }}</dd>
 
         <!--<p>Inputs: {{}}</p>-->
 
@@ -119,16 +121,15 @@
     </div>
 
     <div class="col-md-3 text-right">
-      <!--DL FOR TENSOR-->
-      <button class="btn btn-light">
-        TENSOR <i class="fa fa-download"></i>
+      <button (click)="exportModelCardTensorflow(modelCard.id)" class="btn btn-light">
+        TENSORFLOW <i class="fa fa-download"></i>
       </button>
-      <!--DL FOR HUGGING-->
-      <button class="btn btn-light">
-        HUGGING <i class="fa fa-download"></i>
+
+      <button (click)="exportModelCardHuggingface(modelCard.id)" class="btn btn-light">
+        HUGGINGFACE <i class="fa fa-download"></i>
       </button>
-      <!--DL FOR BIOIMAGEIO-->
-      <button class="btn btn-light">
+
+      <button (click)="exportModelCardBioimageio(modelCard.id)" class="btn btn-light">
         BIOIMAGEIO <i class="fa fa-download"></i>
       </button>
     </div>
