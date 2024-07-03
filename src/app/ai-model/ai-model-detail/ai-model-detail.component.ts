@@ -96,6 +96,8 @@ export class AiModelDetailComponent implements OnInit {
 
   /***** Model Card Methods *****/
 
+  // Export
+
   exportModelCard(id: string): void {
     var platform = (<HTMLInputElement>document.getElementById("platforms")).value;
     switch(platform) {
@@ -125,9 +127,15 @@ export class AiModelDetailComponent implements OnInit {
     alert("todo bio");
   }
 
-  previewModelCard(id: string): void {
-    alert("todo Preview Model Card");
-  }
+  // Preview
 
+  previewModelCard(showModelcardModal): void {
+    var platform = (<HTMLInputElement>document.getElementById("platforms")).value;
+    switch(platform) {
+      case "TENSORFLOW": this.modalService.open(showModelcardModal, {'size': 'lg'}); break;
+      case "HUGGINGFACE": alert("todo preview hug"); break;
+      case "BIOIMAGEIO": alert("todo preview hug"); break;
+    }
+  }
 
 }

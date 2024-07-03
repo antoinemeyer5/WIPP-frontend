@@ -128,11 +128,17 @@
         <option value="BIOIMAGEIO">BIOIMAGEIO</option>
       </select>
 
-      <button (click)="previewModelCard(modelCard.id)" class="btn btn-light">
+      <button type="button"
+        title="Display Model Card for a specific platform"
+        class="btn btn-light"
+        (click)="previewModelCard(showModelcardModal)">
         <i class="fa fa-eye"></i>
       </button>
 
-      <button (click)="exportModelCard(modelCard.id)" class="btn btn-light">
+      <button type="button"
+        title="Download Model Card"
+        class="btn btn-light"
+        (click)="exportModelCard(modelCard.id)">
         <i class="fa fa-download"></i>
       </button>
       
@@ -140,3 +146,26 @@
   </div>
 
 </div>
+
+<ng-template #showModelcardModal let-c="close" let-d="dismiss" class="">
+  <div class="modal-header">
+    <h4 class="modal-title">Modal Card</h4>
+    <button type="button" class="close" aria-label="Close" (click)="d()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div>
+      <pre>{{ modelCard | json }}</pre>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button
+      type="button"
+      class="btn btn-outline-dark"
+      ngbAutofocus
+      (click)="d()">
+      Close
+    </button>
+  </div>
+</ng-template>
