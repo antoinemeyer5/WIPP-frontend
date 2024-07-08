@@ -89,8 +89,13 @@
         <dd class="col-md-8">{{modelCard.name}}</dd>
 
         <dt class="col-md-4">Author</dt>
-        <dd class="col-md-8">{{ modelCard.author ? modelCard.author : "null" }}</dd>
-
+        <dd class="col-md-8">
+          <input type="text"
+            value="{{ modelCard.author ? modelCard.author : 'null' }}"
+            (change)="updateModelCard($event.target.value, 'author')"
+          >
+        </dd>
+        
         <dt class="col-md-4">Version</dt>
         <dd class="col-md-8">{{modelCard.version}}</dd>
 
@@ -112,7 +117,12 @@
         <!--<p>Contact: {{}}</p>-->
 
         <dt class="col-md-4">Citation</dt>
-        <dd class="col-md-8">{{ modelCard.citation ? modelCard.citation : "null" }}</dd>
+        <dd class="col-md-8">
+          <input type="text"
+            value="{{ modelCard.citation ? modelCard.citation : 'null' }}"
+            (change)="updateModelCard($event.target.value, 'citation')"
+          >
+        </dd>
 
         <!--<p>Inputs: {{}}</p>-->
 

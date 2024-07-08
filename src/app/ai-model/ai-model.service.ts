@@ -105,8 +105,12 @@ export class AiModelService implements DataService<AiModel, PaginatedAiModels> {
     return this.http.get(`${this.ModelCardUrl}/${id}/export/tensorflow`, { observe: 'response', responseType: 'blob' });
   }
 
-  // todo
-
-  // todo
+  updateModelCard(modelCard: ModelCard): Observable<ModelCard> {
+    const httpOptions = {
+      headers: new HttpHeaders({'Content-Type': 'application/json'}),
+      params: {}
+    };
+    return this.http.patch<ModelCard>(`${this.ModelCardUrl}/${modelCard['id']}`, modelCard, httpOptions);
+  }
 
 }

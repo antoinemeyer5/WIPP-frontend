@@ -129,4 +129,15 @@ export class AiModelDetailComponent implements OnInit {
     }
   }
 
+  // Update 
+
+  updateModelCard(value: string, field: string): void {
+    if(this.modelCard.hasOwnProperty(field)) {
+      this.modelCard[field] = value ? value : "null";
+      this.aiModelService.updateModelCard(this.modelCard).subscribe(mc => this.modelCard = mc);
+    } else {
+      alert("ALERT: can't modify this field.");
+    }
+  }
+
 }
