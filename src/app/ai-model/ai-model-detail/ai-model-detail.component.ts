@@ -24,6 +24,7 @@ export class AiModelDetailComponent implements OnInit {
   job: Job = null;
   aiModelId = this.route.snapshot.paramMap.get('id');
   modelCard: ModelCard = new ModelCard();
+  aiFramework: string[] = ["TENSORFLOW", "HUGGINGFACE", "BIOIMAGEIO"];
 
   constructor(
     private route: ActivatedRoute,
@@ -101,9 +102,8 @@ export class AiModelDetailComponent implements OnInit {
   exportModelCard(id: string): void {
     var platform = (<HTMLInputElement>document.getElementById("platforms")).value;
     switch(platform) {
-      case "TENSORFLOW": this.exportModelCardTensorflow(id); break;
-      case "HUGGINGFACE": this.exportModelCardHuggingface(id); break;
-      case "BIOIMAGEIO": this.exportModelCardBioimageio(id); break;
+      case this.aiFramework[0]: this.exportModelCardTensorflow(id); break;
+      default: alert("todo export: " + platform);
     }
   }
 
@@ -119,22 +119,13 @@ export class AiModelDetailComponent implements OnInit {
       });
   }
 
-  exportModelCardHuggingface(id: string): void {
-    alert("todo hug");
-  }
-
-  exportModelCardBioimageio(id: string): void {
-    alert("todo bio");
-  }
-
   // Preview
 
-  previewModelCard(showModelcardModal): void {
+  previewModelCard(showModelcardModal: any): void {
     var platform = (<HTMLInputElement>document.getElementById("platforms")).value;
     switch(platform) {
-      case "TENSORFLOW": this.modalService.open(showModelcardModal, {'size': 'lg'}); break;
-      case "HUGGINGFACE": alert("todo preview hug"); break;
-      case "BIOIMAGEIO": alert("todo preview hug"); break;
+      case this.aiFramework[0]: this.modalService.open(showModelcardModal, {'size': 'lg'}); break;
+      default: alert("todo preview: " + platform); break;
     }
   }
 

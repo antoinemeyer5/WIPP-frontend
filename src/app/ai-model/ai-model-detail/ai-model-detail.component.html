@@ -121,11 +121,8 @@
     </div>
 
     <div class="col-md-3 text-right">
-      
       <select name="platforms" id="platforms">
-        <option value="TENSORFLOW" selected="selected">TENSORFLOW</option>
-        <option value="HUGGINGFACE">HUGGINGFACE</option>
-        <option value="BIOIMAGEIO">BIOIMAGEIO</option>
+        <option *ngFor="let framework of aiFramework" value="{{framework}}">{{ framework }}</option>
       </select>
 
       <button type="button"
