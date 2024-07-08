@@ -7,19 +7,19 @@
     <div class="col-md-9">
       <dl class="row">
 
-        <dt class="col-md-4">Framework: </dt>
+        <dt class="col-md-4">Framework</dt>
         <dd class="col-md-8">{{aiModel.framework}}</dd>
 
-        <dt class="col-md-4">Name: </dt>
+        <dt class="col-md-4">Name</dt>
         <dd class="col-md-8">{{aiModel.name}}</dd>
 
-        <dt class="col-md-4">Creation Date: </dt>
+        <dt class="col-md-4">Creation Date</dt>
         <dd class="col-md-8">{{aiModel.creationDate | date}}</dd>
 
-        <dt class="col-md-4">Owner:</dt>
+        <dt class="col-md-4">Owner</dt>
         <dd class="col-md-8">{{aiModel.owner}}</dd>
 
-        <dt class="col-md-4">Training job: </dt>
+        <dt class="col-md-4">Training job</dt>
         <dd class="col-md-8">
           <a *ngIf="job; else not_applicable"
              (click)="displayJobModal(job.id)"
@@ -30,7 +30,7 @@
           </a>
         </dd>
 
-        <dt class="col-md-4">Tensorboard Logs: </dt>
+        <dt class="col-md-4">Tensorboard Logs</dt>
         <dd class="col-md-8">
           <a  *ngIf="tensorboardLogs; else not_applicable"
               href={{tensorboardLink}}
@@ -38,7 +38,7 @@
           </a>
         </dd>
         <ng-template #not_applicable>N/A</ng-template>
-        <dt class="col-md-4">Visibility:</dt>
+        <dt class="col-md-4">Visibility</dt>
         <dd class="col-md-8">
           <div *ngIf="aiModel.publiclyShared; else privateData">Public</div>
         </dd>
@@ -68,7 +68,9 @@
   <!--
   <h4>Plots</h4>
   <div class="row">
-    <p>TODO</p>
+    <div class="col-md-9">
+      <p>TODO</p>
+    </div>
   </div>
   -->
 
@@ -77,30 +79,30 @@
     <div class="col-md-9">
       <dl class="row">
 
-        <dt class="col-md-4">ID:</dt>
+        <dt class="col-md-4">ID</dt>
         <dd class="col-md-8">{{modelCard.id}}</dd>
 
-        <dt class="col-md-4">AiModel ID:</dt>
+        <dt class="col-md-4">AiModel ID</dt>
         <dd class="col-md-8">{{modelCard.aiModelId}}</dd>
 
-        <dt class="col-md-4">Name:</dt>
+        <dt class="col-md-4">Name</dt>
         <dd class="col-md-8">{{modelCard.name}}</dd>
 
-        <dt class="col-md-4">Author:</dt>
+        <dt class="col-md-4">Author</dt>
         <dd class="col-md-8">{{ modelCard.author ? modelCard.author : "null" }}</dd>
 
-        <dt class="col-md-4">Version:</dt>
+        <dt class="col-md-4">Version</dt>
         <dd class="col-md-8">{{modelCard.version}}</dd>
 
-        <dt class="col-md-4">Framework:</dt>
+        <dt class="col-md-4">Framework</dt>
         <dd class="col-md-8">{{modelCard.framework}}</dd>
 
         <!--<p>Type: {{}}</p>-->
 
-        <dt class="col-md-4">Date:</dt>
+        <dt class="col-md-4">Date</dt>
         <dd class="col-md-8">{{modelCard.date}}</dd>
 
-        <dt class="col-md-4">Description:</dt>
+        <dt class="col-md-4">Description</dt>
         <dd class="col-md-8">{{modelCard.description}}</dd>
 
         <!--<p>Documentation: {{}}</p>-->
@@ -109,7 +111,7 @@
 
         <!--<p>Contact: {{}}</p>-->
 
-        <dt class="col-md-4">Citation:</dt>
+        <dt class="col-md-4">Citation</dt>
         <dd class="col-md-8">{{ modelCard.citation ? modelCard.citation : "null" }}</dd>
 
         <!--<p>Inputs: {{}}</p>-->
