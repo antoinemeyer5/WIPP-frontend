@@ -21,20 +21,16 @@
 
         <dt class="col-md-4">Training job</dt>
         <dd class="col-md-8">
-          <a *ngIf="job; else not_applicable"
-             (click)="displayJobModal(job.id)"
-             class="wipp-link"
-             ngbTooltip="Show Job"
-             placement="left">
+          <a *ngIf="job; else not_applicable" (click)="displayJobModal(job.id)" class="wipp-link" ngbTooltip="Show Job"
+            placement="left">
             {{job.name}}
           </a>
         </dd>
 
         <dt class="col-md-4">Tensorboard Logs</dt>
         <dd class="col-md-8">
-          <a  *ngIf="tensorboardLogs; else not_applicable"
-              href={{tensorboardLink}}
-              target="_blank">{{tensorboardLogs.name}}
+          <a *ngIf="tensorboardLogs; else not_applicable" href={{tensorboardLink}}
+            target="_blank">{{tensorboardLogs.name}}
           </a>
         </dd>
         <ng-template #not_applicable>N/A</ng-template>
@@ -47,20 +43,13 @@
     </div>
 
     <div class="col-md-3 text-right">
-      <button
-        (click)="openDownload(aiModel._links.download.href)"
-        ngbTooltip="Download as zip"
-        placement="left"
+      <button (click)="openDownload(aiModel._links.download.href)" ngbTooltip="Download as zip" placement="left"
         class="btn btn-light">
-                  <span
-                    aria-hidden="true"><i class="fa fa-download"></i></span>
+        <span aria-hidden="true"><i class="fa fa-download"></i></span>
       </button>
-      <button *ngIf="!aiModel.publiclyShared && canEdit()" type="button"
-              ngbTooltip="Make AI model public"
-              placement="left"
-              class="btn btn-light" (click)="makePublicaiModel();">
-        <span class="fa fa-users"
-              aria-hidden="true"></span>
+      <button *ngIf="!aiModel.publiclyShared && canEdit()" type="button" ngbTooltip="Make AI model public"
+        placement="left" class="btn btn-light" (click)="makePublicaiModel();">
+        <span class="fa fa-users" aria-hidden="true"></span>
       </button>
     </div>
   </div>
@@ -90,12 +79,10 @@
 
         <dt class="col-md-4">Author</dt>
         <dd class="col-md-8">
-          <input type="text"
-            value="{{ modelCard.author ? modelCard.author : 'null' }}"
-            (change)="updateModelCard($event.target.value, 'author')"
-          >
+          <input type="text" value="{{ modelCard.author ? modelCard.author : 'null' }}"
+            (change)="updateModelCard($event.target.value, 'author')">
         </dd>
-        
+
         <dt class="col-md-4">Version</dt>
         <dd class="col-md-8">{{modelCard.version}}</dd>
 
@@ -118,10 +105,8 @@
 
         <dt class="col-md-4">Citation</dt>
         <dd class="col-md-8">
-          <input type="text"
-            value="{{ modelCard.citation ? modelCard.citation : 'null' }}"
-            (change)="updateModelCard($event.target.value, 'citation')"
-          >
+          <input type="text" value="{{ modelCard.citation ? modelCard.citation : 'null' }}"
+            (change)="updateModelCard($event.target.value, 'citation')">
         </dd>
 
         <!--<p>Inputs: {{}}</p>-->
@@ -137,20 +122,15 @@
         <option *ngFor="let framework of aiFramework" value="{{framework}}">{{ framework }}</option>
       </select>
 
-      <button type="button"
-        title="Display Model Card for a specific platform"
-        class="btn btn-light"
-        (click)="previewModelCard(showModelcardModal)">
+      <button type="button" title="Display Model Card for a specific platform" class="btn btn-light"
+        (click)="previewModelCard(modelCard.id, showModelcardModal)">
         <i class="fa fa-eye"></i>
       </button>
 
-      <button type="button"
-        title="Download Model Card"
-        class="btn btn-light"
-        (click)="exportModelCard(modelCard.id)">
+      <button type="button" title="Download Model Card" class="btn btn-light" (click)="exportModelCard(modelCard.id)">
         <i class="fa fa-download"></i>
       </button>
-      
+
     </div>
   </div>
 
@@ -165,15 +145,11 @@
   </div>
   <div class="modal-body">
     <div>
-      <pre>{{ modelCard | json }}</pre>
+      <pre>{{ modalContent }}</pre>
     </div>
   </div>
   <div class="modal-footer">
-    <button
-      type="button"
-      class="btn btn-outline-dark"
-      ngbAutofocus
-      (click)="d()">
+    <button type="button" class="btn btn-outline-dark" ngbAutofocus (click)="d()">
       Close
     </button>
   </div>

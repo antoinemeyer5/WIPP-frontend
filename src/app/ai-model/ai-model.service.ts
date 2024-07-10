@@ -81,10 +81,10 @@ export class AiModelService implements DataService<AiModel, PaginatedAiModels> {
 
   makePublicAiModel(AiModel: AiModel): Observable<AiModel> {
     const httpOptions = {
-      headers: new HttpHeaders({'Content-Type': 'application/json'}),
+      headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
       params: {}
     };
-    return this.http.patch<AiModel>(`${this.AiModelUrl}/${AiModel.id}`, {publiclyShared: true}, httpOptions);
+    return this.http.patch<AiModel>(`${this.AiModelUrl}/${AiModel.id}`, { publiclyShared: true }, httpOptions);
   }
 
   startDownload(url: string): Observable<string> {
@@ -101,13 +101,17 @@ export class AiModelService implements DataService<AiModel, PaginatedAiModels> {
     return this.http.get<ModelCard>(`${this.ModelCardUrl}/search/findModelCardByAiModelId`, httpOptions);
   }
 
-  downloadTensorflow(id: string): Observable<HttpResponse<Blob>> {
+  exportTensorflow(id: string): Observable<HttpResponse<Blob>> {
     return this.http.get(`${this.ModelCardUrl}/${id}/export/tensorflow`, { observe: 'response', responseType: 'blob' });
+  }
+
+  exportHuggingface(id: string): Observable<HttpResponse<Blob>> {
+    return this.http.get(`${this.ModelCardUrl}/${id}/export/huggingface`, { observe: 'response', responseType: 'blob' });
   }
 
   updateModelCard(modelCard: ModelCard): Observable<ModelCard> {
     const httpOptions = {
-      headers: new HttpHeaders({'Content-Type': 'application/json'}),
+      headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
       params: {}
     };
     return this.http.patch<ModelCard>(`${this.ModelCardUrl}/${modelCard['id']}`, modelCard, httpOptions);

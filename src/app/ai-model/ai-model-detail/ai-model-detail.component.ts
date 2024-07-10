@@ -10,6 +10,7 @@ import { AppConfigService } from '../../app-config.service';
 import urljoin from 'url-join';
 import { KeycloakService } from '../../services/keycloak/keycloak.service';
 import { HttpResponse } from '@angular/common/http';
+import { NgTemplateOutlet } from '@angular/common';
 
 @Component({
   selector: 'app-ai-model-detail',
@@ -24,7 +25,8 @@ export class AiModelDetailComponent implements OnInit {
   job: Job = null;
   aiModelId = this.route.snapshot.paramMap.get('id');
   modelCard: ModelCard = new ModelCard();
-  aiFramework: string[] = ["TENSORFLOW", "HUGGINGFACE", "BIOIMAGEIO"];
+  aiFramework: string[] = ["TENSORFLOW", "HUGGINGFACE"];
+  modalContent: string;
 
   constructor(
     private route: ActivatedRoute,
@@ -69,16 +71,16 @@ export class AiModelDetailComponent implements OnInit {
   }
 
   displayJobModal(jobId: string) {
-    const modalRef = this.modalService.open(JobDetailComponent, {'size': 'lg'});
+    const modalRef = this.modalService.open(JobDetailComponent, { 'size': 'lg' });
     modalRef.componentInstance.modalReference = modalRef;
     (modalRef.componentInstance as JobDetailComponent).jobId = jobId;
     modalRef.result.then((result) => {
-      }
+    }
       , (reason) => {
         console.log('dismissed');
       });
   }
-  
+
   makePublicAiModel(): void {
     this.aiModelService
       .makePublicAiModel(this.aiModel)
@@ -101,15 +103,16 @@ export class AiModelDetailComponent implements OnInit {
 
   exportModelCard(id: string): void {
     var platform = (<HTMLInputElement>document.getElementById("platforms")).value;
-    switch(platform) {
-      case this.aiFramework[0]: this.exportModelCardTensorflow(id); break;
-      default: alert("todo export: " + platform);
+    switch (platform) {
+      case this.aiFramework[0]: this.exportModelCard_Tensorflow(id); break;
+      case this.aiFramework[1]: this.exportModelCard_Huggingface(id); break;
+      default: alert("TODO export for " + platform);
     }
   }
 
-  exportModelCardTensorflow(id: string): void {
+  exportModelCard_Tensorflow(id: string): void {
     this.aiModelService
-      .downloadTensorflow(id)
+      .exportTensorflow(id)
       .subscribe((response: HttpResponse<Blob>) => {
         // get file name
         const contentDisposition = response.headers.get('content-disposition');
@@ -119,20 +122,55 @@ export class AiModelDetailComponent implements OnInit {
       });
   }
 
+  exportModelCard_Huggingface(id: string): void {
+    this.aiModelService
+      .exportHuggingface(id)
+      .subscribe((response: HttpResponse<Blob>) => {
+        // get file name
+        const contentDisposition = response.headers.get('content-disposition');
+        const filename: string = contentDisposition.split('; filename="')[1].trim();
+        // save
+        saveAs(response.body, filename);
+      });
+  }
+
   // Preview
 
-  previewModelCard(showModelcardModal: any): void {
+  previewModelCard(id: string, showModal: NgTemplateOutlet): void {
     var platform = (<HTMLInputElement>document.getElementById("platforms")).value;
-    switch(platform) {
-      case this.aiFramework[0]: this.modalService.open(showModelcardModal, {'size': 'lg'}); break;
-      default: alert("todo preview: " + platform); break;
+    switch (platform) {
+      // case tensorflow
+      case this.aiFramework[0]: {
+        // get json
+        this.aiModelService
+          .exportTensorflow(id)
+          .subscribe(async (response: HttpResponse<Blob>) =>
+            this.modalContent = await response.body['text']());
+        // show modal
+        this.modalService.open(showModal, { 'size': 'lg' });
+        break;
+      }
+
+      // case huggingface
+      case this.aiFramework[1]: {
+        // get yaml
+        this.aiModelService
+          .exportHuggingface(id)
+          .subscribe(async (response: HttpResponse<Blob>) =>
+            this.modalContent = await response.body['text']());
+        // show modal
+        this.modalService.open(showModal, { 'size': 'lg' });
+        break;
+      }
+
+      default: alert("TODO preview for " + platform); break;
     }
   }
 
   // Update 
 
   updateModelCard(value: string, field: string): void {
-    if(this.modelCard.hasOwnProperty(field)) {
+    if (this.modelCard.hasOwnProperty(field)) {
       this.modelCard[field] = value ? value : "null";
       this.aiModelService.updateModelCard(this.modelCard).subscribe(mc => this.modelCard = mc);
     } else {
