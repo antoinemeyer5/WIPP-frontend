@@ -11,6 +11,7 @@ import urljoin from 'url-join';
 import { KeycloakService } from '../../services/keycloak/keycloak.service';
 import { HttpResponse } from '@angular/common/http';
 import { NgTemplateOutlet } from '@angular/common';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-ai-model-detail',
@@ -97,97 +98,40 @@ export class AiModelDetailComponent implements OnInit {
 
   /***** Model Card Methods *****/
 
-  // Export
+  getHttpFromCurrentFramework(id:string): Observable<HttpResponse<Blob>> {
+    // get current framework
+    var framework = (<HTMLInputElement>document.getElementById("frameworks")).value;
+    // choose
+    switch (framework) {
+      case this.aiFramework[0]: return this.aiModelService.exportTensorflow(id);
+      case this.aiFramework[1]: return this.aiModelService.exportHuggingface(id);
+      case this.aiFramework[2]: return this.aiModelService.exportHuggingface(id);
+      default:
+        alert("ERROR: you can't take any action on this framework.");
+        return null;
+    }
+  }
 
   exportModelCard(id: string): void {
-    var framework = (<HTMLInputElement>document.getElementById("frameworks")).value;
-    switch (framework) {
-      case this.aiFramework[0]: this.exportModelCard_Tensorflow(id); break;
-      case this.aiFramework[1]: this.exportModelCard_Huggingface(id); break;
-      case this.aiFramework[2]: this.exportModelCard_Bioimageio(id); break;
-      default: alert("TODO export for " + framework);
-    }
+    // get content
+    this.getHttpFromCurrentFramework(id)
+    .subscribe((response: HttpResponse<Blob>) => {
+      const contentDisposition = response.headers.get('content-disposition');
+      // retrieve file name
+      const filename: string = contentDisposition.split('; filename="')[1].trim();
+      // save file
+      saveAs(response.body, filename);
+    });
   }
-
-  exportModelCard_Tensorflow(id: string): void {
-    this.aiModelService
-      .exportTensorflow(id)
-      .subscribe((response: HttpResponse<Blob>) => {
-        // get file name
-        const contentDisposition = response.headers.get('content-disposition');
-        const filename: string = contentDisposition.split('; filename="')[1].split('.json')[0].trim();
-        // save
-        saveAs(response.body, filename);
-      });
-  }
-
-  exportModelCard_Huggingface(id: string): void {
-    this.aiModelService
-      .exportHuggingface(id)
-      .subscribe((response: HttpResponse<Blob>) => {
-        // get file name
-        const contentDisposition = response.headers.get('content-disposition');
-        const filename: string = contentDisposition.split('; filename="')[1].trim();
-        // save
-        saveAs(response.body, filename);
-      });
-  }
-
-  exportModelCard_Bioimageio(id: string): void {
-    this.aiModelService
-      .exportBioimageio(id)
-      .subscribe((response: HttpResponse<Blob>) => {
-        // get file name
-        const contentDisposition = response.headers.get('content-disposition');
-        const filename: string = contentDisposition.split('; filename="')[1].trim();
-        // save
-        saveAs(response.body, filename);
-      });
-  }
-
-  // Preview
 
   previewModelCard(id: string, showModal: NgTemplateOutlet): void {
-    var framework = (<HTMLInputElement>document.getElementById("frameworks")).value;
-    switch (framework) {
-      // case tensorflow
-      case this.aiFramework[0]: {
-        // get json
-        this.aiModelService
-          .exportTensorflow(id)
-          .subscribe(async (response: HttpResponse<Blob>) =>
-            this.modalContent = await response.body['text']());
-        // show modal
-        this.modalService.open(showModal, { 'size': 'lg' });
-        break;
-      }
-
-      // case huggingface
-      case this.aiFramework[1]: {
-        // get yaml
-        this.aiModelService
-          .exportHuggingface(id)
-          .subscribe(async (response: HttpResponse<Blob>) =>
-            this.modalContent = await response.body['text']());
-        // show modal
-        this.modalService.open(showModal, { 'size': 'lg' });
-        break;
-      }
-
-      // case bioimageio
-      case this.aiFramework[2]: {
-        // get yaml
-        this.aiModelService
-          .exportBioimageio(id)
-          .subscribe(async (response: HttpResponse<Blob>) =>
-            this.modalContent = await response.body['text']());
-        // show modal
-        this.modalService.open(showModal, { 'size': 'lg' });
-        break;
-      }
-
-      default: alert("TODO preview for " + framework); break;
-    }
+    // get content
+    this.getHttpFromCurrentFramework(id)
+    .subscribe(async (response: HttpResponse<Blob>) => {
+      this.modalContent = await response.body['text']();
+    });
+    // show
+    this.modalService.open(showModal, { 'size': 'lg' });
   }
 
   // Update 
