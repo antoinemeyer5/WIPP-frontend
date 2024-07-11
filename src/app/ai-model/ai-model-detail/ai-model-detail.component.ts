@@ -20,13 +20,13 @@ import { NgTemplateOutlet } from '@angular/common';
 export class AiModelDetailComponent implements OnInit {
 
   aiModel: AiModel = new AiModel();
-  tensorboardLogs: TensorboardLogs = null;
+  tensorboardLogs: TensorboardLogs = new TensorboardLogs();
   tensorboardLink = '';
   job: Job = null;
   aiModelId = this.route.snapshot.paramMap.get('id');
   modelCard: ModelCard = new ModelCard();
-  aiFramework: string[] = ["TENSORFLOW", "HUGGINGFACE"];
-  modalContent: string;
+  aiFramework: string[] = ["TENSORFLOW", "HUGGINGFACE", "BIOIMAGEIO"];
+  modalContent: string = '';
 
   constructor(
     private route: ActivatedRoute,
@@ -50,6 +50,7 @@ export class AiModelDetailComponent implements OnInit {
     this.aiModelService.getModelCard(this.aiModelId)
       .subscribe(modelCard => {
         this.modelCard = modelCard;
+        document.getElementById(this.modelCard.license).setAttribute("selected", "selected");
       }, error => {
         this.router.navigate(['/404']);
       });
@@ -59,13 +60,10 @@ export class AiModelDetailComponent implements OnInit {
     if (this.aiModel._links['sourceJob']) {
       this.aiModelService.getJob(this.aiModel._links['sourceJob']['href']).subscribe(job => {
         this.job = job;
-        /*
-        this.aiModelService.getTensorboardLogsByJob(this.job.id).subscribe(res => {
+        this.aiModelService.getTensorboardLogsByJob("6682c9e43149955bd95f59a8").subscribe(res => {
           this.tensorboardLogs = res;
-          console.log(this.tensorboardLogs);
           this.tensorboardLink = this.tensorboardLink + this.tensorboardLogs.name;
         });
-        */
       });
     }
   }
@@ -102,11 +100,12 @@ export class AiModelDetailComponent implements OnInit {
   // Export
 
   exportModelCard(id: string): void {
-    var platform = (<HTMLInputElement>document.getElementById("platforms")).value;
-    switch (platform) {
+    var framework = (<HTMLInputElement>document.getElementById("frameworks")).value;
+    switch (framework) {
       case this.aiFramework[0]: this.exportModelCard_Tensorflow(id); break;
       case this.aiFramework[1]: this.exportModelCard_Huggingface(id); break;
-      default: alert("TODO export for " + platform);
+      case this.aiFramework[2]: this.exportModelCard_Bioimageio(id); break;
+      default: alert("TODO export for " + framework);
     }
   }
 
@@ -134,11 +133,23 @@ export class AiModelDetailComponent implements OnInit {
       });
   }
 
+  exportModelCard_Bioimageio(id: string): void {
+    this.aiModelService
+      .exportBioimageio(id)
+      .subscribe((response: HttpResponse<Blob>) => {
+        // get file name
+        const contentDisposition = response.headers.get('content-disposition');
+        const filename: string = contentDisposition.split('; filename="')[1].trim();
+        // save
+        saveAs(response.body, filename);
+      });
+  }
+
   // Preview
 
   previewModelCard(id: string, showModal: NgTemplateOutlet): void {
-    var platform = (<HTMLInputElement>document.getElementById("platforms")).value;
-    switch (platform) {
+    var framework = (<HTMLInputElement>document.getElementById("frameworks")).value;
+    switch (framework) {
       // case tensorflow
       case this.aiFramework[0]: {
         // get json
@@ -163,7 +174,19 @@ export class AiModelDetailComponent implements OnInit {
         break;
       }
 
-      default: alert("TODO preview for " + platform); break;
+      // case bioimageio
+      case this.aiFramework[2]: {
+        // get yaml
+        this.aiModelService
+          .exportBioimageio(id)
+          .subscribe(async (response: HttpResponse<Blob>) =>
+            this.modalContent = await response.body['text']());
+        // show modal
+        this.modalService.open(showModal, { 'size': 'lg' });
+        break;
+      }
+
+      default: alert("TODO preview for " + framework); break;
     }
   }
 

@@ -109,6 +109,10 @@ export class AiModelService implements DataService<AiModel, PaginatedAiModels> {
     return this.http.get(`${this.ModelCardUrl}/${id}/export/huggingface`, { observe: 'response', responseType: 'blob' });
   }
 
+  exportBioimageio(id: string): Observable<HttpResponse<Blob>> {
+    return this.http.get(`${this.ModelCardUrl}/${id}/export/bioimageio`, { observe: 'response', responseType: 'blob' });
+  }
+
   updateModelCard(modelCard: ModelCard): Observable<ModelCard> {
     const httpOptions = {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' }),

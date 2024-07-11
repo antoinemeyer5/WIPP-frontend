@@ -10,8 +10,8 @@ export class ModelCard
     date: Date;
     description: string;
     // documentation: [TYPE];
-    // license: [TYPE];
-    // contact: [TYPE];
+    license: string;
+    contact: string;
     citation: string;
     // inputs: [TYPE];
     // outputs: [TYPE];
