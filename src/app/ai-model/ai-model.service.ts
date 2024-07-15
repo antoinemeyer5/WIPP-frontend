@@ -19,6 +19,12 @@ export class AiModelService implements DataService<AiModel, PaginatedAiModels> {
 
   constructor(private http: HttpClient) { }
 
+  getJob(jobUrl: string): Observable<Job> {
+    return this.http.get<Job>(jobUrl);
+  }
+
+  /***** AI Model Services *****/
+
   getById(id: string): Observable<AiModel> {
     return this.http.get<AiModel>(`${this.AiModelUrl}/${id}`);
   }
@@ -58,23 +64,6 @@ export class AiModelService implements DataService<AiModel, PaginatedAiModels> {
     return this.http.get<any>(this.AiModelUrl + '/search/findByNameContainingIgnoreCase', httpOptions).pipe(
       map((result: any) => {
         result.data = result._embedded.aiModels;
-        return result;
-      }));
-  }
-
-  getJob(jobUrl: string): Observable<Job> {
-    return this.http.get<Job>(jobUrl);
-  }
-
-  getTensorboardLogsByJob(jobId: string): Observable<TensorboardLogs> {
-    const httpOptions = {
-      headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
-      params: {}
-    };
-    const httpParams = new HttpParams().set('sourceJob', jobId);
-    httpOptions.params = httpParams;
-    return this.http.get<any>(this.tensorboardLogsUrl + '/search/findOneBySourceJob', httpOptions).pipe(
-      map((result: any) => {
         return result;
       }));
   }
@@ -119,6 +108,29 @@ export class AiModelService implements DataService<AiModel, PaginatedAiModels> {
       params: {}
     };
     return this.http.patch<ModelCard>(`${this.ModelCardUrl}/${modelCard['id']}`, modelCard, httpOptions);
+  }
+
+   /***** TensorBoard Services *****/
+
+   getTensorboardLogsByJob(jobId: string): Observable<TensorboardLogs> {
+    const httpOptions = {
+      headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
+      params: {}
+    };
+    const httpParams = new HttpParams().set('sourceJob', jobId);
+    httpOptions.params = httpParams;
+    return this.http.get<any>(this.tensorboardLogsUrl + '/search/findOneBySourceJob', httpOptions).pipe(
+      map((result: any) => {
+        return result;
+      }));
+  }
+
+  getTensorboardlogsCSV(id: string, type: string, tag: string): Observable<any> {
+    const httpOptions = {
+      headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
+      params: new HttpParams().set('type', type).set('tag', tag)
+    };
+    return this.http.get<any>(`${this.tensorboardLogsUrl}/${id}/get/csv`, httpOptions);
   }
 
 }

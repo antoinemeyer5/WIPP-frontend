@@ -13,8 +13,8 @@ export class ModelCard
     license: string;
     contact: string;
     citation: string;
-    // inputs: [TYPE];
-    // outputs: [TYPE];
+    inputs: any[];
+    outputs: any[];
     // trainingData: [TYPE];
     publiclyShared: boolean = true;
     _links: any;

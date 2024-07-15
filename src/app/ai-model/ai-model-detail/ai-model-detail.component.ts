@@ -23,6 +23,7 @@ export class AiModelDetailComponent implements OnInit {
   aiModel: AiModel = new AiModel();
   tensorboardLogs: TensorboardLogs = new TensorboardLogs();
   tensorboardLink = '';
+  tensorboardPlotable: boolean = false;
   job: Job = null;
   aiModelId = this.route.snapshot.paramMap.get('id');
   modelCard: ModelCard = new ModelCard();
@@ -57,17 +58,35 @@ export class AiModelDetailComponent implements OnInit {
       });
   }
 
+  /***** TensorBoard Methods *****/
+
   getTensorboardLogsAndJob() {
     if (this.aiModel._links['sourceJob']) {
       this.aiModelService.getJob(this.aiModel._links['sourceJob']['href']).subscribe(job => {
         this.job = job;
-        this.aiModelService.getTensorboardLogsByJob("6682c9e43149955bd95f59a8").subscribe(res => {
+        this.aiModelService
+        .getTensorboardLogsByJob("6682c9e43149955bd95f59a8")  // todo: use `this.job.id`
+        .subscribe(res => {
           this.tensorboardLogs = res;
           this.tensorboardLink = this.tensorboardLink + this.tensorboardLogs.name;
+          this.tensorboardPlotable = true;
         });
       });
     }
   }
+
+  // TODO: work zone
+  checkTensorboardLogsCSV()
+  {
+    let train_data: any;
+    this.aiModelService
+    .getTensorboardlogsCSV("6682c9e43149955bd95f59a8", "train", "loss") // todo: use `this.tensorboardLogs.id`
+    .subscribe(data => {
+      train_data = data;
+      console.log(train_data);
+    });
+  }
+  // TODO: work zone
 
   displayJobModal(jobId: string) {
     const modalRef = this.modalService.open(JobDetailComponent, { 'size': 'lg' });
@@ -105,7 +124,7 @@ export class AiModelDetailComponent implements OnInit {
     switch (framework) {
       case this.aiFramework[0]: return this.aiModelService.exportTensorflow(id);
       case this.aiFramework[1]: return this.aiModelService.exportHuggingface(id);
-      case this.aiFramework[2]: return this.aiModelService.exportHuggingface(id);
+      case this.aiFramework[2]: return this.aiModelService.exportBioimageio(id);
       default:
         alert("ERROR: you can't take any action on this framework.");
         return null;
@@ -131,10 +150,8 @@ export class AiModelDetailComponent implements OnInit {
       this.modalContent = await response.body['text']();
     });
     // show
-    this.modalService.open(showModal, { 'size': 'lg' });
+    this.modalService.open(showModal, {'size': 'lg'});  
   }
-
-  // Update 
 
   updateModelCard(value: string, field: string): void {
     if (this.modelCard.hasOwnProperty(field)) {
