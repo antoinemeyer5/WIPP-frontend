@@ -60,17 +60,20 @@
 
   <!--
    <button type="button" class="btn btn-light" (click)="checkTensorboardLogsCSV()">test</button>
+
+   
   -->
- 
-  <div class="row"  *ngIf="!tensorboardPlotable">
+
+  <div class="row" *ngIf="!tensorboardPlotable">
     <div class="col-md-9">
       <p>This AI model did not produce a tensorboard.</p>
       <p>There are therefore no tensorboard results to display.</p>
-      <p>If you wish to obtain tensorboard results, please modify the plugin manifest used and restart your training.</p>
+      <p>If you wish to obtain tensorboard results, please modify the plugin manifest used and restart your training.
+      </p>
     </div>
   </div>
 
-  <div class="row"  *ngIf="tensorboardPlotable">
+  <div class="row" *ngIf="tensorboardPlotable">
     <div class="col-md-9">
       <p>This AI model did produce a tensorboard.</p>
       <dl class="row">
@@ -97,7 +100,6 @@
         <div style="width:200px; height:100px; color: white; background:blue;">graph train</div>
         <div style="width:200px; height:100px; color: white; background:red;">graph test</div>
       </div>
-      
     </div>
   </div>
   <br><br>
@@ -160,10 +162,30 @@
         </dd>
 
         <dt class="col-md-4">Inputs</dt>
-        <dd class="col-md-8">{{modelCard.inputs}}</dd>
-
+        <dt class="col-md-8">
+          <details *ngFor="let input of modelCard.inputs" style="font-weight:normal;">
+            <summary>{{input.name}}</summary>
+            <pre>
+              Desr: {{input.description ? input.description : 'null'}}
+              Type: {{input.type ? input.type : 'null'}}
+              Opti: {{input.options ? input.options : 'null'}}
+              Requ: {{input.required ? input.required : 'null'}}
+            </pre>
+          </details>
+        </dt>
+        
         <dt class="col-md-4">Outputs</dt>
-        <dd class="col-md-8">{{modelCard.outputs}}</dd>
+        <dt class="col-md-8">
+          <details *ngFor="let output of modelCard.outputs" style="font-weight:normal;">
+            <summary>{{output.name}}</summary>
+            <pre>
+              Desr: {{output.description ? output.description : 'null'}}
+              Type: {{output.type ? output.type : 'null'}}
+              Opti: {{output.options ? output.options : 'null'}}
+              Requ: {{output.required ? output.required : 'null'}}
+            </pre>
+          </details>
+        </dt>
 
         <!--<p>TrainingData: {{}}</p>-->
       </dl>

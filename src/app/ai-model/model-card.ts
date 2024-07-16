@@ -1,5 +1,12 @@
-export class ModelCard
-{
+export interface In_Out_Put {
+    name: string;
+    description: string;
+    type: string;
+    options: any; // todo: define
+    required: boolean;
+}
+
+export class ModelCard {
     id: string;
     aiModelId: string;
     name: string;
@@ -13,8 +20,8 @@ export class ModelCard
     license: string;
     contact: string;
     citation: string;
-    inputs: any[];
-    outputs: any[];
+    inputs: In_Out_Put[];
+    outputs: In_Out_Put[];
     // trainingData: [TYPE];
     publiclyShared: boolean = true;
     _links: any;

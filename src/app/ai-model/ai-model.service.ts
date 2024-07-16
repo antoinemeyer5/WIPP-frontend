@@ -110,9 +110,9 @@ export class AiModelService implements DataService<AiModel, PaginatedAiModels> {
     return this.http.patch<ModelCard>(`${this.ModelCardUrl}/${modelCard['id']}`, modelCard, httpOptions);
   }
 
-   /***** TensorBoard Services *****/
+  /***** TensorBoard Services *****/
 
-   getTensorboardLogsByJob(jobId: string): Observable<TensorboardLogs> {
+  getTensorboardLogsByJob(jobId: string): Observable<TensorboardLogs> {
     const httpOptions = {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
       params: {}

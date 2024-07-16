@@ -65,28 +65,25 @@ export class AiModelDetailComponent implements OnInit {
       this.aiModelService.getJob(this.aiModel._links['sourceJob']['href']).subscribe(job => {
         this.job = job;
         this.aiModelService
-        .getTensorboardLogsByJob("6682c9e43149955bd95f59a8")  // todo: use `this.job.id`
-        .subscribe(res => {
-          this.tensorboardLogs = res;
-          this.tensorboardLink = this.tensorboardLink + this.tensorboardLogs.name;
-          this.tensorboardPlotable = true;
-        });
+          .getTensorboardLogsByJob("6682c9e43149955bd95f59a8")  // todo: use `this.job.id`   
+          .subscribe(res => {
+            this.tensorboardLogs = res;
+            this.tensorboardLink = this.tensorboardLink + this.tensorboardLogs.name;
+            this.tensorboardPlotable = true;
+          });
       });
     }
   }
-
-  // TODO: work zone
-  checkTensorboardLogsCSV()
-  {
+   
+  checkTensorboardLogsCSV() {
     let train_data: any;
     this.aiModelService
-    .getTensorboardlogsCSV("6682c9e43149955bd95f59a8", "train", "loss") // todo: use `this.tensorboardLogs.id`
-    .subscribe(data => {
-      train_data = data;
-      console.log(train_data);
-    });
+      .getTensorboardlogsCSV("6682c9e43149955bd95f59a8", "train", "loss") // todo: use `this.tensorboardLogs.id`
+      .subscribe(data => {
+        train_data = data;
+        console.log(train_data);
+      });
   }
-  // TODO: work zone
 
   displayJobModal(jobId: string) {
     const modalRef = this.modalService.open(JobDetailComponent, { 'size': 'lg' });
@@ -117,7 +114,7 @@ export class AiModelDetailComponent implements OnInit {
 
   /***** Model Card Methods *****/
 
-  getHttpFromCurrentFramework(id:string): Observable<HttpResponse<Blob>> {
+  getHttpFromCurrentFramework(id: string): Observable<HttpResponse<Blob>> {
     // get current framework
     var framework = (<HTMLInputElement>document.getElementById("frameworks")).value;
     // choose
@@ -134,23 +131,23 @@ export class AiModelDetailComponent implements OnInit {
   exportModelCard(id: string): void {
     // get content
     this.getHttpFromCurrentFramework(id)
-    .subscribe((response: HttpResponse<Blob>) => {
-      const contentDisposition = response.headers.get('content-disposition');
-      // retrieve file name
-      const filename: string = contentDisposition.split('; filename="')[1].trim();
-      // save file
-      saveAs(response.body, filename);
-    });
+      .subscribe((response: HttpResponse<Blob>) => {
+        const contentDisposition = response.headers.get('content-disposition');
+        // retrieve file name
+        const filename: string = contentDisposition.split('; filename="')[1].trim();
+        // save file
+        saveAs(response.body, filename);
+      });
   }
 
   previewModelCard(id: string, showModal: NgTemplateOutlet): void {
     // get content
     this.getHttpFromCurrentFramework(id)
-    .subscribe(async (response: HttpResponse<Blob>) => {
-      this.modalContent = await response.body['text']();
-    });
+      .subscribe(async (response: HttpResponse<Blob>) => {
+        this.modalContent = await response.body['text']();
+      });
     // show
-    this.modalService.open(showModal, {'size': 'lg'});  
+    this.modalService.open(showModal, { 'size': 'lg' });
   }
 
   updateModelCard(value: string, field: string): void {
