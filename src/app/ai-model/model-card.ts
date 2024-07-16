@@ -1,3 +1,4 @@
+/*
 export interface In_Out_Put {
     name: string;
     description: string;
@@ -5,6 +6,7 @@ export interface In_Out_Put {
     options: any; // todo: define
     required: boolean;
 }
+*/
 
 export class ModelCard {
     id: string;
@@ -13,15 +15,18 @@ export class ModelCard {
     author: string;
     version: string;
     framework: string;
-    // type: [TYPE];
+    type: string;
+    architecture: string;
     date: Date;
+    training: number[];
+    testing: number[];
     description: string;
     // documentation: [TYPE];
     license: string;
     contact: string;
     citation: string;
-    inputs: In_Out_Put[];
-    outputs: In_Out_Put[];
+    // inputs: In_Out_Put[];
+    // outputs: In_Out_Put[];
     // trainingData: [TYPE];
     publiclyShared: boolean = true;
     _links: any;

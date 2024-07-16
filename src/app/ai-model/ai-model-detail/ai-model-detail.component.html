@@ -108,16 +108,6 @@
   <div class="row">
     <div class="col-md-9">
       <dl class="row">
-
-        <dt class="col-md-4">ID</dt>
-        <dd class="col-md-8">{{modelCard.id}}</dd>
-
-        <dt class="col-md-4">AiModel ID</dt>
-        <dd class="col-md-8">{{modelCard.aiModelId}}</dd>
-
-        <dt class="col-md-4">Name</dt>
-        <dd class="col-md-8">{{modelCard.name}}</dd>
-
         <dt class="col-md-4">Author</dt>
         <dd class="col-md-8">
           <input type="text" value="{{ modelCard.author ? modelCard.author : 'null' }}"
@@ -130,11 +120,34 @@
         <dt class="col-md-4">Framework</dt>
         <dd class="col-md-8">{{modelCard.framework}}</dd>
 
-        <!--<p>Type: {{}}</p>-->
+        <dt class="col-md-4">Type</dt>
+        <select class="col-md-8" (change)="updateModelCard($event.target.value, 'type')">
+          <option id="Untype" value="Untype">Untype</option>
+          <option id="NaiveBayesClassifier" value="Naive Bayes classifier">Naive Bayes Classifier</option>
+          <option id="ConvolutionalNeuralNetwork" value="Convolutional Neural Network">Convolutional Neural Network</option>
+          <option id="SupervisionLearningMethod" value="Supervision/Learning Method">Supervision/Learning Method</option>
+        </select>
+
+        <dt class="col-md-4">Architecture</dt>
+        <select class="col-md-8" (change)="updateModelCard($event.target.value, 'architecture')">
+          <option id="Unknown" value="Unknown">Unknown</option>
+          <option id="Unet" value="Unet">Unet</option>
+          <option id="Resnet50" value="Resnet50">Resnet50</option>
+        </select>
 
         <dt class="col-md-4">Date</dt>
         <dd class="col-md-8">{{modelCard.date}}</dd>
 
+        <dt class="col-md-4" *ngIf="tensorboardPlotable">Training</dt>
+        <dd class="col-md-8" *ngIf="tensorboardPlotable">
+          Execute in <b>{{modelCard.training[0]}}</b> seconds with <b>{{modelCard.training[1]}}</b> steps/epochs
+        </dd>
+
+        <dt class="col-md-4" *ngIf="tensorboardPlotable">Testing</dt>
+        <dd class="col-md-8" *ngIf="tensorboardPlotable">
+          Execute in <b>{{modelCard.testing[0]}}</b> seconds with <b>{{modelCard.testing[1]}}</b> steps/epochs
+        </dd>
+    
         <dt class="col-md-4">Description</dt>
         <dd class="col-md-8">{{modelCard.description}}</dd>
 
@@ -149,18 +162,10 @@
           <option id="BSD-3-Clause" value="BSD-3-Clause">BSD-3-Clause</option>
         </select>
 
-        <dt class="col-md-4">Contact</dt>
-        <dd class="col-md-8">
-          <input type="text" value="{{ modelCard.contact ? modelCard.contact : 'null' }}"
-            (change)="updateModelCard($event.target.value, 'contact')">
-        </dd>
-
         <dt class="col-md-4">Citation</dt>
-        <dd class="col-md-8">
-          <input type="text" value="{{ modelCard.citation ? modelCard.citation : 'null' }}"
-            (change)="updateModelCard($event.target.value, 'citation')">
-        </dd>
+        <dd class="col-md-8">{{modelCard.citation ? modelCard.citation : 'null'}}</dd>
 
+        <!--
         <dt class="col-md-4">Inputs</dt>
         <dt class="col-md-8">
           <details *ngFor="let input of modelCard.inputs" style="font-weight:normal;">
@@ -173,19 +178,7 @@
             </pre>
           </details>
         </dt>
-        
-        <dt class="col-md-4">Outputs</dt>
-        <dt class="col-md-8">
-          <details *ngFor="let output of modelCard.outputs" style="font-weight:normal;">
-            <summary>{{output.name}}</summary>
-            <pre>
-              Desr: {{output.description ? output.description : 'null'}}
-              Type: {{output.type ? output.type : 'null'}}
-              Opti: {{output.options ? output.options : 'null'}}
-              Requ: {{output.required ? output.required : 'null'}}
-            </pre>
-          </details>
-        </dt>
+        -->
 
         <!--<p>TrainingData: {{}}</p>-->
       </dl>

@@ -78,7 +78,7 @@ export class AiModelDetailComponent implements OnInit {
   checkTensorboardLogsCSV() {
     let train_data: any;
     this.aiModelService
-      .getTensorboardlogsCSV("6682c9e43149955bd95f59a8", "train", "loss") // todo: use `this.tensorboardLogs.id`
+      .getTensorboardlogsCSV("6682f3d43149955bd95f59ab", "train", "loss") // todo: use `this.tensorboardLogs.id`, "6682c9e43149955bd95f59a8"
       .subscribe(data => {
         train_data = data;
         console.log(train_data);
