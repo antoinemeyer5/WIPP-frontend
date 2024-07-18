@@ -57,12 +57,6 @@
 
   <h4>Tensorboard Logs Plots</h4>
 
-  <!--
-   <button type="button" class="btn btn-light" (click)="checkTensorboardLogsCSV()">test</button>
-
-   
-  -->
-
   <div class="row" *ngIf="!tensorboardPlotable">
     <div class="col-md-9">
       <p>This AI model did not produce a tensorboard.</p>
@@ -89,20 +83,12 @@
         <dt class="col-md-4">Date</dt>
         <dd class="col-md-8">{{tensorboardLogs.creationDate}}</dd>
 
-      </dl>
-      
-      <button type="button" title="" class="btn btn-light" (click)="checkTensorboardLogsCSV()">
-        <i class="fa fa-question-circle"></i>
-      </button>
-      <details>
-        <summary>Train - Loss</summary>
-        <p *ngFor="let d of train_loss_data">{{ d }}</p>
-      </details>
-      <details>
-        <summary>Test - Accuracy</summary>
-        <p *ngFor="let d of test_accuracy_data">{{ d }}</p>
-      </details>
+        <dt class="col-md-4">Plot Train</dt>
+        <dd class="col-md-8" style="color: red;">TODO</dd>
 
+        <dt class="col-md-4">Plot Test</dt>
+        <dd class="col-md-8" style="color: red;">TODO</dd>
+      </dl>
     </div>
   </div>
   <br><br>
@@ -111,48 +97,60 @@
   <div class="row">
     <div class="col-md-9">
       <dl class="row">
-        <dt class="col-md-4">Author</dt>
-        <dd class="col-md-8">{{aiModelCard.author}}</dd>
-
+        <!--
+        <dt class="col-md-4">Id</dt>
+        <dd class="col-md-8">{{aiModelCard.id}}</dd>
+        -->
         <dt class="col-md-4">Version</dt>
-        <dd class="col-md-8">{{aiModelCard.version}}</dd>
+        <dd class="col-md-8" style="color: red;">{{aiModelCard.version}}</dd>
 
+        <!--
+        <dt class="col-md-4">AI Model Id</dt>
+        <dd class="col-md-8">{{aiModelCard.aiModelId}}</dd>
+        -->
+        <dt class="col-md-4">Name</dt>
+        <dd class="col-md-8">{{aiModelCard.name}}</dd>
+        <dt class="col-md-4">Date</dt>
+        <dd class="col-md-8">{{aiModelCard.date}}</dd>
         <dt class="col-md-4">Framework</dt>
         <dd class="col-md-8">{{aiModelCard.framework}}</dd>
 
+        <dt class="col-md-4">Training Data</dt>
+        <dd class="col-md-8" style="color: green;">{{ aiModelCard.trainingData | json }}</dd>
+
+        <dt class="col-md-4">Author</dt>
+        <dd class="col-md-8">{{aiModelCard.author ? aiModelCard.author : 'null'}}</dd>
+        <dt class="col-md-4">Description</dt>
+        <dd class="col-md-8">{{aiModelCard.description}}</dd>
+        <dt class="col-md-4">Citation</dt>
+        <dd class="col-md-8">
+          <input type="text" value="{{ aiModelCard.citation ? aiModelCard.citation : 'null' }}"
+            (change)="updateAiModelCard($event.target.value, 'citation')">
+        </dd>
         <dt class="col-md-4">Type</dt>
-        <select class="col-md-2" (change)="updateAiModelCard($event.target.value, 'type')">
-          <option id="Untype" value="Untype">Untype</option>
-          <option id="NaiveBayesClassifier" value="Naive Bayes classifier">Naive Bayes Classifier</option>
-          <option id="ConvolutionalNeuralNetwork" value="Convolutional Neural Network">Convolutional Neural Network</option>
-          <option id="SupervisionLearningMethod" value="Supervision/Learning Method">Supervision/Learning Method</option>
-        </select>
-        <dd class="col-md-6"></dd>
-
+        <dd class="col-md-8" style="color: red;">{{aiModelCard.type}}</dd>
         <dt class="col-md-4">Architecture</dt>
-        <select class="col-md-2" (change)="updateAiModelCard($event.target.value, 'architecture')">
-          <option id="Unknown" value="Unknown">Unknown</option>
-          <option id="Unet" value="Unet">Unet</option>
-          <option id="Resnet50" value="Resnet50">Resnet50</option>
-        </select>
-        <dd class="col-md-6"></dd>
-
-        <dt class="col-md-4">Date</dt>
-        <dd class="col-md-8">{{aiModelCard.date}}</dd>
+        <dd class="col-md-8" style="color: red;">{{aiModelCard.architecture}}</dd>
 
         <dt class="col-md-4" *ngIf="tensorboardPlotable">Training</dt>
         <dd class="col-md-8" *ngIf="tensorboardPlotable">
-          Execute in <b>{{aiModelCard.training[0]}}</b> seconds with <b>{{aiModelCard.training[1]}}</b> steps
+          <p>
+            time: {{ aiModelCard.training["time"] }} seconds |
+            epochs: {{ aiModelCard.training["epochs"] }} |
+            maxAccuracy: {{ aiModelCard.training["maxAccuracy"] }} |
+            minLoss: {{ aiModelCard.training["minLoss"] }}
+          </p>
         </dd>
-
         <dt class="col-md-4" *ngIf="tensorboardPlotable">Testing</dt>
         <dd class="col-md-8" *ngIf="tensorboardPlotable">
-          Execute in <b>{{aiModelCard.testing[0]}}</b> seconds with <b>{{aiModelCard.testing[1]}}</b> steps
+          <p>
+            time: {{ aiModelCard.testing["time"] }} seconds |
+            epochs: {{ aiModelCard.testing["epochs"] }} |
+            maxAccuracy: {{ aiModelCard.testing["maxAccuracy"] }} |
+            minLoss: {{ aiModelCard.testing["minLoss"] }}
+          </p>
         </dd>
-    
-        <dt class="col-md-4">Description</dt>
-        <dd class="col-md-8">{{aiModelCard.description}}</dd>
-
+        
         <dt class="col-md-4">License</dt>
         <select class="col-md-2" (change)="updateAiModelCard($event.target.value, 'license')">
           <option id="Unlicense" value="Unlicense">Unlicense</option>
@@ -163,12 +161,6 @@
         </select>
         <dd class="col-md-6"></dd>
 
-        <dt class="col-md-4">Citation</dt>
-        <dd class="col-md-8">
-          <input type="text" value="{{ aiModelCard.citation ? aiModelCard.citation : 'null' }}"
-            (change)="updateAiModelCard($event.target.value, 'citation')">
-        </dd>
-
       </dl>
     </div>
 
@@ -177,12 +169,12 @@
         <option *ngFor="let framework of aiFramework" value="{{framework}}">{{ framework }}</option>
       </select>
 
-      <button type="button" title="Display Model Card for a specific platform" class="btn btn-light"
+      <button type="button" title="Display AI Model Card for a specific platform" class="btn btn-light"
         (click)="previewAiModelCard(aiModelCard.id, showAiModelCardModal)">
         <i class="fa fa-eye"></i>
       </button>
 
-      <button type="button" title="Download Model Card" class="btn btn-light" (click)="exportAiModelCard(aiModelCard.id)">
+      <button type="button" title="Download AI Model Card" class="btn btn-light" (click)="exportAiModelCard(aiModelCard.id)">
         <i class="fa fa-download"></i>
       </button>
 

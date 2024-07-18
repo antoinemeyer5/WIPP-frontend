@@ -14,7 +14,7 @@ import { AiModelCard } from './ai-model-card';
 export class AiModelService implements DataService<AiModel, PaginatedAiModels> {
 
   private AiModelUrl = environment.apiRootUrl + '/aiModels';
-  private AiModelCardUrl = environment.apiRootUrl + '/modelCards';
+  private AiModelCardUrl = environment.apiRootUrl + '/aiModelCards';
   private tensorboardLogsUrl = environment.apiRootUrl + '/tensorboardLogs';
 
   constructor(private http: HttpClient) { }

@@ -1,23 +1,26 @@
-export class AiModelCard {
+export class AiModelCard
+{
     id: string;
+    version: string;
+
     aiModelId: string;
     name: string;
-    author: string;
-    version: string;
+    date: Date;
     framework: string;
+
+    trainingData: Map<string, string>;
+
+    author: string;
+    description: string;
+    citation: string;
     type: string;
     architecture: string;
-    date: Date;
-    training: number[];
-    testing: number[];
-    description: string;
-    // documentation: [TYPE];
+    
+    training: Map<string, number>;
+    testing: Map<string, number>;
+
     license: string;
-    contact: string;
-    citation: string;
-    // inputs: In_Out_Put[];
-    // outputs: In_Out_Put[];
-    // trainingData: [TYPE];
+
     publiclyShared: boolean = true;
     _links: any;
 }

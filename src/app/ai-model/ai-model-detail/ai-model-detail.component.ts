@@ -20,18 +20,15 @@ import { Observable } from 'rxjs';
 })
 export class AiModelDetailComponent implements OnInit {
 
+  aiFramework: string[] = ["TENSORFLOW", "HUGGINGFACE", "BIOIMAGEIO"];
   aiModel: AiModel = new AiModel();
+  aiModelId = this.route.snapshot.paramMap.get('id');
+  aiModelCard: AiModelCard = new AiModelCard();
   tensorboardLogs: TensorboardLogs = new TensorboardLogs();
   tensorboardLink = '';
   tensorboardPlotable: boolean = false;
   job: Job = null;
-  aiModelId = this.route.snapshot.paramMap.get('id');
-  aiModelCard: AiModelCard = new AiModelCard();
-  aiFramework: string[] = ["TENSORFLOW", "HUGGINGFACE", "BIOIMAGEIO"];
   modalContent: string = '';
-
-  train_loss_data: string[][];
-  test_accuracy_data: string[][];
 
   constructor(
     private route: ActivatedRoute,
