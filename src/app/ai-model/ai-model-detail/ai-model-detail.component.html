@@ -33,7 +33,6 @@
             target="_blank">{{tensorboardLogs.name}}
           </a>
         </dd>
-        <ng-template #not_applicable>N/A</ng-template>
 
         <dt class="col-md-4">Visibility</dt>
         <dd class="col-md-8">
@@ -77,110 +76,99 @@
     <div class="col-md-9">
       <p>This AI model did produce a tensorboard.</p>
       <dl class="row">
-
-        <dt class="col-md-4">ID</dt>
-        <dd class="col-md-8">{{tensorboardLogs.id}}</dd>
+        <dt class="col-md-4">Name</dt>
+        <dd class="col-md-8">
+          <a *ngIf="tensorboardLogs; else not_applicable" href={{tensorboardLink}}
+            target="_blank">{{tensorboardLogs.name}}
+          </a>
+        </dd>
 
         <dt class="col-md-4">Owner</dt>
         <dd class="col-md-8">{{tensorboardLogs.owner}}</dd>
 
-        <dt class="col-md-4">Name</dt>
-        <dd class="col-md-8">{{tensorboardLogs.name}}</dd>
-
         <dt class="col-md-4">Date</dt>
         <dd class="col-md-8">{{tensorboardLogs.creationDate}}</dd>
 
-        <!--
-        <dt class="col-md-4">Source Job</dt>
-        <dd class="col-md-8">{{tensorboardLogs.sourceJob}}</dd>
-        -->
       </dl>
+      
+      <button type="button" title="" class="btn btn-light" (click)="checkTensorboardLogsCSV()">
+        <i class="fa fa-question-circle"></i>
+      </button>
+      <details>
+        <summary>Train - Loss</summary>
+        <p *ngFor="let d of train_loss_data">{{ d }}</p>
+      </details>
+      <details>
+        <summary>Test - Accuracy</summary>
+        <p *ngFor="let d of test_accuracy_data">{{ d }}</p>
+      </details>
 
-      <div style="display: flex;">
-        <div style="width:200px; height:100px; color: white; background:blue;">graph train</div>
-        <div style="width:200px; height:100px; color: white; background:red;">graph test</div>
-      </div>
     </div>
   </div>
   <br><br>
 
-  <h4>Model Card</h4>
+  <h4>AI Model Card</h4>
   <div class="row">
     <div class="col-md-9">
       <dl class="row">
         <dt class="col-md-4">Author</dt>
-        <dd class="col-md-8">
-          <input type="text" value="{{ modelCard.author ? modelCard.author : 'null' }}"
-            (change)="updateModelCard($event.target.value, 'author')">
-        </dd>
+        <dd class="col-md-8">{{aiModelCard.author}}</dd>
 
         <dt class="col-md-4">Version</dt>
-        <dd class="col-md-8">{{modelCard.version}}</dd>
+        <dd class="col-md-8">{{aiModelCard.version}}</dd>
 
         <dt class="col-md-4">Framework</dt>
-        <dd class="col-md-8">{{modelCard.framework}}</dd>
+        <dd class="col-md-8">{{aiModelCard.framework}}</dd>
 
         <dt class="col-md-4">Type</dt>
-        <select class="col-md-8" (change)="updateModelCard($event.target.value, 'type')">
+        <select class="col-md-2" (change)="updateAiModelCard($event.target.value, 'type')">
           <option id="Untype" value="Untype">Untype</option>
           <option id="NaiveBayesClassifier" value="Naive Bayes classifier">Naive Bayes Classifier</option>
           <option id="ConvolutionalNeuralNetwork" value="Convolutional Neural Network">Convolutional Neural Network</option>
           <option id="SupervisionLearningMethod" value="Supervision/Learning Method">Supervision/Learning Method</option>
         </select>
+        <dd class="col-md-6"></dd>
 
         <dt class="col-md-4">Architecture</dt>
-        <select class="col-md-8" (change)="updateModelCard($event.target.value, 'architecture')">
+        <select class="col-md-2" (change)="updateAiModelCard($event.target.value, 'architecture')">
           <option id="Unknown" value="Unknown">Unknown</option>
           <option id="Unet" value="Unet">Unet</option>
           <option id="Resnet50" value="Resnet50">Resnet50</option>
         </select>
+        <dd class="col-md-6"></dd>
 
         <dt class="col-md-4">Date</dt>
-        <dd class="col-md-8">{{modelCard.date}}</dd>
+        <dd class="col-md-8">{{aiModelCard.date}}</dd>
 
         <dt class="col-md-4" *ngIf="tensorboardPlotable">Training</dt>
         <dd class="col-md-8" *ngIf="tensorboardPlotable">
-          Execute in <b>{{modelCard.training[0]}}</b> seconds with <b>{{modelCard.training[1]}}</b> steps/epochs
+          Execute in <b>{{aiModelCard.training[0]}}</b> seconds with <b>{{aiModelCard.training[1]}}</b> steps
         </dd>
 
         <dt class="col-md-4" *ngIf="tensorboardPlotable">Testing</dt>
         <dd class="col-md-8" *ngIf="tensorboardPlotable">
-          Execute in <b>{{modelCard.testing[0]}}</b> seconds with <b>{{modelCard.testing[1]}}</b> steps/epochs
+          Execute in <b>{{aiModelCard.testing[0]}}</b> seconds with <b>{{aiModelCard.testing[1]}}</b> steps
         </dd>
     
         <dt class="col-md-4">Description</dt>
-        <dd class="col-md-8">{{modelCard.description}}</dd>
-
-        <!--<p>Documentation: {{}}</p>-->
+        <dd class="col-md-8">{{aiModelCard.description}}</dd>
 
         <dt class="col-md-4">License</dt>
-        <select class="col-md-8" (change)="updateModelCard($event.target.value, 'license')">
+        <select class="col-md-2" (change)="updateAiModelCard($event.target.value, 'license')">
           <option id="Unlicense" value="Unlicense">Unlicense</option>
           <option id="Apache-2.0" value="Apache-2.0">Apache-2.0</option>
           <option id="GPL" value="GPL">GPL</option>
           <option id="MPL-2.0" value="MPL-2.0">MPL-2.0</option>
           <option id="BSD-3-Clause" value="BSD-3-Clause">BSD-3-Clause</option>
         </select>
+        <dd class="col-md-6"></dd>
 
         <dt class="col-md-4">Citation</dt>
-        <dd class="col-md-8">{{modelCard.citation ? modelCard.citation : 'null'}}</dd>
+        <dd class="col-md-8">
+          <input type="text" value="{{ aiModelCard.citation ? aiModelCard.citation : 'null' }}"
+            (change)="updateAiModelCard($event.target.value, 'citation')">
+        </dd>
 
-        <!--
-        <dt class="col-md-4">Inputs</dt>
-        <dt class="col-md-8">
-          <details *ngFor="let input of modelCard.inputs" style="font-weight:normal;">
-            <summary>{{input.name}}</summary>
-            <pre>
-              Desr: {{input.description ? input.description : 'null'}}
-              Type: {{input.type ? input.type : 'null'}}
-              Opti: {{input.options ? input.options : 'null'}}
-              Requ: {{input.required ? input.required : 'null'}}
-            </pre>
-          </details>
-        </dt>
-        -->
-
-        <!--<p>TrainingData: {{}}</p>-->
       </dl>
     </div>
 
@@ -190,11 +178,11 @@
       </select>
 
       <button type="button" title="Display Model Card for a specific platform" class="btn btn-light"
-        (click)="previewModelCard(modelCard.id, showModelcardModal)">
+        (click)="previewAiModelCard(aiModelCard.id, showAiModelCardModal)">
         <i class="fa fa-eye"></i>
       </button>
 
-      <button type="button" title="Download Model Card" class="btn btn-light" (click)="exportModelCard(modelCard.id)">
+      <button type="button" title="Download Model Card" class="btn btn-light" (click)="exportAiModelCard(aiModelCard.id)">
         <i class="fa fa-download"></i>
       </button>
 
@@ -203,9 +191,9 @@
 
 </div>
 
-<ng-template #showModelcardModal let-c="close" let-d="dismiss" class="">
+<ng-template #showAiModelCardModal let-c="close" let-d="dismiss" class="">
   <div class="modal-header">
-    <h4 class="modal-title">Modal Card</h4>
+    <h4 class="modal-title">AI Modal Card</h4>
     <button type="button" class="close" aria-label="Close" (click)="d()">
       <span aria-hidden="true">&times;</span>
     </button>

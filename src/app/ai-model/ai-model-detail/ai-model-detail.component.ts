@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AiModelService } from '../ai-model.service';
 import { TensorboardLogs, AiModel } from '../ai-model';
-import { ModelCard } from '../model-card';
+import { AiModelCard } from '../ai-model-card';
 import { JobDetailComponent } from '../../job/job-detail/job-detail.component';
 import { AppConfigService } from '../../app-config.service';
 import urljoin from 'url-join';
@@ -26,9 +26,12 @@ export class AiModelDetailComponent implements OnInit {
   tensorboardPlotable: boolean = false;
   job: Job = null;
   aiModelId = this.route.snapshot.paramMap.get('id');
-  modelCard: ModelCard = new ModelCard();
+  aiModelCard: AiModelCard = new AiModelCard();
   aiFramework: string[] = ["TENSORFLOW", "HUGGINGFACE", "BIOIMAGEIO"];
   modalContent: string = '';
+
+  train_loss_data: string[][];
+  test_accuracy_data: string[][];
 
   constructor(
     private route: ActivatedRoute,
@@ -48,11 +51,11 @@ export class AiModelDetailComponent implements OnInit {
       }, error => {
         this.router.navigate(['/404']);
       });
-    // loads the ModelCard associated with the model
-    this.aiModelService.getModelCard(this.aiModelId)
-      .subscribe(modelCard => {
-        this.modelCard = modelCard;
-        document.getElementById(this.modelCard.license).setAttribute("selected", "selected");
+    // loads the AI ModelCard associated with the model
+    this.aiModelService.getAiModelCard(this.aiModelId)
+      .subscribe(aiModelCard => {
+        this.aiModelCard = aiModelCard;
+        document.getElementById(this.aiModelCard.license).setAttribute("selected", "selected");
       }, error => {
         this.router.navigate(['/404']);
       });
@@ -65,7 +68,7 @@ export class AiModelDetailComponent implements OnInit {
       this.aiModelService.getJob(this.aiModel._links['sourceJob']['href']).subscribe(job => {
         this.job = job;
         this.aiModelService
-          .getTensorboardLogsByJob("6682c9e43149955bd95f59a8")  // todo: use `this.job.id`   
+          .getTensorboardLogsByJob("6682c9e43149955bd95f59a8")  // todo: use `this.job.id`, 6682c9e43149955bd95f59a8
           .subscribe(res => {
             this.tensorboardLogs = res;
             this.tensorboardLink = this.tensorboardLink + this.tensorboardLogs.name;
@@ -75,15 +78,22 @@ export class AiModelDetailComponent implements OnInit {
     }
   }
    
-  checkTensorboardLogsCSV() {
-    let train_data: any;
+  // test zone
+  /*checkTensorboardLogsCSV()
+  {
     this.aiModelService
       .getTensorboardlogsCSV("6682f3d43149955bd95f59ab", "train", "loss") // todo: use `this.tensorboardLogs.id`, "6682c9e43149955bd95f59a8"
       .subscribe(data => {
-        train_data = data;
-        console.log(train_data);
+        this.train_loss_data = data;
       });
-  }
+    
+    this.aiModelService
+      .getTensorboardlogsCSV("6682f3d43149955bd95f59ab", "test", "accuracy")
+      .subscribe(data => {
+        this.test_accuracy_data = data;
+      });
+  }*/
+  // test zone
 
   displayJobModal(jobId: string) {
     const modalRef = this.modalService.open(JobDetailComponent, { 'size': 'lg' });
@@ -112,7 +122,7 @@ export class AiModelDetailComponent implements OnInit {
       .subscribe(downloadUrl => window.location.href = downloadUrl['url']);
   }
 
-  /***** Model Card Methods *****/
+  /***** AI Model Card Methods *****/
 
   getHttpFromCurrentFramework(id: string): Observable<HttpResponse<Blob>> {
     // get current framework
@@ -128,7 +138,7 @@ export class AiModelDetailComponent implements OnInit {
     }
   }
 
-  exportModelCard(id: string): void {
+  exportAiModelCard(id: string): void {
     // get content
     this.getHttpFromCurrentFramework(id)
       .subscribe((response: HttpResponse<Blob>) => {
@@ -140,7 +150,7 @@ export class AiModelDetailComponent implements OnInit {
       });
   }
 
-  previewModelCard(id: string, showModal: NgTemplateOutlet): void {
+  previewAiModelCard(id: string, showModal: NgTemplateOutlet): void {
     // get content
     this.getHttpFromCurrentFramework(id)
       .subscribe(async (response: HttpResponse<Blob>) => {
@@ -150,10 +160,10 @@ export class AiModelDetailComponent implements OnInit {
     this.modalService.open(showModal, { 'size': 'lg' });
   }
 
-  updateModelCard(value: string, field: string): void {
-    if (this.modelCard.hasOwnProperty(field)) {
-      this.modelCard[field] = value ? value : "null";
-      this.aiModelService.updateModelCard(this.modelCard).subscribe(mc => this.modelCard = mc);
+  updateAiModelCard(value: string, field: string): void {
+    if (this.aiModelCard.hasOwnProperty(field)) {
+      this.aiModelCard[field] = value ? value : "null";
+      this.aiModelService.updateAiModelCard(this.aiModelCard).subscribe(mc => this.aiModelCard = mc);
     } else {
       alert("ALERT: can't modify this field.");
     }

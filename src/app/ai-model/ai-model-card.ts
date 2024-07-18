@@ -1,14 +1,4 @@
-/*
-export interface In_Out_Put {
-    name: string;
-    description: string;
-    type: string;
-    options: any; // todo: define
-    required: boolean;
-}
-*/
-
-export class ModelCard {
+export class AiModelCard {
     id: string;
     aiModelId: string;
     name: string;

@@ -6,7 +6,7 @@ import { map } from 'rxjs/operators';
 import { PaginatedAiModels, TensorboardLogs, AiModel } from './ai-model';
 import { Job } from '../job/job';
 import { DataService } from '../data-service';
-import { ModelCard } from './model-card';
+import { AiModelCard } from './ai-model-card';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +14,7 @@ import { ModelCard } from './model-card';
 export class AiModelService implements DataService<AiModel, PaginatedAiModels> {
 
   private AiModelUrl = environment.apiRootUrl + '/aiModels';
-  private ModelCardUrl = environment.apiRootUrl + '/modelCards';
+  private AiModelCardUrl = environment.apiRootUrl + '/modelCards';
   private tensorboardLogsUrl = environment.apiRootUrl + '/tensorboardLogs';
 
   constructor(private http: HttpClient) { }
@@ -80,34 +80,34 @@ export class AiModelService implements DataService<AiModel, PaginatedAiModels> {
     return this.http.get<string>(url);
   }
 
-  /***** Model Card Services *****/
+  /***** AI Model Card Services *****/
 
-  getModelCard(aiModelId: string): Observable<ModelCard> {
+  getAiModelCard(aiModelId: string): Observable<AiModelCard> {
     const httpOptions = {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
       params: new HttpParams().set('aiModelId', aiModelId)
     };
-    return this.http.get<ModelCard>(`${this.ModelCardUrl}/search/findModelCardByAiModelId`, httpOptions);
+    return this.http.get<AiModelCard>(`${this.AiModelCardUrl}/search/findModelCardByAiModelId`, httpOptions);
   }
 
   exportTensorflow(id: string): Observable<HttpResponse<Blob>> {
-    return this.http.get(`${this.ModelCardUrl}/${id}/export/tensorflow`, { observe: 'response', responseType: 'blob' });
+    return this.http.get(`${this.AiModelCardUrl}/${id}/export/tensorflow`, { observe: 'response', responseType: 'blob' });
   }
 
   exportHuggingface(id: string): Observable<HttpResponse<Blob>> {
-    return this.http.get(`${this.ModelCardUrl}/${id}/export/huggingface`, { observe: 'response', responseType: 'blob' });
+    return this.http.get(`${this.AiModelCardUrl}/${id}/export/huggingface`, { observe: 'response', responseType: 'blob' });
   }
 
   exportBioimageio(id: string): Observable<HttpResponse<Blob>> {
-    return this.http.get(`${this.ModelCardUrl}/${id}/export/bioimageio`, { observe: 'response', responseType: 'blob' });
+    return this.http.get(`${this.AiModelCardUrl}/${id}/export/bioimageio`, { observe: 'response', responseType: 'blob' });
   }
 
-  updateModelCard(modelCard: ModelCard): Observable<ModelCard> {
+  updateAiModelCard(aiModelCard: AiModelCard): Observable<AiModelCard> {
     const httpOptions = {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
       params: {}
     };
-    return this.http.patch<ModelCard>(`${this.ModelCardUrl}/${modelCard['id']}`, modelCard, httpOptions);
+    return this.http.patch<AiModelCard>(`${this.AiModelCardUrl}/${aiModelCard['id']}`, aiModelCard, httpOptions);
   }
 
   /***** TensorBoard Services *****/
