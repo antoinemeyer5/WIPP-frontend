@@ -13,7 +13,7 @@ export class AiModelCard
     author: string;
     description: string;
     citation: string;
-    type: string;
+    operationType: string;
     architecture: string;
     
     training: Map<string, number>;

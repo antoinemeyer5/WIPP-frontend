@@ -97,26 +97,23 @@
   <div class="row">
     <div class="col-md-9">
       <dl class="row">
-        <!--
-        <dt class="col-md-4">Id</dt>
-        <dd class="col-md-8">{{aiModelCard.id}}</dd>
-        -->
         <dt class="col-md-4">Version</dt>
-        <dd class="col-md-8" style="color: red;">{{aiModelCard.version}}</dd>
+        <dd class="col-md-8 pb-4">{{aiModelCard.version}}</dd>
 
-        <!--
-        <dt class="col-md-4">AI Model Id</dt>
-        <dd class="col-md-8">{{aiModelCard.aiModelId}}</dd>
-        -->
         <dt class="col-md-4">Name</dt>
         <dd class="col-md-8">{{aiModelCard.name}}</dd>
         <dt class="col-md-4">Date</dt>
         <dd class="col-md-8">{{aiModelCard.date}}</dd>
         <dt class="col-md-4">Framework</dt>
-        <dd class="col-md-8">{{aiModelCard.framework}}</dd>
+        <dd class="col-md-8 pb-4">{{aiModelCard.framework || "N/A"}}</dd>
 
         <dt class="col-md-4">Training Data</dt>
-        <dd class="col-md-8" style="color: green;">{{ aiModelCard.trainingData | json }}</dd>
+        <dd class="col-md-8 pb-4" >
+          <details>
+            <summary>Details</summary>
+            <div *ngFor="let item of aiModelCard.trainingData | keyvalue"> {{item.key}} -> {{item.value}}</div>
+          </details>
+        </dd>
 
         <dt class="col-md-4">Author</dt>
         <dd class="col-md-8">{{aiModelCard.author ? aiModelCard.author : 'null'}}</dd>
@@ -127,28 +124,26 @@
           <input type="text" value="{{ aiModelCard.citation ? aiModelCard.citation : 'null' }}"
             (change)="updateAiModelCard($event.target.value, 'citation')">
         </dd>
-        <dt class="col-md-4">Type</dt>
-        <dd class="col-md-8" style="color: red;">{{aiModelCard.type}}</dd>
+        <dt class="col-md-4">Operation Type</dt>
+        <dd class="col-md-8">{{aiModelCard.operationType || "N/A"}}</dd>
         <dt class="col-md-4">Architecture</dt>
-        <dd class="col-md-8" style="color: red;">{{aiModelCard.architecture}}</dd>
+        <dd class="col-md-8 pb-4">{{aiModelCard.architecture || "N/A"}}</dd>
 
         <dt class="col-md-4" *ngIf="tensorboardPlotable">Training</dt>
         <dd class="col-md-8" *ngIf="tensorboardPlotable">
-          <p>
-            time: {{ aiModelCard.training["time"] }} seconds |
-            epochs: {{ aiModelCard.training["epochs"] }} |
-            maxAccuracy: {{ aiModelCard.training["maxAccuracy"] }} |
-            minLoss: {{ aiModelCard.training["minLoss"] }}
-          </p>
+          <details>
+            <summary>Details</summary>
+            Compute in {{ aiModelCard.training["time"] }} seconds with {{ aiModelCard.training["epochs"] }} epochs <br>
+            Achieves maxAccuracy of {{ aiModelCard.training["maxAccuracy"] }} and minLoss of {{ aiModelCard.training["minLoss"] }}
+          </details>
         </dd>
         <dt class="col-md-4" *ngIf="tensorboardPlotable">Testing</dt>
-        <dd class="col-md-8" *ngIf="tensorboardPlotable">
-          <p>
-            time: {{ aiModelCard.testing["time"] }} seconds |
-            epochs: {{ aiModelCard.testing["epochs"] }} |
-            maxAccuracy: {{ aiModelCard.testing["maxAccuracy"] }} |
-            minLoss: {{ aiModelCard.testing["minLoss"] }}
-          </p>
+        <dd class="col-md-8 pb-4" *ngIf="tensorboardPlotable">
+          <details>
+            <summary>Details</summary>
+            Compute in {{ aiModelCard.testing["time"] }} seconds with {{ aiModelCard.testing["epochs"] }} epochs <br>
+            Achieves maxAccuracy of {{ aiModelCard.testing["maxAccuracy"] }} and minLoss of {{ aiModelCard.testing["minLoss"] }}
+          </details>
         </dd>
         
         <dt class="col-md-4">License</dt>
