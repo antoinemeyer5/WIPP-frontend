@@ -31,7 +31,7 @@ export class PluginDetailComponent implements OnInit, OnDestroy {
 
   plugin: Plugin = new Plugin();
   columnsToDisplayInputs = ['name', 'description', 'type', 'required'];
-  columnsToDisplayOutputs = ['name', 'description', 'type'];
+  columnsToDisplayOutputs = ['name', 'framework', 'architecture', 'description', 'type'];
   expandedInput: JSON[] | null;
   manifest: JSON | null;
 
