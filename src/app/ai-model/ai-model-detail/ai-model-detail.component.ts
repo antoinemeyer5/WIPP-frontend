@@ -1,26 +1,29 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Job } from '../../job/job';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AiModelService } from '../ai-model.service';
 import { TensorboardLogs, AiModel } from '../ai-model';
-import { AiModelCard } from '../ai-model-card';
 import { JobDetailComponent } from '../../job/job-detail/job-detail.component';
 import { AppConfigService } from '../../app-config.service';
 import urljoin from 'url-join';
 import { KeycloakService } from '../../services/keycloak/keycloak.service';
+import { DialogService } from 'primeng/dynamicdialog';
+
+import { AiModelCard } from '../../ai-model-card/ai-model-card';
+import { AiModelCardDetailComponent } from 'src/app/ai-model-card/ai-model-card-detail/ai-model-card-detail.component'
+import { AiModelCardService } from 'src/app/ai-model-card/ai-model-card.service';
 import { HttpResponse } from '@angular/common/http';
-import { NgTemplateOutlet } from '@angular/common';
 import { Observable } from 'rxjs';
+
 
 @Component({
   selector: 'app-ai-model-detail',
   templateUrl: './ai-model-detail.component.html',
-  styleUrls: ['./ai-model-detail.component.css']
+  styleUrls: ['./ai-model-detail.component.css'],
+  providers: [DialogService]
 })
-export class AiModelDetailComponent implements OnInit {
-
-  aiFramework: string[] = ["TENSORFLOW", "HUGGINGFACE", "BIOIMAGEIO"];
+export class AiModelDetailComponent implements OnInit, OnDestroy {
+  aiFramework: string[] = ["TENSORFLOW", "HUGGINGFACE", "BIOIMAGEIO", "PYTORCH"];
   aiModel: AiModel = new AiModel();
   aiModelId = this.route.snapshot.paramMap.get('id');
   aiModelCard: AiModelCard = new AiModelCard();
@@ -28,16 +31,21 @@ export class AiModelDetailComponent implements OnInit {
   tensorboardLink = '';
   tensorboardPlotable: boolean = false;
   job: Job = null;
-  modalContent: string = '';
+
+  chartdata_accu: any;
+  chartdata_loss: any;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private modalService: NgbModal,
+    private dialogService: DialogService,
     private appConfigService: AppConfigService,
     private aiModelService: AiModelService,
-    private keycloakService: KeycloakService) {
-  }
+    private aiModelCardService: AiModelCardService,
+    private keycloakService: KeycloakService
+  ) { }
+
+  /***** NgOn Methods *****/
 
   ngOnInit() {
     this.tensorboardLink = urljoin(this.appConfigService.getConfig().tensorboardUrl, '#scalars&regexInput=');
@@ -49,13 +57,17 @@ export class AiModelDetailComponent implements OnInit {
         this.router.navigate(['/404']);
       });
     // loads the AI ModelCard associated with the model
-    this.aiModelService.getAiModelCard(this.aiModelId)
+    this.aiModelCardService.getAiModelCard(this.aiModelId)
       .subscribe(aiModelCard => {
         this.aiModelCard = aiModelCard;
         document.getElementById(this.aiModelCard.license).setAttribute("selected", "selected");
       }, error => {
         this.router.navigate(['/404']);
       });
+  }
+
+  ngOnDestroy() {
+    this.dialogService.dialogComponentRefMap.forEach((dialog) => dialog.destroy());
   }
 
   /***** TensorBoard Methods *****/
@@ -70,47 +82,86 @@ export class AiModelDetailComponent implements OnInit {
             this.tensorboardLogs = res;
             this.tensorboardLink = this.tensorboardLink + this.tensorboardLogs.name;
             this.tensorboardPlotable = true;
+            this.accuChart();
+            this.lossChart();
           });
       });
     }
   }
-   
-  // test zone
-  /*checkTensorboardLogsCSV()
-  {
-    this.aiModelService
-      .getTensorboardlogsCSV("6682f3d43149955bd95f59ab", "train", "loss") // todo: use `this.tensorboardLogs.id`, "6682c9e43149955bd95f59a8"
-      .subscribe(data => {
-        this.train_loss_data = data;
-      });
-    
-    this.aiModelService
-      .getTensorboardlogsCSV("6682f3d43149955bd95f59ab", "test", "accuracy")
-      .subscribe(data => {
-        this.test_accuracy_data = data;
-      });
-  }*/
-  // test zone
 
   displayJobModal(jobId: string) {
-    const modalRef = this.modalService.open(JobDetailComponent, { 'size': 'lg' });
-    modalRef.componentInstance.modalReference = modalRef;
-    (modalRef.componentInstance as JobDetailComponent).jobId = jobId;
-    modalRef.result.then((result) => {
-    }
-      , (reason) => {
-        console.log('dismissed');
+    this.dialogService.open(JobDetailComponent, {
+      header: 'Job detail',
+      position: 'top',
+      width: '50vw',
+      data: { jobId: jobId },
+      breakpoints: {
+        '960px': '75vw',
+        '640px': '90vw'
+      }
+    });
+  }
+
+  lossChart() {
+    let chartdata_loss_labels: string[] = [];
+    let chartdata_loss_TEST = { label: 'test', data: [] };
+    let chartdata_loss_TRAIN = { label: 'train', data: [] };
+
+    this.chartdata_loss = {
+      labels: chartdata_loss_labels,
+      datasets: [chartdata_loss_TEST, chartdata_loss_TRAIN]
+    };
+
+    this.aiModelService
+      .getTensorboardlogsCSV("6682f3d43149955bd95f59ab", "test", "loss") // todo: use `this.tensorboardLogs.id`, "6682c9e43149955bd95f59a8"
+      .subscribe(data => {
+        for (let v of data.slice(1)) { // remove headers
+          chartdata_loss_labels.push(v[1]); // epoch
+          chartdata_loss_TEST.data.push(v[2]); //values
+        }
+      });
+    this.aiModelService
+      .getTensorboardlogsCSV("6682f3d43149955bd95f59ab", "train", "loss")
+      .subscribe(data => {
+        for (let v of data.slice(1)) { // remove headers
+          chartdata_loss_TRAIN.data.push(v[2]); //values
+        }
       });
   }
+
+  accuChart() {
+    let chartdata_accu_labels: string[] = [];
+    let chartdata_accu_TEST = { label: 'test', data: [] };
+    let chartdata_accu_TRAIN = { label: 'train', data: [] };
+
+    this.chartdata_accu = {
+      labels: chartdata_accu_labels,
+      datasets: [chartdata_accu_TEST, chartdata_accu_TRAIN]
+    };
+
+    this.aiModelService
+      .getTensorboardlogsCSV("6682f3d43149955bd95f59ab", "test", "accuracy") // todo: use `this.tensorboardLogs.id`, "6682c9e43149955bd95f59a8"
+      .subscribe(data => {
+        for (let v of data.slice(1)) { // remove headers
+          chartdata_accu_labels.push(v[1]); // epoch
+          chartdata_accu_TEST.data.push(v[2]); //values
+        }
+      });
+    this.aiModelService
+      .getTensorboardlogsCSV("6682f3d43149955bd95f59ab", "train", "accuracy")
+      .subscribe(data => {
+        for (let v of data.slice(1)) { // remove headers
+          chartdata_accu_TRAIN.data.push(v[2]); //values
+        }
+      });
+  }
+
+  /***** AiModel Methods *****/
 
   makePublicAiModel(): void {
     this.aiModelService
       .makePublicAiModel(this.aiModel)
       .subscribe(aiModel => { this.aiModel = aiModel; });
-  }
-
-  canEdit(): boolean {
-    return this.keycloakService.canEdit(this.aiModel);
   }
 
   openDownload(url: string) {
@@ -119,16 +170,36 @@ export class AiModelDetailComponent implements OnInit {
       .subscribe(downloadUrl => window.location.href = downloadUrl['url']);
   }
 
-  /***** AI Model Card Methods *****/
+  displayAiModelCardModal(aiModelId: string) {
+    // get
+    this.getHttpFromCurrentFramework(aiModelId)
+      .subscribe(async (response: HttpResponse<Blob>) => {
+        let content: string = await response.body['text']();
+        // display
+        this.dialogService.open(AiModelCardDetailComponent, {
+          header: 'Preview',
+          position: 'top',
+          width: '50vw',
+          data: {
+            aiModelId: aiModelId,
+            content: content
+          },
+          breakpoints: {
+            '960px': '75vw',
+            '640px': '90vw'
+          }
+        });
+      });
+  }
 
   getHttpFromCurrentFramework(id: string): Observable<HttpResponse<Blob>> {
     // get current framework
     var framework = (<HTMLInputElement>document.getElementById("frameworks")).value;
     // choose
     switch (framework) {
-      case this.aiFramework[0]: return this.aiModelService.exportTensorflow(id);
-      case this.aiFramework[1]: return this.aiModelService.exportHuggingface(id);
-      case this.aiFramework[2]: return this.aiModelService.exportBioimageio(id);
+      case "TENSORFLOW": return this.aiModelCardService.exportTensorflow(id);
+      case "HUGGINGFACE": return this.aiModelCardService.exportHuggingface(id);
+      case "BIOIMAGEIO": return this.aiModelCardService.exportBioimageio(id);
       default:
         alert("ERROR: you can't take any action on this framework.");
         return null;
@@ -147,23 +218,19 @@ export class AiModelDetailComponent implements OnInit {
       });
   }
 
-  previewAiModelCard(id: string, showModal: NgTemplateOutlet): void {
-    // get content
-    this.getHttpFromCurrentFramework(id)
-      .subscribe(async (response: HttpResponse<Blob>) => {
-        this.modalContent = await response.body['text']();
-      });
-    // show
-    this.modalService.open(showModal, { 'size': 'lg' });
-  }
-
   updateAiModelCard(value: string, field: string): void {
     if (this.aiModelCard.hasOwnProperty(field)) {
       this.aiModelCard[field] = value ? value : "null";
-      this.aiModelService.updateAiModelCard(this.aiModelCard).subscribe(mc => this.aiModelCard = mc);
+      this.aiModelCardService.updateAiModelCard(this.aiModelCard).subscribe(mc => this.aiModelCard = mc);
     } else {
       alert("ALERT: can't modify this field.");
     }
+  }
+
+  /***** Keycloak Methods *****/
+
+  canEdit(): boolean {
+    return this.keycloakService.canEdit(this.aiModel);
   }
 
 }

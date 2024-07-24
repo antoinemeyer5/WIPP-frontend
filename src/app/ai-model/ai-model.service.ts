@@ -6,7 +6,6 @@ import { map } from 'rxjs/operators';
 import { PaginatedAiModels, TensorboardLogs, AiModel } from './ai-model';
 import { Job } from '../job/job';
 import { DataService } from '../data-service';
-import { AiModelCard } from './ai-model-card';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +13,6 @@ import { AiModelCard } from './ai-model-card';
 export class AiModelService implements DataService<AiModel, PaginatedAiModels> {
 
   private AiModelUrl = environment.apiRootUrl + '/aiModels';
-  private AiModelCardUrl = environment.apiRootUrl + '/aiModelCards';
   private tensorboardLogsUrl = environment.apiRootUrl + '/tensorboardLogs';
 
   constructor(private http: HttpClient) { }
@@ -78,36 +76,6 @@ export class AiModelService implements DataService<AiModel, PaginatedAiModels> {
 
   startDownload(url: string): Observable<string> {
     return this.http.get<string>(url);
-  }
-
-  /***** AI Model Card Services *****/
-
-  getAiModelCard(aiModelId: string): Observable<AiModelCard> {
-    const httpOptions = {
-      headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
-      params: new HttpParams().set('aiModelId', aiModelId)
-    };
-    return this.http.get<AiModelCard>(`${this.AiModelCardUrl}/search/findModelCardByAiModelId`, httpOptions);
-  }
-
-  exportTensorflow(id: string): Observable<HttpResponse<Blob>> {
-    return this.http.get(`${this.AiModelCardUrl}/${id}/export/tensorflow`, { observe: 'response', responseType: 'blob' });
-  }
-
-  exportHuggingface(id: string): Observable<HttpResponse<Blob>> {
-    return this.http.get(`${this.AiModelCardUrl}/${id}/export/huggingface`, { observe: 'response', responseType: 'blob' });
-  }
-
-  exportBioimageio(id: string): Observable<HttpResponse<Blob>> {
-    return this.http.get(`${this.AiModelCardUrl}/${id}/export/bioimageio`, { observe: 'response', responseType: 'blob' });
-  }
-
-  updateAiModelCard(aiModelCard: AiModelCard): Observable<AiModelCard> {
-    const httpOptions = {
-      headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
-      params: {}
-    };
-    return this.http.patch<AiModelCard>(`${this.AiModelCardUrl}/${aiModelCard['id']}`, aiModelCard, httpOptions);
   }
 
   /***** TensorBoard Services *****/

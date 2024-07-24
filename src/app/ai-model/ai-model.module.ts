@@ -11,6 +11,7 @@ import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { FieldsetModule } from 'primeng/fieldset';
 import { TooltipModule } from 'primeng/tooltip';
+import { ChartModule } from 'primeng/chart';
 
 @NgModule({
   imports: [
@@ -21,7 +22,8 @@ import { TooltipModule } from 'primeng/tooltip';
     ButtonModule,
     InputTextModule,
     FieldsetModule,
-    TooltipModule
+    TooltipModule,
+    ChartModule
   ],
   declarations: [
     AiModelListComponent,

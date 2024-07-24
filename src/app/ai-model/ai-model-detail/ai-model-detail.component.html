@@ -1,64 +1,88 @@
-<h3 class="wipp-title">AI Model: {{aiModel.name}}</h3>
+<h1 class="wipp-title">
+  AI Model: {{aiModel.name}}
+  <div style="float: right;">
+    <p-button icon="pi pi-download"
+              (click)="openDownload(aiModel._links.download.href)"
+              pTooltip="Download as zip"
+              tooltipPosition="left"
+              [outlined]="true">
+    </p-button>
+    <p-button icon="pi pi-globe" *ngIf="!aiModel.publiclyShared && canEdit()" type="button"
+              pTooltip="Make collection public"
+              tooltipPosition="left"
+              [outlined]="true"
+              (click)="makePublicAiModel();">
+    </p-button>
+  </div>
+</h1>
 
-<div>
-
-  <h4>AI Model Details</h4>
-  <div class="row">
-    <div class="col-md-9">
-      <dl class="row">
-
-        <dt class="col-md-4">Framework</dt>
-        <dd class="col-md-8">{{aiModel.framework}}</dd>
-
-        <dt class="col-md-4">Name</dt>
-        <dd class="col-md-8">{{aiModel.name}}</dd>
-
-        <dt class="col-md-4">Creation Date</dt>
-        <dd class="col-md-8">{{aiModel.creationDate | date}}</dd>
-
-        <dt class="col-md-4">Owner</dt>
-        <dd class="col-md-8">{{aiModel.owner}}</dd>
-
-        <dt class="col-md-4">Training job</dt>
-        <dd class="col-md-8">
-          <a *ngIf="job; else not_applicable" (click)="displayJobModal(job.id)" class="wipp-link" ngbTooltip="Show Job"
-            placement="left">
+<p-fieldset legend="AI Model Details" [toggleable]="true">
+  <div class="grid nested-grid">
+    <div class="col-12 md:col-6">
+      <div class="grid">
+        <div class="col-3 py-1 font-semibold">
+          Name:
+        </div>
+        <div class="col-9 py-1">
+          {{aiModel.name}}
+        </div>
+        <div class="col-3 py-1 font-semibold">
+          Framework:
+        </div>
+        <div class="col-9 py-1">
+          {{aiModel.framework}}
+        </div>
+        <div class="col-3 py-1 font-semibold">
+          Creation date:
+        </div>
+        <div class="col-9 py-1">
+          {{aiModel.creationDate | date}}
+        </div>
+        <div class="col-3 py-1 font-semibold">
+          Owner:
+        </div>
+        <div class="col-9 py-1">
+          {{aiModel.owner}}
+        </div>
+        <div class="col-3 py-1 font-semibold">
+          Source:
+        </div>
+        <div class="col-9 py-1">
+          <a *ngIf="job; else not_applicable" (click)="displayJobModal(job.id)"
+             class="wipp-link"
+             pTooltip="Show Job"
+             placement="left">
             {{job.name}}
           </a>
-        </dd>
-
-        <dt class="col-md-4">Tensorboard Logs</dt>
-        <dd class="col-md-8">
-          <a *ngIf="tensorboardLogs; else not_applicable" href={{tensorboardLink}}
-            target="_blank">{{tensorboardLogs.name}}
+        </div>
+        <div class="col-3 py-1 font-semibold">
+          Tensorboard Logs:
+        </div>
+        <div class="col-9 py-1">
+          <a *ngIf="tensorboardLogs; else not_applicable"
+             href={{tensorboardLink}}
+             target="_blank">{{tensorboardLogs.name}}
           </a>
-        </dd>
-
-        <dt class="col-md-4">Visibility</dt>
-        <dd class="col-md-8">
+        </div>
+        <div class="col-3 py-1 font-semibold">
+          Visibility:
+        </div>
+        <div class="col-9 py-1">
           <div *ngIf="aiModel.publiclyShared; else privateData">Public</div>
-        </dd>
-        <ng-template #privateData>Private</ng-template>
-      </dl>
-    </div>
-
-    <div class="col-md-3 text-right">
-      <button (click)="openDownload(aiModel._links.download.href)" ngbTooltip="Download as zip" placement="left"
-        class="btn btn-light">
-        <span aria-hidden="true"><i class="fa fa-download"></i></span>
-      </button>
-      <button *ngIf="!aiModel.publiclyShared && canEdit()" type="button" ngbTooltip="Make AI model public"
-        placement="left" class="btn btn-light" (click)="makePublicaiModel();">
-        <span class="fa fa-users" aria-hidden="true"></span>
-      </button>
+          <ng-template #privateData>Private</ng-template>
+        </div>
+      </div>
     </div>
   </div>
-  <br><br>
+</p-fieldset>
 
-  <h4>Tensorboard Logs Plots</h4>
+<ng-template #not_applicable>N/A</ng-template>
 
-  <div class="row" *ngIf="!tensorboardPlotable">
-    <div class="col-md-9">
+<!-- AI MODEL CARD addings below -->
+
+<p-fieldset legend="Tensorboard Logs Charts" [toggleable]="true" [collapsed]="true">
+  <div class="grid nested-grid" *ngIf="!tensorboardPlotable">
+    <div class="col-12 md:col-6">
       <p>This AI model did not produce a tensorboard.</p>
       <p>There are therefore no tensorboard results to display.</p>
       <p>If you wish to obtain tensorboard results, please modify the plugin manifest used and restart your training.
@@ -66,47 +90,80 @@
     </div>
   </div>
 
-  <div class="row" *ngIf="tensorboardPlotable">
-    <div class="col-md-9">
+  <div class="grid nested-grid" *ngIf="tensorboardPlotable">
+    <div class="col-12 md:col-6">
       <p>This AI model did produce a tensorboard.</p>
-      <dl class="row">
-        <dt class="col-md-4">Name</dt>
-        <dd class="col-md-8">
+      <div class="grid">
+        <div class="col-3 py-1 font-semibold">
+          Name:
+        </div>
+        <div class="col-9 py-1">
           <a *ngIf="tensorboardLogs; else not_applicable" href={{tensorboardLink}}
             target="_blank">{{tensorboardLogs.name}}
           </a>
-        </dd>
+        </div>
+        <div class="col-3 py-1 font-semibold">
+          Owner:
+        </div>
+        <div class="col-9 py-1">
+          {{tensorboardLogs.owner}}
+        </div>
+        <div class="col-3 py-1 font-semibold">
+          Date:
+        </div>
+        <div class="col-9 py-1">
+          {{tensorboardLogs.creationDate}}
+        </div>
 
-        <dt class="col-md-4">Owner</dt>
-        <dd class="col-md-8">{{tensorboardLogs.owner}}</dd>
+        <div class="col-3 py-1 font-semibold">Accuracy chart:</div>
+        <p-chart class="col-9 py-1" type="line" [data]="chartdata_accu"></p-chart>
 
-        <dt class="col-md-4">Date</dt>
-        <dd class="col-md-8">{{tensorboardLogs.creationDate}}</dd>
-
-        <dt class="col-md-4">Plot Train</dt>
-        <dd class="col-md-8" style="color: red;">TODO</dd>
-
-        <dt class="col-md-4">Plot Test</dt>
-        <dd class="col-md-8" style="color: red;">TODO</dd>
-      </dl>
+        <div class="col-3 py-1 font-semibold">Loss chart:</div>  
+        <p-chart class="col-9 py-1" type="line" [data]="chartdata_loss"></p-chart>
+      </div>
     </div>
   </div>
-  <br><br>
+</p-fieldset>
 
-  <h4>AI Model Card</h4>
-  <div class="row">
-    <div class="col-md-9">
-      <dl class="row">
-        <dt class="col-md-4">Version</dt>
-        <dd class="col-md-8 pb-4">{{aiModelCard.version}}</dd>
+<p-fieldset legend="AI Model Card" [toggleable]="true">
+  <div style="float: right;">
+    <!--
+    TODO: p-dropdown
+    -->
+    <select name="frameworks" id="frameworks">
+      <option *ngFor="let framework of aiFramework" value="{{framework}}">{{ framework }}</option>
+    </select>
+    <p-button icon="pi pi-eye"
+              (click)="displayAiModelCardModal(aiModelCard.id);"
+              pTooltip="Display AI Model Card for a specific platform"
+              tooltipPosition="left"
+              [outlined]="true">
+    </p-button>
+    <p-button icon="pi pi-download"
+              (click)="exportAiModelCard(aiModelCard.id);"
+              pTooltip="Download AI Model Card"
+              tooltipPosition="left"
+              [outlined]="true">
+    </p-button>
+  </div>
+  <div class="grid nested-grid">
+    <div class="col-12 md:col-6">
+      <div class="grid">
+        <div class="col-3 py-1 font-semibold">Version:</div>
+        <div class="col-9 py-1">{{aiModelCard.version}}</div>
 
-        <dt class="col-md-4">Name</dt>
-        <dd class="col-md-8">{{aiModelCard.name}}</dd>
-        <dt class="col-md-4">Date</dt>
-        <dd class="col-md-8">{{aiModelCard.date}}</dd>
-        <dt class="col-md-4">Framework</dt>
-        <dd class="col-md-8 pb-4">{{aiModelCard.framework || "N/A"}}</dd>
+        <div class="col-3 py-1 font-semibold">Name:</div>
+        <div class="col-9 py-1">{{aiModelCard.name}}</div>
 
+        <div class="col-3 py-1 font-semibold">Date:</div>
+        <div class="col-9 py-1">{{aiModelCard.date}}</div>
+
+        <div class="col-3 py-1 font-semibold">Framework:</div>
+        <div class="col-9 py-1">{{aiModelCard.framework || "N/A"}}</div>
+
+        <div class="col-3 py-1 font-semibold">Training Data:</div>
+        <div class="col-9 py-1" style="color: red;">wip new frontend</div>
+        <!--
         <dt class="col-md-4">Training Data</dt>
         <dd class="col-md-8 pb-4" >
           <details>
@@ -114,39 +171,51 @@
             <div *ngFor="let item of aiModelCard.trainingData | keyvalue"> {{item.key}} -> {{item.value}}</div>
           </details>
         </dd>
+        -->
 
-        <dt class="col-md-4">Author</dt>
-        <dd class="col-md-8">{{aiModelCard.author ? aiModelCard.author : 'null'}}</dd>
-        <dt class="col-md-4">Description</dt>
-        <dd class="col-md-8">{{aiModelCard.description}}</dd>
+        <div class="col-3 py-1 font-semibold">Author:</div>
+        <div class="col-9 py-1">{{aiModelCard.author || "null"}}</div>
+
+        <div class="col-3 py-1 font-semibold">Description:</div>
+        <div class="col-9 py-1">{{aiModelCard.description}}</div>
+
+        <div class="col-3 py-1 font-semibold">Citation:</div>
+        <div class="col-9 py-1" style="color: red;">wip new frontend</div>
+        <!--
         <dt class="col-md-4">Citation</dt>
         <dd class="col-md-8">
-          <input type="text" value="{{ aiModelCard.citation ? aiModelCard.citation : 'null' }}"
-            (change)="updateAiModelCard($event.target.value, 'citation')">
+          <input type="text"
+            value="{{ aiModelCard.citation ? aiModelCard.citation : 'null' }}"
+            (change)="updateAiModelCard($event.target.value, 'citation')"
+          >
         </dd>
-        <dt class="col-md-4">Operation Type</dt>
-        <dd class="col-md-8">{{aiModelCard.operationType || "N/A"}}</dd>
-        <dt class="col-md-4">Architecture</dt>
-        <dd class="col-md-8 pb-4">{{aiModelCard.architecture || "N/A"}}</dd>
+        -->
 
-        <dt class="col-md-4" *ngIf="tensorboardPlotable">Training</dt>
-        <dd class="col-md-8" *ngIf="tensorboardPlotable">
+        <div class="col-3 py-1 font-semibold">Operation Type:</div>
+        <div class="col-9 py-1">{{aiModelCard.operationType || "N/A"}}</div>
+
+        <div class="col-3 py-1 font-semibold">Architecture:</div>
+        <div class="col-9 py-1">{{aiModelCard.architecture || "N/A"}}</div>
+
+        <div class="col-3 py-1 font-semibold" *ngIf="tensorboardPlotable">Training:</div>
+        <div class="col-9 py-1" *ngIf="tensorboardPlotable">
           <details>
             <summary>Details</summary>
             Compute in {{ aiModelCard.training["time"] }} seconds with {{ aiModelCard.training["epochs"] }} epochs <br>
             Achieves maxAccuracy of {{ aiModelCard.training["maxAccuracy"] }} and minLoss of {{ aiModelCard.training["minLoss"] }}
           </details>
-        </dd>
-        <dt class="col-md-4" *ngIf="tensorboardPlotable">Testing</dt>
-        <dd class="col-md-8 pb-4" *ngIf="tensorboardPlotable">
+        </div>
+
+        <div class="col-3 py-1 font-semibold" *ngIf="tensorboardPlotable">Testing:</div>
+        <div class="col-9 py-1" *ngIf="tensorboardPlotable">
           <details>
             <summary>Details</summary>
             Compute in {{ aiModelCard.testing["time"] }} seconds with {{ aiModelCard.testing["epochs"] }} epochs <br>
             Achieves maxAccuracy of {{ aiModelCard.testing["maxAccuracy"] }} and minLoss of {{ aiModelCard.testing["minLoss"] }}
           </details>
-        </dd>
-        
-        <dt class="col-md-4">License</dt>
+        </div>
+
+        <div class="col-3 py-1 font-semibold" *ngIf="tensorboardPlotable">License:</div>
         <select class="col-md-2" (change)="updateAiModelCard($event.target.value, 'license')">
           <option id="Unlicense" value="Unlicense">Unlicense</option>
           <option id="Apache-2.0" value="Apache-2.0">Apache-2.0</option>
@@ -154,45 +223,8 @@
           <option id="MPL-2.0" value="MPL-2.0">MPL-2.0</option>
           <option id="BSD-3-Clause" value="BSD-3-Clause">BSD-3-Clause</option>
         </select>
-        <dd class="col-md-6"></dd>
 
-      </dl>
-    </div>
-
-    <div class="col-md-3 text-right">
-      <select name="frameworks" id="frameworks">
-        <option *ngFor="let framework of aiFramework" value="{{framework}}">{{ framework }}</option>
-      </select>
-
-      <button type="button" title="Display AI Model Card for a specific platform" class="btn btn-light"
-        (click)="previewAiModelCard(aiModelCard.id, showAiModelCardModal)">
-        <i class="fa fa-eye"></i>
-      </button>
-
-      <button type="button" title="Download AI Model Card" class="btn btn-light" (click)="exportAiModelCard(aiModelCard.id)">
-        <i class="fa fa-download"></i>
-      </button>
-
+      </div>
     </div>
   </div>
-
-</div>
-
-<ng-template #showAiModelCardModal let-c="close" let-d="dismiss" class="">
-  <div class="modal-header">
-    <h4 class="modal-title">AI Modal Card</h4>
-    <button type="button" class="close" aria-label="Close" (click)="d()">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-  <div class="modal-body">
-    <div>
-      <pre>{{ modalContent }}</pre>
-    </div>
-  </div>
-  <div class="modal-footer">
-    <button type="button" class="btn btn-outline-dark" ngbAutofocus (click)="d()">
-      Close
-    </button>
-  </div>
-</ng-template>
+</p-fieldset>
