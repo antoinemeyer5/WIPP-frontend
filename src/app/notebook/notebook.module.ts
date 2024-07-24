@@ -1,30 +1,28 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatInputModule } from '@angular/material/input';
-import { MatPaginatorModule } from '@angular/material/paginator';
-import { MatSortModule } from '@angular/material/sort';
-import { MatTableModule } from '@angular/material/table';
-import {FormsModule} from '@angular/forms';
 import {NotebookRoutingModule} from './notebook-routing.module';
 import { NotebookListComponent } from './notebook-list/notebook-list.component';
 import { NotebookDetailComponent } from './notebook-detail/notebook-detail.component';
 import {NotebookTemplateComponent} from './notebook-template/notebook-template.component';
-import {NgxSpinnerModule} from 'ngx-spinner';
+import {FieldsetModule} from 'primeng/fieldset';
+import {TableModule} from 'primeng/table';
+import {InputTextModule} from 'primeng/inputtext';
+import {InputIconModule} from 'primeng/inputicon';
+import {IconFieldModule} from 'primeng/iconfield';
+import {SkeletonModule} from 'primeng/skeleton';
+import {ToastModule} from 'primeng/toast';
 
 @NgModule({
   imports: [
     CommonModule,
-    NgbModule,
     NotebookRoutingModule,
-    MatPaginatorModule,
-    MatTableModule,
-    MatSortModule,
-    MatInputModule,
-    FormsModule,
-    MatCheckboxModule,
-    NgxSpinnerModule
+    FieldsetModule,
+    TableModule,
+    InputTextModule,
+    IconFieldModule,
+    InputIconModule,
+    SkeletonModule,
+    ToastModule
   ],
   declarations: [
     NotebookListComponent,

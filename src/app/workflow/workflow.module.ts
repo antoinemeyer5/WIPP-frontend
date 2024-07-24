@@ -19,22 +19,42 @@ import {DynamicComponent} from '../dynamic-content/dynamic.component';
 import {DynamicContentComponent} from '../dynamic-content/dynamic-content.component';
 import {DynamicContentModule} from '../dynamic-content/dynamic-content.module';
 import {NgxSpinnerModule} from 'ngx-spinner';
+import {TableModule} from 'primeng/table';
+import {ToastModule} from 'primeng/toast';
+import {ButtonModule} from 'primeng/button';
+import {InputTextModule} from 'primeng/inputtext';
+import {TagModule} from 'primeng/tag';
+import {FieldsetModule} from 'primeng/fieldset';
+import {TooltipModule} from 'primeng/tooltip';
+import {MessagesModule} from 'primeng/messages';
+import {DropdownModule} from 'primeng/dropdown';
+import {DialogModule} from 'primeng/dialog';
 
 @NgModule({
     imports: [
-        CommonModule,
-        WorkflowRoutingModule,
-        MatPaginatorModule,
-        MatSortModule,
-        MatTableModule,
-        MatInputModule,
-        FormsModule,
-        ReactiveFormsModule,
-        DynamicContentModule,
-        NgbModule,
-        SchemaFormModule.forRoot(),
-        NgxGraphModule,
-        NgxSpinnerModule
+      CommonModule,
+      WorkflowRoutingModule,
+      MatPaginatorModule,
+      MatSortModule,
+      MatTableModule,
+      MatInputModule,
+      FormsModule,
+      ReactiveFormsModule,
+      DynamicContentModule,
+      NgbModule,
+      SchemaFormModule.forRoot(),
+      NgxGraphModule,
+      NgxSpinnerModule,
+      TableModule,
+      ToastModule,
+      ButtonModule,
+      InputTextModule,
+      TagModule,
+      FieldsetModule,
+      TooltipModule,
+      MessagesModule,
+      DropdownModule,
+      DialogModule
     ],
     declarations: [
         WorkflowListComponent,

@@ -1,90 +1,108 @@
-<h3 class="wipp-title">Stitching Vector Detail</h3>
+<h1 class="wipp-title">
+  {{stitchingVector.name}}
+  <div style="display: inline-block;">
+    <p-button icon="pi pi-globe" *ngIf="!stitchingVector.publiclyShared && canEdit()" type="button"
+              pTooltip="Make stitching vector public"
+              tooltipPosition="left"
+              [outlined]="true"
+              (click)="makePublicStitchingVector();">
+    </p-button>
+  </div>
+</h1>
 
-<div>
-  <div class="row">
-    <div class="col-md-9">
-      <div class="row">
-        <div class="col-md-12"><b>Name: </b> {{stitchingVector.name}}</div>
-      </div>
-
-      <div class="row">
-        <div class="col-md-12"><b>Creation Date: </b> {{stitchingVector.creationDate | date}}</div>
-      </div>
-
-      <div class="row">
-        <div class="col-md-12"><b>Owner: </b> {{stitchingVector.owner}}</div>
-      </div>
-
-      <div class="row" *ngIf="stitchingVector._links && stitchingVector._links.statistics">
-        <div class="col-md-12">
-          <b>Statistics file: </b>
-          <a (click)="openDownload(stitchingVector._links.statistics.href)"
-             ngbTooltip="Download statistics file"
+<p-fieldset legend="Details" [toggleable]="true">
+  <div class="grid nested-grid">
+    <div class="col-12 md:col-6">
+      <div class="grid">
+        <div class="col-3 py-1 font-semibold">
+          Name:
+        </div>
+        <div class="col-9 py-1">
+          {{stitchingVector.name}}
+        </div>
+        <div class="col-3 py-1 font-semibold">
+          Creation date:
+        </div>
+        <div class="col-9 py-1">
+          {{stitchingVector.creationDate | date}}
+        </div>
+        <div class="col-3 py-1 font-semibold">
+          Owner:
+        </div>
+        <div class="col-9 py-1">
+          {{stitchingVector.owner}}
+        </div>
+        <div class="col-3 py-1 font-semibold">
+          Source:
+        </div>
+        <div class="col-9 py-1">
+          <a *ngIf="job; else jobNonAvailable" (click)="displayJobModal(job.id)"
+             class="wipp-link"
+             pTooltip="Show Job"
+             placement="left">
+            {{job.name}}
+          </a>
+        </div>
+        <div class="col-3 py-1 font-semibold">
+          Visibility:
+        </div>
+        <div class="col-9 py-1">
+          <div *ngIf="stitchingVector.publiclyShared; else privateData">Public</div>
+          <ng-template #privateData>Private</ng-template>
+        </div>
+        <div class="col-3 py-1 font-semibold">
+          Statistics file:
+        </div>
+        <div class="col-9 py-1">
+          <a *ngIf="stitchingVector._links && stitchingVector._links.statistics; else nonApplicable"
+             (click)="openDownload(stitchingVector._links.statistics.href)"
+             class="wipp-link"
+             pTooltip="Download statistics file"
              placement="left">
             Download
           </a>
         </div>
       </div>
+    </div>
 
-      <div class="row" *ngIf="job">
-        <div class="col-md-5">
-          <b> Stitching job: </b>
-          <a (click)="displayJobModal(job.id)"
-             class="wipp-link"
-             ngbTooltip="Show Job"
-             placement="left">
-            {{job.name}}
-          </a>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-3 text-right">
-      <button *ngIf="!stitchingVector.publiclyShared && canEdit()" type="button"
-              ngbTooltip="Make stitching vector public"
-              placement="left"
-              class="btn btn-light" (click)="makePublicStitchingVector();">
-            <span class="fa fa-users"
-                  aria-hidden="true"></span>
-      </button>
-    </div>
   </div>
+</p-fieldset>
+
+<h2 style="margin-top: 2%">Stitching Vector files</h2>
+<div class="card">
+  <p-table [value]="timeSlices" [lazy]="true" *ngIf="stitchingVector.id"
+           (onLazyLoad)="getTimeSlices($event)"
+           dataKey="id"
+           [tableStyle]="{ 'min-width': '75rem' }"
+           [paginator]="true"
+           [rows]="10"
+           [rowsPerPageOptions]="[10, 25, 50]"
+           [totalRecords]="resultsLength">
+    <ng-template pTemplate="header">
+      <tr>
+        <th pSortableColumn="sliceNumber">
+          Slice Number <p-sortIcon field="sliceNumber" />
+        </th>
+        <th pSortableColumn="errorMessage">
+          Message <p-sortIcon field="errorMessage" />
+        </th>
+        <th>Actions</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-sv>
+      <tr>
+        <td>{{ sv.sliceNumber }}</td>
+        <td>{{ sv.errorMessage }}</td>
+        <td>
+          <p-button icon="pi pi-download" [outlined]="true" label="Download" size="small"
+                    class="flex-auto md:flex-initial white-space-nowrap"
+                    severity="secondary"
+                    (click)="openStitchingVectorDownload(sv.sliceNumber);"/>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
 </div>
 
-<table mat-table [dataSource]="timeSlices">
-
-  # Column
-  <ng-container matColumnDef="sliceNumber">
-    <th mat-header-cell *matHeaderCellDef> Slice Number</th>
-    <td mat-cell *matCellDef="let row">
-      {{row.sliceNumber}}
-    </td>
-  </ng-container>
-
-  # Column
-  <ng-container matColumnDef="errorMessage">
-    <th mat-header-cell *matHeaderCellDef> Error Message</th>
-    <td mat-cell *matCellDef="let row">
-      {{row.errorMessage}}
-    </td>
-  </ng-container>
-
-  # Column
-  <ng-container matColumnDef="actions">
-    <th mat-header-cell *matHeaderCellDef> Actions</th>
-    <td mat-cell *matCellDef="let row">
-      <button (click)="openDownload(row._links.globalPositions.href)"
-         ngbTooltip="Download"
-         placement="left"
-         class="btn btn-light">
-        <span
-          aria-hidden="true"><i class="fa fa-download"></i>
-        </span>
-      </button>
-    </td>
-  </ng-container>
-
-  <tr mat-header-row *matHeaderRowDef="displayedColumnsTimeSlices"></tr>
-  <tr mat-row *matRowDef="let row; columns: displayedColumnsTimeSlices;"></tr>
-</table>
-
-<mat-paginator [length]="resultsLength" [pageSize]="pageSize" #timeSlicesPaginator></mat-paginator>
+<ng-template #jobNonAvailable>Uploaded</ng-template>
+<ng-template #nonApplicable>N/A</ng-template>

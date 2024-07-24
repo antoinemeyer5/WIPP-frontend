@@ -1,15 +1,18 @@
 /* You can add global styles to this file, and also import other style files */
-@import '~bootstrap/dist/css/bootstrap.css';
+/*@import '~bootstrap/dist/css/bootstrap.css';*/
 @import '~@fortawesome/fontawesome-free/css/all.min.css';
 @import '@angular/material/prebuilt-themes/indigo-pink.css';
 @import '~@recogito/annotorious-openseadragon/dist/annotorious.min.css';
 @import "~primeicons/primeicons.css";
-@import "~primeng/resources/themes/bootstrap4-light-blue/theme.css";
+@import "~primeng/resources/themes/aura-light-blue/theme.css";
 @import "~primeng/resources/primeng.min.css";
+@import "~primeflex/primeflex.css";
 
 
 html, body { height: 100%; }
-body { margin: 0; font-family: 'Roboto', sans-serif; }
+body { margin: 0;  background-color: var(--surface-ground); }
+/*body { margin: 0; font-family: 'Roboto', sans-serif; background-color: var(--surface-ground); }*/
+
 table {
   width: 100%;
 }
@@ -27,6 +30,10 @@ table {
 wippwdzt {
   display: block;
   width: 100%;
+}
+
+.wdzt-container, .wdzt-menu-container, .wdzt-osd-container, .wdzt-toolbar-container{
+  background-color: var(--surface-ground);
 }
 
 .wipp-title {

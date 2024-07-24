@@ -11,9 +11,15 @@ import { MatTableModule } from '@angular/material/table';
 import {GenericDataRoutingModule} from './generic-data-routing.module';
 import { HttpClientModule } from '@angular/common/http';
 import { GenericDataNewComponent } from './generic-data-new/generic-data-new.component';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { NgMathPipesModule } from 'angular-pipes';
+import {NgBytesPipeModule} from 'angular-pipes';
 import { FormsModule } from '@angular/forms';
+import {TableModule} from 'primeng/table';
+import {ToastModule} from 'primeng/toast';
+import {ButtonModule} from 'primeng/button';
+import {InputTextModule} from 'primeng/inputtext';
+import {TooltipModule} from 'primeng/tooltip';
+import {FieldsetModule} from 'primeng/fieldset';
+import {ProgressBarModule} from 'primeng/progressbar';
 
 @NgModule({
   imports: [
@@ -25,9 +31,16 @@ import { FormsModule } from '@angular/forms';
     MatFormFieldModule,
     MatInputModule,
     HttpClientModule,
-    NgbModule,
     FormsModule,
-    NgMathPipesModule
+    NgBytesPipeModule,
+    TableModule,
+    ToastModule,
+    TooltipModule,
+    ButtonModule,
+    FieldsetModule,
+    InputTextModule,
+    ProgressBarModule,
+    InputTextModule
   ],
   declarations: [
     GenericDataListComponent,

@@ -1,16 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import {Job} from '../../job/job';
 import {ActivatedRoute, Router} from '@angular/router';
-import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {JobDetailComponent} from '../../job/job-detail/job-detail.component';
 import {Pyramid} from '../pyramid';
 import {PyramidService} from '../pyramid.service';
 import {KeycloakService} from '../../services/keycloak/keycloak.service';
+import {DialogService} from 'primeng/dynamicdialog';
 
 @Component({
   selector: 'app-pyramid-detail',
   templateUrl: './pyramid-detail.component.html',
-  styleUrls: ['./pyramid-detail.component.css']
+  styleUrls: ['./pyramid-detail.component.css'],
+  providers: [DialogService]
 })
 export class PyramidDetailComponent implements OnInit {
   pyramid: Pyramid = new Pyramid();
@@ -21,7 +22,7 @@ export class PyramidDetailComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private modalService: NgbModal,
+    private dialogService: DialogService,
     private pyramidService: PyramidService,
     private keycloakService: KeycloakService) {
   }
@@ -48,14 +49,18 @@ export class PyramidDetailComponent implements OnInit {
   }
 
   displayJobModal(jobId: string) {
-    const modalRef = this.modalService.open(JobDetailComponent, {'size': 'lg'});
-    modalRef.componentInstance.modalReference = modalRef;
-    (modalRef.componentInstance as JobDetailComponent).jobId = jobId;
-    modalRef.result.then((result) => {
+    this.dialogService.open(JobDetailComponent, {
+      header: 'Job detail',
+      position: 'top',
+      width: '50vw',
+      data: {
+        jobId: jobId
+      },
+      breakpoints: {
+        '960px': '75vw',
+        '640px': '90vw'
       }
-      , (reason) => {
-        console.log('dismissed');
-      });
+    });
   }
 
   makePublicPyramid(): void {
@@ -67,6 +72,10 @@ export class PyramidDetailComponent implements OnInit {
 
   canEdit(): boolean {
     return this.keycloakService.canEdit(this.pyramid);
+  }
+
+  ngOnDestroy() {
+    this.dialogService.dialogComponentRefMap.forEach((dialog) => dialog.destroy());
   }
 
 }

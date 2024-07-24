@@ -1,113 +1,70 @@
-import { Component, NgModule, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
-import { MatTable, MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {StitchingVector} from '../stitching-vector';
-import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {StitchingVectorNewComponent} from '../stitching-vector-new/stitching-vector-new.component';
 import {StitchingVectorService} from '../stitching-vector.service';
-import {catchError, map, switchMap} from 'rxjs/operators';
-import {BehaviorSubject, Observable, of as observableOf} from 'rxjs';
 import {KeycloakService} from '../../services/keycloak/keycloak.service'
+import {DialogService} from 'primeng/dynamicdialog';
+import {MessageService} from 'primeng/api';
 
 @Component({
   selector: 'app-stitching-vector-list',
   templateUrl: './stitching-vector-list.component.html',
-  styleUrls: ['./stitching-vector-list.component.css']
-})
-@NgModule({
-  imports: [MatTableModule, MatTableDataSource, MatTable]
+  styleUrls: ['./stitching-vector-list.component.css'],
+  providers: [DialogService, MessageService]
 })
 export class StitchingVectorListComponent implements OnInit, OnDestroy {
-  displayedColumns: string[] = ['name', 'creationDate', 'numberOfTimeSlices', 'owner', 'publiclyShared'];
-  stitchingVectors: Observable<StitchingVector[]>;
+  stitchingVectors: StitchingVector[];
 
   resultsLength = 0;
   pageSize = 10;
-  pageSizeOptions: number[] = [10, 25, 50, 100];
-  paramsChange: BehaviorSubject<{index: number, size: number, sort: string, filter: string}>;
 
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
   constructor(
     private stitchingVectorService: StitchingVectorService,
-    private modalService: NgbModal,
+    private dialogService: DialogService,
     private keycloakService: KeycloakService
   ) {
-    this.paramsChange = new BehaviorSubject({
-      index: 0,
-      size: this.pageSize,
-      sort: 'creationDate,desc',
-      filter: ''
-    });
-  }
-
-  sortChanged(sort) {
-    // If the user changes the sort order, reset back to the first page.
-    this.paramsChange.next({
-      index: 0, size: this.paramsChange.value.size,
-      sort: sort.active + ',' + sort.direction, filter: this.paramsChange.value.filter
-    });
-  }
-
-  pageChanged(page) {
-    this.paramsChange.next({
-      index: page.pageIndex, size: page.pageSize,
-      sort: this.paramsChange.value.sort, filter: this.paramsChange.value.filter
-    });
-  }
-
-  applyFilterByName(filterValue: string) {
-    // if the user filters by name, reset back to the first page
-    this.paramsChange.next({
-      index: 0, size: this.paramsChange.value.size, sort: this.paramsChange.value.sort, filter: filterValue
-    });
   }
 
   ngOnInit() {
-    this.getStitchingVectors();
+    this.getStitchingVectors(null);
   }
 
-  getStitchingVectors(): void {
-    const paramsObservable = this.paramsChange.asObservable();
-    this.stitchingVectors = paramsObservable.pipe(
-      switchMap((page) => {
-        const params = {
-          pageIndex: page.index,
-          size: page.size,
-          sort: page.sort
-        };
-        if (page.filter) {
-          return this.stitchingVectorService.getByNameContainingIgnoreCase(params, page.filter).pipe(
-            map((paginatedResult) => {
-              this.resultsLength = paginatedResult.page.totalElements;
-              return paginatedResult.data;
-            }),
-            catchError(() => {
-              return observableOf([]);
-            })
-          );
-        }
-        return this.stitchingVectorService.get(params).pipe(
-          map((paginatedResult) => {
-            this.resultsLength = paginatedResult.page.totalElements;
-            return paginatedResult.data;
-          }),
-          catchError(() => {
-            return observableOf([]);
-          })
-        );
-      })
-    );
+  getStitchingVectors(event): void {
+    const sortField = event?.sortOrder == -1 ? 'desc' : 'asc';
+    const pageIndex = event ? event.first / event.rows : 0;
+    const pageSize = event ? event.rows : this.pageSize;
+    const params = {
+      pageIndex: pageIndex,
+      size: pageSize,
+      sort: sortField
+    };
+    if(event?.filters?.global?.value) {
+      this.stitchingVectorService.getByNameContainingIgnoreCase(params, event.filters.global.value).subscribe(result => {
+        this.stitchingVectors = result.data;
+        this.resultsLength = result.page.totalElements;
+      });
+    } else {
+      this.stitchingVectorService.get(params).subscribe(result => {
+        this.stitchingVectors = result.data;
+        this.resultsLength = result.page.totalElements;
+      });
+    }
   }
 
   createNew() {
-    const modalRef = this.modalService.open(StitchingVectorNewComponent, {size: 'lg'});
-    modalRef.componentInstance.modalReference = modalRef;
+    this.dialogService.open(StitchingVectorNewComponent, {
+      header: 'New stitching vector',
+      position: 'top',
+      width: '50vw',
+      breakpoints: {
+        '960px': '75vw',
+        '640px': '90vw'
+      }
+    });
   }
 
   ngOnDestroy() {
-    this.modalService.dismissAll();
+    this.dialogService.dialogComponentRefMap.forEach((dialog) => dialog.destroy());
   }
 
   canCreate() : boolean {

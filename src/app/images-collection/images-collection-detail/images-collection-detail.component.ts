@@ -3,7 +3,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {auditTime, catchError, map, mergeMap, switchMap} from 'rxjs/operators';
 import * as Flow from '@flowjs/flow.js';
 import {NgbModal, NgbModule} from '@ng-bootstrap/ng-bootstrap';
-import {BytesPipe, NgMathPipesModule} from 'angular-pipes';
+import {NgBytesPipeModule} from 'angular-pipes';
 import {ImagesCollectionService} from '../images-collection.service';
 import {ImagesCollection} from '../images-collection';
 import {Image} from '../image';
@@ -18,19 +18,20 @@ import {AppConfigService} from '../../app-config.service';
 import {KeycloakService} from '../../services/keycloak/keycloak.service';
 import {ModalErrorComponent} from '../../modal-error/modal-error.component';
 import {ConfirmDialogService} from '../../confirm-dialog/confirm-dialog.service';
-import {NgxSpinnerService} from 'ngx-spinner';
 import OpenSeadragon from 'openseadragon';
 import {SelectItem} from 'primeng/api';
 import {environment} from '../../../environments/environment';
+import {DialogService} from 'primeng/dynamicdialog';
 
 @Component({
   selector: 'app-images-collection-detail',
   templateUrl: './images-collection-detail.component.html',
-  styleUrls: ['./images-collection-detail.component.css']
+  styleUrls: ['./images-collection-detail.component.css'],
+  providers: [DialogService]
 })
 
 @NgModule({
-  imports: [NgbModule, NgMathPipesModule, BytesPipe]
+  imports: [NgbModule, NgBytesPipeModule]
 })
 export class ImagesCollectionDetailComponent implements OnInit, AfterViewInit {
 
@@ -39,6 +40,7 @@ export class ImagesCollectionDetailComponent implements OnInit, AfterViewInit {
   images: Observable<Image[]>;
   imagesTest: Image[];
   metadataFiles: Observable<MetadataFile[]>;
+  metadataFiles2: MetadataFile[];
   sourceJob: Job = null;
   showNotes = true;
   editNotes = false;
@@ -46,6 +48,8 @@ export class ImagesCollectionDetailComponent implements OnInit, AfterViewInit {
 
   displayedColumnsImages: string[] = ['index', 'thumbnail', 'fileName', 'fileSize', 'actions'];
   displayedColumnsMetadata: string[] = ['index', 'fileName', 'fileSize', 'actions'];
+
+  layout: string = 'grid';
 
   sortOptions: SelectItem[];
   sortField: string;
@@ -74,6 +78,9 @@ export class ImagesCollectionDetailComponent implements OnInit, AfterViewInit {
   sourceCatalogLink = '';
 
   iipRootUrl: string = environment.iipRootUrl;
+  dzvVisible: boolean = false;
+  selectedImage: Image = undefined;
+  osdViewer: OpenSeadragon.Viewer | undefined;
 
   @ViewChild('browseBtn') browseBtn: ElementRef;
   @ViewChild('browseDirBtn') browseDirBtn: ElementRef;
@@ -90,11 +97,11 @@ export class ImagesCollectionDetailComponent implements OnInit, AfterViewInit {
     private router: Router,
     private elem: ElementRef,
     private modalService: NgbModal,
+    private dialogService: DialogService,
     private imagesCollectionService: ImagesCollectionService,
     private appConfigService: AppConfigService,
     private keycloakService: KeycloakService,
     private confirmDialogService: ConfirmDialogService,
-    private spinner: NgxSpinnerService,
     private ngZone: NgZone
     ) {
     this.imagesParamsChange = new BehaviorSubject({
@@ -231,12 +238,16 @@ export class ImagesCollectionDetailComponent implements OnInit, AfterViewInit {
         this.getMetadataFiles();
         const params = {
           pageIndex: 0,
-          size: 12,
+          size: 10,
           sort: "fileName,asc"
         };
         this.imagesCollectionService.getImages(this.imagesCollection, params).subscribe(val => {
           this.resultsLengthImages = val.page.totalElements;
           this.imagesTest = val.data;
+        });
+        this.imagesCollectionService.getMetadataFiles(this.imagesCollection, params).subscribe(val => {
+          this.resultsLengthMetadataFiles = val.page.totalElements;
+          this.metadataFiles2 = val.data;
         });
         if (this.imagesCollection.numberImportingImages !== 0) {
           this.$throttleRefresh.next();
@@ -284,6 +295,7 @@ export class ImagesCollectionDetailComponent implements OnInit, AfterViewInit {
         return this.imagesCollectionService.getMetadataFiles(this.imagesCollection, metadataParams).pipe(
           map((paginatedResult) => {
             this.resultsLengthMetadataFiles = paginatedResult.page.totalElements;
+            this.metadataFiles2 = paginatedResult.data;
             return paginatedResult.data;
           }),
           catchError(() => {
@@ -481,14 +493,26 @@ export class ImagesCollectionDetailComponent implements OnInit, AfterViewInit {
   }
 
   displayJobModal(jobId: string) {
-    const modalRef = this.modalService.open(JobDetailComponent, {size: 'lg', backdrop: 'static'});
-    modalRef.componentInstance.modalReference = modalRef;
-    (modalRef.componentInstance as JobDetailComponent).jobId = jobId;
-    modalRef.result.then((result) => {
+    this.dialogService.open(JobDetailComponent, {
+      header: 'Job detail',
+      position: 'top',
+      width: '50vw',
+      data: {
+        jobId: jobId
+      },
+      breakpoints: {
+        '960px': '75vw',
+        '640px': '90vw'
       }
-      , (reason) => {
-        console.log('dismissed');
-      });
+    });
+    // const modalRef = this.modalService.open(JobDetailComponent, {size: 'lg', backdrop: 'static'});
+    // modalRef.componentInstance.modalReference = modalRef;
+    // (modalRef.componentInstance as JobDetailComponent).jobId = jobId;
+    // modalRef.result.then((result) => {
+    //   }
+    //   , (reason) => {
+    //     console.log('dismissed');
+    //   });
   }
 
   getSourceJob() {
@@ -523,12 +547,16 @@ export class ImagesCollectionDetailComponent implements OnInit, AfterViewInit {
   }
 
   openDeepZoomImage(wdztContent, image: Image): void {
-    var dzModal = this.modalService.open(wdztContent, {ariaLabelledBy: 'modal-basic-title'});
-    const viewerosd = this.ngZone.runOutsideAngular(() => {
+    this.dzvVisible = true;
+    this.selectedImage = image;
+  }
+
+  displayDeepZoomImage() {
+    this.ngZone.runOutsideAngular(() => {
       const contrastParam = this.contrastField ? this.contrastField : '1';
       const colorMapParam = this.colorMapField ? ('&CMP=' + this.colorMapField) : '';
       const invertParam = this.invertField ? this.invertField : '';
-      var viewer = OpenSeadragon({
+      this.osdViewer = OpenSeadragon({
         id: 'openseadragon-img',
         prefixUrl: "https://cdn.jsdelivr.net/npm/openseadragon@4.1/build/openseadragon/images/",
         tileSources: [
@@ -538,18 +566,15 @@ export class ImagesCollectionDetailComponent implements OnInit, AfterViewInit {
           + colorMapParam
           + invertParam
           + '&IIIF='
-          + this.imagesCollection.id + '/images/' + image.fileName + '/info.json'
+          + this.imagesCollection.id + '/images/' + this.selectedImage.fileName + '/info.json'
         ]
       });
     });
-    dzModal.result.then(
-      (result) => {
-        console.log(result);
-      },
-      (reason) => {
-        console.log(reason);
-      },
-    );
+ }
+
+  closeDeepZoomImage() {
+    if(this.osdViewer)
+      this.osdViewer.destroy();
   }
 
   loadData(event) {
@@ -564,7 +589,20 @@ export class ImagesCollectionDetailComponent implements OnInit, AfterViewInit {
     );
   }
 
+  loadMetaFiles(event) {
+    const sortField = event.sortField ? event.sortField : 'fileName,asc';
+    const params = {
+      pageIndex: event.first / event.rows,
+      size: event.rows,
+      sort: sortField
+    };
+    this.imagesCollectionService.getMetadataFiles(this.imagesCollection, params).subscribe(val =>
+      this.metadataFiles2 = val.data
+    );
+  }
+
   ngOnDestroy() {
     this.modalService.dismissAll();
+    this.dialogService.dialogComponentRefMap.forEach((dialog) => dialog.destroy());
   }
 }

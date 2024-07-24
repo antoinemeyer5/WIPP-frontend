@@ -1,36 +1,42 @@
-<h3 class="wipp-title">Notebook Detail</h3>
-
-<div class="container-fluid">
-  <div class="row top20">
-    <div class="col-md-3">
-      <dl class="row">
-        <dt class="col-md-4">Name:</dt>
-        <dd class="col-md-8 break">
-          {{notebook.name}}
-        </dd>
-        <dt class="col-md-4">Creation Date:</dt>
-        <dd class="col-md-8">
-          {{notebook.creationDate | date}}
-        </dd>
-        <dt class="col-md-4">Visibility:</dt>
-        <dd class="col-md-8">
-          <div *ngIf="notebook.publiclyShared; else privateData">Public</div>
-        </dd>
-        <ng-template #privateData>Private</ng-template>
-        <dt class="col-md-4">Description:</dt>
-        <dd class="col-md-8">
-          {{notebook.description}}
-        </dd>
-      </dl>
-    </div>
-    <div class="col-md-9 notebook" #notebookDisplay>
-      <ngx-spinner
-        [fullScreen]="false"
-        bdColor="rgba(248,249,250,0.8)"
-        size="medium"
-        color="#212529"
-      >
-      </ngx-spinner>
-    </div>
+<h1>{{notebook.name}}</h1>
+<div class="grid">
+  <p-fieldset legend="Details" [toggleable]="true" class="col-12 md:col-3">
+        <div class="grid">
+          <div class="col-12 lg:col-4 py-1 font-semibold">
+            Name:
+          </div>
+          <div class="col-12 lg:col-8 py-1">
+            {{notebook.name}}
+          </div>
+          <div class="col-12 lg:col-4 py-1 font-semibold">
+            Creation date:
+          </div>
+          <div class="col-12 lg:col-8 py-1">
+            {{notebook.creationDate | date}}
+          </div>
+          <div class="col-12 lg:col-4 py-1 font-semibold">
+            Owner:
+          </div>
+          <div class="col-12 lg:col-8 py-1">
+            {{notebook.owner}}
+          </div>
+          <div class="col-12 lg:col-4 py-1 font-semibold">
+            Visibility:
+          </div>
+          <div class="col-12 lg:col-8 py-1">
+            <div *ngIf="notebook.publiclyShared; else privateData">Public</div>
+            <ng-template #privateData>Private</ng-template>
+          </div>
+          <div class="col-12 lg:col-4 py-1 font-semibold">
+            Description:
+          </div>
+          <div class="col-12 lg:col-8 py-1">
+            {{notebook.description}}
+          </div>
+        </div>
+  </p-fieldset>
+  <div class="col-12 md:col-9 notebook" #notebookDisplay>
+    <p-skeleton  *ngIf="loading"/>
   </div>
 </div>
+<p-toast position="top-center"/>

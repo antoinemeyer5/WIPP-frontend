@@ -2,104 +2,54 @@
   <div id="logo" *ngIf="router.url === '/home'">
     <img src="assets/img/logo-wipp.png">
   </div>
-  <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" routerLink="/home">
-      <i class="fas fa-home">
-        <p>WIPP</p>
-      </i>
-    </a>
 
-    <button class="navbar-toggler navbar-toggler-right" type="button" (click)="isNavbarCollapsed = !isNavbarCollapsed" data-toggle="collapse" data-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
+  <p-menubar [model]="items">
+    <ng-template pTemplate="end">
+      <div class="flex align-items-center gap-2 p-menuitem">
+        <div class="p-menuitem-content">
+          <a pRipple class="flex align-items-center p-menuitem-link" href="{{onlineHelpLink}}">
+            <span class="pi pi-question"></span>
+            <span class="ml-2">Help</span>
+          </a>
+        </div>
+        <div class="p-menuitem-content" *ngIf="displayApiDocsLink">
+          <a pRipple class="flex align-items-center p-menuitem-link" href="{{apiDocsLink}}">
+            <span class="pi pi-code"></span>
+            <span class="ml-2">API docs</span>
+          </a>
+        </div>
+        <div class="p-menuitem-content" *ngIf="!isLoggedIn()">
+          <a pRipple class="flex align-items-center p-menuitem-link"
+             (click)="login()" style="cursor: pointer;" target="_blank">
+            <span class="pi pi-sign-in"></span>
+            <span class="ml-2">Login</span>
+          </a>
+        </div>
+        <div class="p-menuitem-content" *ngIf="isLoggedIn()">
+          <a pRipple class="flex align-items-center p-menuitem-link"
+             (click)="profile()" style="cursor: pointer;" target="_blank">
+            <span class="pi pi-user"></span>
+            <span class="ml-2">{{displayUserInfo()}}</span>
+          </a>
+        </div>
+        <div class="p-menuitem-content" *ngIf="isLoggedIn()">
+          <a pRipple class="flex align-items-center p-menuitem-link"
+             (click)="logout()" style="cursor: pointer;" target="_blank">
+            <span class="pi pi-sign-out"></span>
+            <span class="ml-2">Logout</span>
+          </a>
+        </div>
+      </div>
+    </ng-template>
+  </p-menubar>
 
-    <div [ngbCollapse]="isNavbarCollapsed" class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav mr-auto">
-        <li class="nav-item dropdown" routerLinkActive="active" ngbDropdown>
-          <a class="nav-link dropdown-toggle" id="dataDropdown" routerLinkActive="active" ngbDropdownToggle>
-            <i class="fas fa-database">
-              <p>Data</p>
-            </i>
-          </a>
-          <div class="dropdown-menu" aria-labelledby="dataDropdown" ngbDropdownMenu>
-            <a class="dropdown-item" routerLink="/images-collections" ngbDropdownItem>Images collections</a>
-<!--            <a class="dropdown-item" routerLink="/pyramid-annotations" ngbDropdownItem>Pyramid annotations</a>-->
-            <a class="dropdown-item" routerLink="/pyramid-visualizations" ngbDropdownItem>Multichannel visualizations</a>
-            <a class="dropdown-item" routerLink="/tensorflow-models" ngbDropdownItem>Trained AI models</a>
-            <a class="dropdown-item" routerLink="/csv-collections" ngbDropdownItem>CSV collections</a>
-            <a class="dropdown-item" routerLink="/notebooks" ngbDropdownItem *ngIf="jupyterNotebooksLink">Notebooks</a>
-            <a class="dropdown-item" routerLink="/stitching-vectors" ngbDropdownItem>Stitching vectors</a>
-            <a class="dropdown-item" routerLink="/pyramids" ngbDropdownItem>Legacy Pyramids</a>
-            <a class="dropdown-item" routerLink="/generic-datas" ngbDropdownItem>Generic Data Collections</a>
-          </div>
-        </li>
-        <li class="nav-item" routerLinkActive="active">
-          <a class="nav-link" routerLink="/plugins">
-            <i class="fas fa-cube">
-              <p>Plugins</p>
-            </i>
-          </a>
-        </li>
-        <li class="nav-item" routerLinkActive="active">
-          <a class="nav-link" routerLink="/workflows">
-            <i class="fas fa-share-alt ">
-              <p>Workflows</p>
-            </i>
-          </a>
-        </li>
-        <li class="nav-item" routerLinkActive="active" *ngIf="jupyterNotebooksLink">
-          <a class="nav-link" href={{jupyterNotebooksLink}} target="_blank">
-            <i class="fab fa-python">
-              <p>Notebooks</p>
-            </i>
-          </a>
-        </li>
-      </ul>
-      <ul class="navbar-nav ml-auto">
-        <li class="nav-item dropdown" routerLinkActive="active" ngbDropdown>
-          <a class="nav-link dropdown-toggle" id="helpDropdown" routerLinkActive="active" ngbDropdownToggle>
-            <i class="fas fa-question-circle">
-              <p>Help</p>
-            </i>
-          </a>
-          <div class="dropdown-menu dropdown-menu-right" aria-labelledby="helpDropdown" ngbDropdownMenu>
-            <a class="dropdown-item" href={{onlineHelpLink}} ngbDropdownItem>User guide</a>
-            <a class="dropdown-item" href={{apiDocsLink}} ngbDropdownItem *ngIf="displayApiDocsLink">API docs</a>
-            <a class="dropdown-item-text"><small>Version {{version}}</small></a>
-          </div>
-        </li>
-        <li *ngIf="!isLoggedIn()" class="nav-item navbar-right">
-          <a class="nav-link" (click)="login()" style="cursor: pointer;" target="_blank">
-            <i class="fas fa-sign-in-alt">
-              <p>Login</p>
-            </i>
-          </a>
-        </li>
-        <li *ngIf="isLoggedIn()" class="nav-item navbar-right" routerLinkActive="active">
-          <a class="nav-link" (click)="profile()" target="_blank" style="cursor: pointer;">
-            <i class="fas fa-user">
-              <p>{{displayUserInfo()}}</p>
-            </i>
-          </a>
-        </li>
-        <li *ngIf="isLoggedIn()" class="nav-item navbar-right">
-          <a class="nav-link" (click)="logout()" target="_blank" style="cursor: pointer;">
-            <i class="fas fa-sign-out-alt">
-              <p>Logout</p>
-            </i>
-          </a>
-        </li>
-      </ul>
-    </div>
-  </nav>
 </header>
 
-<div class="container-fluid main-container">
+<div class="wipp-container">
   <router-outlet></router-outlet>
 </div>
 
-<footer class="bg-light">
+<footer class="layout-footer">
   <p><small>
     WIPP v{{version}} - <a href="https://www.nist.gov/disclaimer">Disclaimer</a>
     - Logo

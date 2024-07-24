@@ -1,20 +1,21 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Job} from '../../job/job';
 import {ActivatedRoute, Router} from '@angular/router';
-import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {TensorflowModelService} from '../tensorflow-model.service';
 import {TensorboardLogs, TensorflowModel} from '../tensorflow-model';
 import {JobDetailComponent} from '../../job/job-detail/job-detail.component';
 import {AppConfigService} from '../../app-config.service';
 import urljoin from 'url-join';
 import {KeycloakService} from '../../services/keycloak/keycloak.service';
+import {DialogService} from 'primeng/dynamicdialog';
 
 @Component({
   selector: 'app-tensorflow-model-detail',
   templateUrl: './tensorflow-model-detail.component.html',
-  styleUrls: ['./tensorflow-model-detail.component.css']
+  styleUrls: ['./tensorflow-model-detail.component.css'],
+  providers: [DialogService]
 })
-export class TensorflowModelDetailComponent implements OnInit {
+export class TensorflowModelDetailComponent implements OnInit, OnDestroy {
 
   tensorflowModel: TensorflowModel = new TensorflowModel();
   tensorboardLogs: TensorboardLogs = null;
@@ -25,7 +26,7 @@ export class TensorflowModelDetailComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private modalService: NgbModal,
+    private dialogService: DialogService,
     private appConfigService: AppConfigService,
     private tensorflowModelService: TensorflowModelService,
     private keycloakService: KeycloakService) {
@@ -48,7 +49,6 @@ export class TensorflowModelDetailComponent implements OnInit {
         this.job = job;
         this.tensorflowModelService.getTensorboardLogsByJob(this.job.id).subscribe(res => {
           this.tensorboardLogs = res;
-          console.log(this.tensorboardLogs);
           this.tensorboardLink = this.tensorboardLink + this.tensorboardLogs.name;
         });
       });
@@ -56,14 +56,18 @@ export class TensorflowModelDetailComponent implements OnInit {
   }
 
   displayJobModal(jobId: string) {
-    const modalRef = this.modalService.open(JobDetailComponent, {'size': 'lg'});
-    modalRef.componentInstance.modalReference = modalRef;
-    (modalRef.componentInstance as JobDetailComponent).jobId = jobId;
-    modalRef.result.then((result) => {
+    this.dialogService.open(JobDetailComponent, {
+      header: 'Job detail',
+      position: 'top',
+      width: '50vw',
+      data: {
+        jobId: jobId
+      },
+      breakpoints: {
+        '960px': '75vw',
+        '640px': '90vw'
       }
-      , (reason) => {
-        console.log('dismissed');
-      });
+    });
   }
 
   makePublicTensorflowModel(): void {
@@ -80,5 +84,9 @@ export class TensorflowModelDetailComponent implements OnInit {
   openDownload(url: string) {
     this.tensorflowModelService.startDownload(url).subscribe(downloadUrl =>
       window.location.href = downloadUrl['url']);
+  }
+
+  ngOnDestroy() {
+    this.dialogService.dialogComponentRefMap.forEach((dialog) => dialog.destroy());
   }
 }

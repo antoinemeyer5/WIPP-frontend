@@ -1,14 +1,5 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {NgMathPipesModule} from 'angular-pipes';
-import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatPaginatorModule } from '@angular/material/paginator';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatSortModule } from '@angular/material/sort';
-import { MatTableModule } from '@angular/material/table';
 import {FormsModule} from '@angular/forms';
 import {StitchingVectorNewComponent} from './stitching-vector-new/stitching-vector-new.component';
 import {StitchingVectorListComponent} from './stitching-vector-list/stitching-vector-list.component';
@@ -18,22 +9,25 @@ import {
   StitchingVectorTemplateComponent
 } from './stitching-vector-template/stitching-vector-template.component';
 import {ModalErrorComponent} from '../modal-error/modal-error.component';
+import {TableModule} from 'primeng/table';
+import {ToastModule} from 'primeng/toast';
+import {ButtonModule} from 'primeng/button';
+import {InputTextModule} from 'primeng/inputtext';
+import {FieldsetModule} from 'primeng/fieldset';
+import {TooltipModule} from 'primeng/tooltip';
 
 
 @NgModule({
     imports: [
-        CommonModule,
-        NgbModule,
-        NgMathPipesModule,
-        StitchingVectorRoutingModule,
-        MatProgressSpinnerModule,
-        MatPaginatorModule,
-        MatTableModule,
-        MatSortModule,
-        MatFormFieldModule,
-        MatInputModule,
-        FormsModule,
-        MatCheckboxModule
+      CommonModule,
+      StitchingVectorRoutingModule,
+      FormsModule,
+      TableModule,
+      ToastModule,
+      ButtonModule,
+      InputTextModule,
+      FieldsetModule,
+      TooltipModule,
     ],
     declarations: [
         StitchingVectorDetailComponent,

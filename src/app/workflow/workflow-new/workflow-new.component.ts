@@ -1,25 +1,21 @@
-import { Component, Input, OnInit } from '@angular/core';
-import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
+import { Component, OnInit } from '@angular/core';
 import {Workflow} from '../workflow';
+import {DynamicDialogRef} from 'primeng/dynamicdialog';
 
 @Component({
   selector: 'app-workflow-new',
   templateUrl: './workflow-new.component.html',
   styleUrls: ['./workflow-new.component.css']
 })
-export class WorkflowNewComponent implements OnInit {
+export class WorkflowNewComponent {
 
-  @Input() modalReference: any;
   workflow: Workflow = new Workflow();
   isCopy = false;
 
-  constructor(private activeModal: NgbActiveModal) { }
-
-  ngOnInit() {
-  }
+  constructor(public modalReference: DynamicDialogRef) { }
 
   cancel() {
-    this.modalReference.dismiss();
+    this.modalReference.close();
   }
 
   save() {

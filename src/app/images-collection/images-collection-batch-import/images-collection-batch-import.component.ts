@@ -3,6 +3,7 @@ import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 import {AppConfigService} from '../../app-config.service';
 import {ImagesCollectionService} from '../images-collection.service';
 import {Router} from '@angular/router';
+import {DialogService} from 'primeng/dynamicdialog';
 
 @Component({
   selector: 'app-images-collection-batch-import',
@@ -20,7 +21,7 @@ export class ImagesCollectionBatchImportComponent implements OnInit {
   alertMessage = '';
   alertType = 'danger';
 
-  constructor(private activeModal: NgbActiveModal,
+  constructor(//private activeModal: NgbActiveModal,
               private appConfigService: AppConfigService,
               private imagesCollectionService: ImagesCollectionService,
               private router: Router) {

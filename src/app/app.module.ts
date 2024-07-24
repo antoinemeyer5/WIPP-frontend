@@ -35,6 +35,9 @@ import { GenericDataModule } from './generic-data/generic-data.module';
 import {ConfirmDialogService} from './confirm-dialog/confirm-dialog.service';
 import {ConfirmDialogModule} from './confirm-dialog/confirm-dialog.module';
 import {HomeModule} from './home/home.module';
+import {MenubarModule} from 'primeng/menubar';
+import {DynamicDialogModule} from 'primeng/dynamicdialog';
+import {AutoFocusModule} from 'primeng/autofocus';
 
 @NgModule({
   declarations: [
@@ -68,7 +71,10 @@ import {HomeModule} from './home/home.module';
     MatProgressSpinnerModule,
     FormsModule,
     MatCheckboxModule,
-    NgbModule
+    NgbModule,
+    MenubarModule,
+    DynamicDialogModule,
+    AutoFocusModule
   ],
   providers: [
     AppConfigService,

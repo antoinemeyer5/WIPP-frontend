@@ -386,6 +386,28 @@ export class ImagesCollectionService implements DataService<ImagesCollection, Pa
     return '(' + prefix + ')(\\d{' + tCount + '})(' + suffix + ')';
   }
 
+  // UI utils
+  getIconByImgCollStatus(imgColl: ImagesCollection) : any {
+    let statusStyle = {
+      piClass: "",
+      colorStyle: ""
+    };
+    if (imgColl.numberImportingImages > 0) {
+      statusStyle.piClass = 'pi pi-spin pi-spinner';
+      statusStyle.colorStyle = "color: blue";
+    } else if (imgColl.numberOfImportErrors) {
+      statusStyle.piClass = 'pi pi-times';
+      statusStyle.colorStyle = "color: red";
+    } else if (imgColl.numberOfImages == 0) {
+      statusStyle.piClass = 'pi pi-pencil';
+      statusStyle.colorStyle = "color: slateblue";
+    } else {
+      statusStyle.piClass = 'pi pi-check';
+      statusStyle.colorStyle = "color: green";
+    }
+    return statusStyle;
+  }
+
   // WIP annotations
   // annotateCollection(imagesCollection: ImagesCollection, labels: string): Observable<any> {
   //   const httpOptions = {

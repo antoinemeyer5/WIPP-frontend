@@ -1,7 +1,6 @@
 import { Component, ElementRef, OnInit, Renderer2, ViewChild } from '@angular/core';
 import {Notebook} from '../notebook';
 import {ActivatedRoute, Router} from '@angular/router';
-import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {NotebookService} from '../notebook.service';
 import 'prismjs';
 import * as Prism from 'prismjs';
@@ -18,37 +17,32 @@ import 'prismjs/components/prism-javascript';
 import 'prismjs/components/prism-typescript';
 import 'prismjs/components/prism-bash';
 import {HttpClient} from '@angular/common/http';
-import {NgxSpinnerService} from 'ngx-spinner';
-import {ModalErrorComponent} from '../../modal-error/modal-error.component';
-import {PlatformLocation} from '@angular/common';
+import {MessageService} from 'primeng/api';
 
 @Component({
   selector: 'app-notebook-detail',
   templateUrl: './notebook-detail.component.html',
-  styleUrls: ['./notebook-detail.component.css']
+  styleUrls: ['./notebook-detail.component.css'],
+  providers: [MessageService]
 })
 export class NotebookDetailComponent implements OnInit {
   notebook: Notebook = new Notebook();
   notebookId = this.route.snapshot.paramMap.get('id');
   notebookJson: string;
   @ViewChild('notebookDisplay') notebookDisplay: ElementRef;
+  loading: boolean = true;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private modalService: NgbModal,
+    private messageService: MessageService,
     private http: HttpClient,
     private notebookService: NotebookService,
     private renderer: Renderer2,
-    private spinner: NgxSpinnerService,
-    private location: PlatformLocation
   ) {
-    // closes modal when back button is clicked
-    location.onPopState(() => this.modalService.dismissAll());
   }
 
   ngOnInit() {
-    this.spinner.show();
     this.notebookService.getById(this.notebookId).subscribe(notebook => {
       this.notebook = notebook;
       this.notebookService.getNotebookFile(this.notebookId)
@@ -57,7 +51,8 @@ export class NotebookDetailComponent implements OnInit {
             this.displayNotebook();
           },
           error => {
-            this.openErrorModal(error);
+            this.loading = false;
+            this.messageService.add({ severity: 'error', summary: 'Error while loading the notebook file', detail: error.error.message });
           }
         );
       }, error => {
@@ -73,14 +68,6 @@ export class NotebookDetailComponent implements OnInit {
     };
     this.renderer.appendChild(this.notebookDisplay.nativeElement, notebook.render());
     Prism.highlightAll();
-    this.spinner.hide();
+    this.loading = false;
   }
-
-  openErrorModal(error: any) {
-    this.spinner.hide();
-    const modalRef = this.modalService.open(ModalErrorComponent);
-    modalRef.componentInstance.title = 'Error while loading the notebook file';
-    modalRef.componentInstance.message = error['error']['message'];
-  }
-
 }

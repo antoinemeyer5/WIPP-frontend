@@ -25,7 +25,7 @@ export class HomeComponent implements OnInit {
   ngOnInit() {
     const params = {
       pageIndex: 0,
-      size: 10,
+      size: 12,
       sort: 'creationDate,desc'
     };
     this.imagesCollectionService.get(params).subscribe(val => {
@@ -37,6 +37,18 @@ export class HomeComponent implements OnInit {
     this.workflowService.getWorkflows(params).subscribe(val => {
       this.workflows = val.workflows;
     });
+  }
+
+  getIconByWorkflowStatus(workflow: Workflow) {
+    return this.workflowService.getIconByWorkflowStatus(workflow);
+  }
+
+  getIconByImgCollStatus(imgColl: ImagesCollection) : any {
+    return this.imagesCollectionService.getIconByImgCollStatus(imgColl);
+  }
+
+  getIconByVizVisibility(visibility: boolean) : string {
+    return visibility? "pi pi-globe" : "pi pi-user";
   }
 
 }
