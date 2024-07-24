@@ -1,8 +1,11 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { WorkflowListComponent } from './workflow-list/workflow-list.component';
-import { MatInputModule, MatPaginatorModule, MatSortModule, MatTableModule} from '@angular/material';
-import { WorkflowRoutingModule} from './workflow-routing.module';
+import { MatInputModule } from '@angular/material/input';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSortModule } from '@angular/material/sort';
+import { MatTableModule } from '@angular/material/table';
+import {WorkflowRoutingModule} from './workflow-routing.module';
 import { WorkflowDetailComponent } from './workflow-detail/workflow-detail.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
@@ -16,35 +19,53 @@ import {DynamicComponent} from '../dynamic-content/dynamic.component';
 import {DynamicContentComponent} from '../dynamic-content/dynamic-content.component';
 import {DynamicContentModule} from '../dynamic-content/dynamic-content.module';
 import {NgxSpinnerModule} from 'ngx-spinner';
+import {TableModule} from 'primeng/table';
+import {ToastModule} from 'primeng/toast';
+import {ButtonModule} from 'primeng/button';
+import {InputTextModule} from 'primeng/inputtext';
+import {TagModule} from 'primeng/tag';
+import {FieldsetModule} from 'primeng/fieldset';
+import {TooltipModule} from 'primeng/tooltip';
+import {MessagesModule} from 'primeng/messages';
+import {DropdownModule} from 'primeng/dropdown';
+import {DialogModule} from 'primeng/dialog';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    WorkflowRoutingModule,
-    MatPaginatorModule,
-    MatSortModule,
-    MatTableModule,
-    MatInputModule,
-    FormsModule,
-    ReactiveFormsModule,
-    DynamicContentModule,
-    NgbModule.forRoot(),
-    SchemaFormModule.forRoot(),
-    NgxGraphModule,
-    NgxSpinnerModule
-  ],
-  entryComponents: [SearchWidgetComponent, WorkflowNewComponent, JobDetailComponent],
-  declarations: [
-    WorkflowListComponent,
-    WorkflowDetailComponent,
-    SearchWidgetComponent,
-    JobDetailComponent,
-    WorkflowNewComponent],
-
-
-  providers: [{
-    provide: WidgetRegistry,
-    useClass: WidgetsRegistry
-  }],
+    imports: [
+      CommonModule,
+      WorkflowRoutingModule,
+      MatPaginatorModule,
+      MatSortModule,
+      MatTableModule,
+      MatInputModule,
+      FormsModule,
+      ReactiveFormsModule,
+      DynamicContentModule,
+      NgbModule,
+      SchemaFormModule.forRoot(),
+      NgxGraphModule,
+      NgxSpinnerModule,
+      TableModule,
+      ToastModule,
+      ButtonModule,
+      InputTextModule,
+      TagModule,
+      FieldsetModule,
+      TooltipModule,
+      MessagesModule,
+      DropdownModule,
+      DialogModule
+    ],
+    declarations: [
+        WorkflowListComponent,
+        WorkflowDetailComponent,
+        SearchWidgetComponent,
+        JobDetailComponent,
+        WorkflowNewComponent
+    ],
+    providers: [{
+            provide: WidgetRegistry,
+            useClass: WidgetsRegistry
+        }]
 })
 export class WorkflowModule { }

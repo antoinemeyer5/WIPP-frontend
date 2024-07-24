@@ -36,7 +36,14 @@
               "node_modules/notebookjs/notebook.js",
               "node_modules/keycloak-js/dist/keycloak.js"
 
-            ]
+            ],
+            "aot": false,
+            "vendorChunk": true,
+            "extractLicenses": false,
+            "buildOptimizer": false,
+            "sourceMap": true,
+            "optimization": false,
+            "namedChunks": true
           },
           "configurations": {
             "production": {
@@ -56,23 +63,24 @@
               "vendorChunk": false,
               "buildOptimizer": true
             }
-          }
+          },
+          "defaultConfiguration": ""
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "WIPP-frontend:build"
+            "buildTarget": "WIPP-frontend:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "WIPP-frontend:build:production"
+              "buildTarget": "WIPP-frontend:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "WIPP-frontend:build"
+            "buildTarget": "WIPP-frontend:build"
           }
         },
         "test": {
@@ -136,6 +144,5 @@
         }
       }
     }
-  },
-  "defaultProject": "WIPP-frontend"
+  }
 }

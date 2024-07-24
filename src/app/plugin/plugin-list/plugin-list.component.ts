@@ -1,24 +1,27 @@
-import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {Plugin} from '../plugin';
 import {PluginService} from '../plugin.service';
-import {MatPaginator, MatSort} from '@angular/material';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
 import {catchError, map, switchMap} from 'rxjs/operators';
 import {BehaviorSubject, Observable, of as observableOf} from 'rxjs';
 import {SelectionModel} from '@angular/cdk/collections';
-import {ActivatedRoute, Router} from '@angular/router';
 import {PluginNewComponent} from '../plugin-new/plugin-new.component';
 import {KeycloakService} from '../../services/keycloak/keycloak.service';
-
+import {DialogService} from 'primeng/dynamicdialog';
+import {MessageService} from 'primeng/api';
+import {StitchingVectorNewComponent} from '../../stitching-vector/stitching-vector-new/stitching-vector-new.component';
 
 @Component({
   selector: 'app-plugin-list',
   templateUrl: './plugin-list.component.html',
-    styleUrls: ['./plugin-list.component.css']
+  styleUrls: ['./plugin-list.component.css'],
+  providers: [DialogService, MessageService]
 })
 export class PluginListComponent implements OnInit, OnDestroy {
   displayedColumns: string[] = [ 'name', 'version', 'description'];
-  plugins: Observable<Plugin[]>;
+  plugins: Plugin[];
   selection = new SelectionModel<Plugin>(false, []);
 
   resultsLength = 0;
@@ -32,7 +35,9 @@ export class PluginListComponent implements OnInit, OnDestroy {
   constructor(
     private modalService: NgbModal,
     private pluginService: PluginService,
-    private keycloakService: KeycloakService
+    private keycloakService: KeycloakService,
+    private dialogService: DialogService,
+    private messageService: MessageService,
   ) {
     this.paramsChange = new BehaviorSubject({
       index: 0,
@@ -65,45 +70,39 @@ export class PluginListComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.getPlugins();
   }
 
-  getPlugins(): void {
-    const paramsObservable = this.paramsChange.asObservable();
-    this.plugins = paramsObservable.pipe(
-      switchMap((page) => {
-        const params = {
-          pageIndex: page.index,
-          size: page.size,
-          sort: page.sort
-        };
-        if (page.filter) {
-          return this.pluginService.getPluginsByNameContainingIgnoreCase(params, page.filter).pipe(
-            map((data) => {
-              this.resultsLength = data.page.totalElements;
-              return data.plugins;
-            }),
-            catchError(() => {
-              return observableOf([]);
-            })
-          );
-        }
-        return this.pluginService.getPlugins(params).pipe(
-          map((data) => {
-            this.resultsLength = data.page.totalElements;
-            return data.plugins;
-          }),
-          catchError(() => {
-            return observableOf([]);
-          })
-        );
-      })
-    );
+  loadData(event) {
+    const sortOrderStr = event.sortOrder == -1 ? 'desc' : 'asc';
+    const sortField = event.sortField ? event.sortField + ',' + sortOrderStr : 'creationDate,desc';
+    const params = {
+      pageIndex: event.first / event.rows,
+      size: event.rows,
+      sort: sortField
+    };
+    if(event.filters?.global?.value) {
+      this.pluginService.getPluginsByNameContainingIgnoreCase(params, event.filters.global.value).subscribe(result => {
+        this.plugins = result.plugins;
+        this.resultsLength = result.page.totalElements;
+      });
+    } else {
+      this.pluginService.getPlugins(params).subscribe(result => {
+        this.plugins = result.plugins;
+        this.resultsLength = result.page.totalElements;
+      });
+    }
   }
 
   displayNewPluginModal() {
-    const modalRef = this.modalService.open(PluginNewComponent, {size: 'lg'});
-    modalRef.componentInstance.modalReference = modalRef;
+    this.dialogService.open(PluginNewComponent, {
+      header: 'New plugin',
+      position: 'top',
+      width: '50vw',
+      breakpoints: {
+        '960px': '75vw',
+        '640px': '90vw'
+      }
+    });
   }
 
   canCreate(): boolean {
@@ -111,7 +110,7 @@ export class PluginListComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.modalService.dismissAll();
+    this.dialogService.dialogComponentRefMap.forEach((dialog) => dialog.destroy());
   }
 
 }

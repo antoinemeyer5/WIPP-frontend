@@ -141,4 +141,58 @@ export class WorkflowService {
     };
     return this.http.patch<Workflow>(`${this.workflowsUrl}/${workflow.id}`, {publiclyShared: true}, httpOptions);
   }
+
+  getIconByWorkflowStatus(workflow: Workflow) : any {
+    let status = workflow.status;
+    let statusStyle = {
+      piClass: "",
+      colorStyle: "",
+      severity: ""
+    };
+    switch(status) {
+      case 'SUCCEEDED': {
+        statusStyle.piClass = 'pi pi-check';
+        statusStyle.colorStyle = "color: green";
+        statusStyle.severity = "success";
+        break;
+      }
+      case 'CREATED': {
+        statusStyle.piClass = 'pi pi-pencil';
+        statusStyle.colorStyle = "color: slateblue";
+        statusStyle.severity = "secondary";
+        break;
+      }
+      case 'SUBMITTED': {
+        statusStyle.piClass = 'pi pi-spin pi-spinner';
+        statusStyle.colorStyle = "color: blue";
+        statusStyle.severity = "primary";
+        break;
+      }
+      case 'RUNNING': {
+        statusStyle.piClass = 'pi pi-spin pi-spinner';
+        statusStyle.colorStyle = "color: blue";
+        statusStyle.severity = "primary";
+        break;
+      }
+      case 'ERROR': {
+        statusStyle.piClass = 'pi pi-times';
+        statusStyle.colorStyle = "color: red";
+        statusStyle.severity = "danger";
+        break;
+      }
+      case 'FAILED': {
+        statusStyle.piClass = 'pi pi-times';
+        statusStyle.colorStyle = "color: red";
+        statusStyle.severity = "danger";
+        break;
+      }
+      default: {
+        statusStyle.piClass = 'pi pi-question'
+        statusStyle.colorStyle = "color: slateblue";
+        statusStyle.severity = "secondary";
+        break;
+      }
+    }
+    return statusStyle;
+  }
 }

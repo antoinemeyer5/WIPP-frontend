@@ -5,7 +5,7 @@ import { PageNotFoundComponent } from './not-found/not-found.component';
 import { ForbiddenAccessComponent } from './forbidden-access/forbidden-access.component';
 
 const appRoutes: Routes = [
-  { path: '',   redirectTo: '/images-collections', pathMatch: 'full' },
+  { path: '',   redirectTo: '/home', pathMatch: 'full' },
   { path: '403', component: ForbiddenAccessComponent },
   { path: '**', component: PageNotFoundComponent }
 ];

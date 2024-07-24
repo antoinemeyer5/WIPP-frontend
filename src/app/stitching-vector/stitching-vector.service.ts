@@ -100,6 +100,10 @@ export class StitchingVectorService implements DataService<StitchingVector, Pagi
     return this.http.patch<StitchingVector>(`${this.stitchingVectorsUrl}/${stitchingVector.id}`, {publiclyShared: true}, httpOptions);
   }
 
+  startStitchingVectorDownload(stitchingVector: StitchingVector, timeSlice: string): Observable<string> {
+    return this.http.get<string>(`${this.stitchingVectorsUrl}/${stitchingVector.id}/timeSlices/${timeSlice}/globalPositions/request`);
+  }
+
   startDownload(url: string): Observable<string> {
     return this.http.get<string>(url);
   }

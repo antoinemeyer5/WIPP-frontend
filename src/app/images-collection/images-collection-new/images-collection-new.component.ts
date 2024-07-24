@@ -1,7 +1,7 @@
-import {Component, Input, NgModule, OnInit} from '@angular/core';
-import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import { Component, OnInit } from '@angular/core';
 import {ImagesCollection, ImagesCollectionImportMethod} from '../images-collection';
 import {AppConfigService} from '../../app-config.service';
+import {DynamicDialogRef} from 'primeng/dynamicdialog';
 
 @Component({
   selector: 'app-images-collection-new',
@@ -10,13 +10,12 @@ import {AppConfigService} from '../../app-config.service';
 })
 export class ImagesCollectionNewComponent implements OnInit {
 
-  @Input() modalReference: any;
   imagesCollection: ImagesCollection = new ImagesCollection();
   usePattern = false;
   ImagesCollectionImportMethod = ImagesCollectionImportMethod;
   displayLocalImportOption = false;
 
-  constructor(private activeModal: NgbActiveModal, private appConfigService: AppConfigService) {
+  constructor(public modalReference: DynamicDialogRef, private appConfigService: AppConfigService) {
     if (this.appConfigService.getConfig().displayLocalImportOption) {
       this.displayLocalImportOption = true;
     }
@@ -26,7 +25,7 @@ export class ImagesCollectionNewComponent implements OnInit {
     this.imagesCollection.importMethod = ImagesCollectionImportMethod.UPLOADED;
   }
   cancel() {
-    this.modalReference.dismiss();
+    this.modalReference.close();
   }
   save() {
     this.modalReference.close(this.imagesCollection);

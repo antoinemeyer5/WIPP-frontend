@@ -3,19 +3,25 @@ import { CommonModule } from '@angular/common';
 import { AiModelListComponent } from './ai-model-list/ai-model-list.component';
 import { AiModelDetailComponent } from './ai-model-detail/ai-model-detail.component';
 import { AiModelRoutingModule } from './ai-model-routing.module';
-import { MatFormFieldModule, MatInputModule, MatPaginator, MatPaginatorModule, MatSortModule, MatTableModule } from '@angular/material';
 import { AiModelTemplateComponent } from './ai-model-template/ai-model-template.component';
 import { TensorboardLogsTemplateComponent } from './ai-model-template/tensorboard-logs-template.component';
+import { TableModule } from 'primeng/table';
+import { ToastModule } from 'primeng/toast';
+import { ButtonModule } from 'primeng/button';
+import { InputTextModule } from 'primeng/inputtext';
+import { FieldsetModule } from 'primeng/fieldset';
+import { TooltipModule } from 'primeng/tooltip';
 
 @NgModule({
   imports: [
     CommonModule,
     AiModelRoutingModule,
-    MatPaginatorModule,
-    MatSortModule,
-    MatTableModule,
-    MatFormFieldModule,
-    MatInputModule
+    TableModule,
+    ToastModule,
+    ButtonModule,
+    InputTextModule,
+    FieldsetModule,
+    TooltipModule
   ],
   declarations: [
     AiModelListComponent,

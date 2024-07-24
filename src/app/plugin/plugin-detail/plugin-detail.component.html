@@ -1,192 +1,170 @@
-<h3 class="wipp-title">Plugin detail</h3>
+<h1>{{plugin.name}}
+  <div style="display: inline-block;">
+    <p-button icon="pi pi-code"
+              (click)="displayManifest()"
+              pTooltip="Display JSON Manifest"
+              tooltipPosition="left"
+              [outlined]="true">
+    </p-button>
+    <p-button icon="pi pi-trash" *ngIf="canEdit()" type="button"
+              pTooltip="Delete plugin"
+              tooltipPosition="left"
+              [outlined]="true"
+              (click)="deletePlugin();">
+    </p-button>
+  </div>
+</h1>
 
-<div>
-  <div class="row">
-    <div class="col-md-9">
-      <dl class="row">
-        <dt class="col-md-4">Name:</dt>
-        <dd class="col-md-8">{{plugin.name}}</dd>
+<p-fieldset legend="Details" [toggleable]="true">
+  <div class="grid nested-grid">
+    <div class="col-12 md:col-6">
+      <div class="grid">
+        <div class="col-3 py-1 font-semibold">Name:</div>
+        <div class="col-9 py-1">{{plugin.name}}</div>
 
-        <dt class="col-md-4">Title:</dt>
-        <dd class="col-md-8">{{plugin.title}}</dd>
+        <div class="col-3 py-1 font-semibold">Title:</div>
+        <div class="col-9 py-1">{{plugin.title}}</div>
 
-        <dt class="col-md-4">Operation type:</dt>
-        <dd class="col-md-8">{{plugin.operationType || "N/A"}}</dd>
+        <div class="col-3 py-1 font-semibold">Operation type:</div>
+        <div class="col-9 py-1">{{plugin.operationType}}</div>
 
-        <dt class="col-md-4">Version:</dt>
-        <dd class="col-md-8">{{plugin.version}}</dd>
+        <div class="col-3 py-1 font-semibold">Version:</div>
+        <div class="col-9 py-1">{{plugin.version}}</div>
 
-        <dt class="col-md-4">Author:</dt>
-        <dd class="col-md-8">{{plugin.author || "N/A"}}</dd>
+        <div class="col-3 py-1 font-semibold">Author:</div>
+        <div class="col-9 py-1">{{plugin.author || "N/A"}}</div>
 
-        <dt class="col-md-4">Institution:</dt>
-        <dd class="col-md-8">{{plugin.institution || "N/A"}}</dd>
+        <div class="col-3 py-1 font-semibold">Institution:</div>
+        <div class="col-9 py-1">{{plugin.institution || "N/A"}}</div>
 
-        <dt class="col-md-4">Repository:</dt>
-        <dd class="col-md-8">
+        <div class="col-3 py-1 font-semibold">Repository:</div>
+        <div class="col-9 py-1">
           <div *ngIf="plugin.repository; else notApplicable">
             <a href={{plugin.repository}}>
               {{plugin.repository}}
             </a>
           </div>
-        </dd>
+        </div>
 
-        <dt class="col-md-4">Website:</dt>
-        <dd class="col-md-8">
+        <div class="col-3 py-1 font-semibold">Website:</div>
+        <div class="col-9 py-1">
           <div *ngIf="plugin.website; else notApplicable">
             <a href={{plugin.website}}>
               {{plugin.website}}
             </a>
           </div>
-        </dd>
+        </div>
 
-        <dt class="col-md-4">Citation:</dt>
-        <dd class="col-md-8">{{plugin.citation || "N/A"}}</dd>
+        <div class="col-3 py-1 font-semibold">Citation:</div>
+        <div class="col-9 py-1">{{plugin.citation || "N/A"}}</div>
 
-        <dt class="col-md-4">Description:</dt>
-        <dd class="col-md-8">{{plugin.description}}</dd>
+        <div class="col-3 py-1 font-semibold">Description:</div>
+        <div class="col-9 py-1">{{plugin.description || "N/A"}}</div>
 
-        <dt class="col-md-4">Docker image:</dt>
-        <dd class="col-md-8">{{plugin.containerId}}</dd>
+        <div class="col-3 py-1 font-semibold">Container images:</div>
+        <div class="col-9 py-1">{{plugin.containerId || "N/A"}}</div>
 
-        <dt class="col-md-4">Base command:</dt>
-        <dd class="col-md-8">{{plugin.baseCommand || "N/A"}}</dd>
+        <div class="col-3 py-1 font-semibold">Base command:</div>
+        <div class="col-9 py-1">{{plugin.baseCommand || "N/A"}}</div>
 
-        <dt class="col-md-4">Creation date:</dt>
-        <dd class="col-md-8">{{plugin.creationDate| date}}</dd>
+        <div class="col-3 py-1 font-semibold">Registration date:</div>
+        <div class="col-9 py-1">{{plugin.creationDate | date}}</div>
 
-      </dl>
-    </div>
-    <div class="col-md-3 text-right">
-      <button type="button" ngbTooltip="Display JSON Manifest" placement="left" class="btn btn-light wipp-btn"
-        (click)="displayManifest(showManifestModal)">
-        <i class="fas fa-file-code">
-          <p>Raw Manifest</p>
-        </i>
-      </button>
-      <button type="button" *ngIf="canEdit()" ngbTooltip="Delete plugin" placement="left" class="btn btn-light wipp-btn"
-        (click)="deletePlugin();">
-        <i class="fas fa-times">
-          <p>Delete</p>
-        </i>
-      </button>
+      </div>
     </div>
   </div>
+</p-fieldset>
 
-  <h4>Inputs</h4>
+<h2>Inputs</h2>
 
-  <table mat-table [dataSource]="plugin.inputs" multiTemplateDataRows>
-    <ng-container matColumnDef="{{column}}" *ngFor="let column of columnsToDisplayInputs">
-      <th mat-header-cell *matHeaderCellDef> {{column}} </th>
-      <td mat-cell *matCellDef="let input"> {{input[column]}} </td>
-    </ng-container>
-
-    <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
-    <ng-container matColumnDef="expandedDetail">
-      <td mat-cell *matCellDef="let input" [attr.colspan]="columnsToDisplayInputs.length">
-        <div class="input-detail row" [@detailExpand]="input == expandedInput ? 'expanded' : 'collapsed'">
-          <div class="input-description-title col-md-1">
+<p-table [value]="plugin.inputs" dataKey="name">
+  <ng-template pTemplate="header">
+    <tr>
+      <th style="width: 5rem"></th>
+      <th>Name</th>
+      <th>Description</th>
+      <th>Type</th>
+      <th>Required</th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-input let-expanded="expanded">
+    <tr>
+      <td>
+        <p-button type="button" pRipple [pRowToggler]="input" [text]="true" [rounded]="true" [plain]="true"
+                  [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'" />
+      </td>
+      <td>{{ input.name }}</td>
+      <td>{{ input.description || 'N/A' }}</td>
+      <td>{{ input.type }}</td>
+      <td>{{ input.required }}</td>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="rowexpansion" let-input>
+    <tr>
+      <td colspan="5">
+        <div class="p-3 grid">
+          <div class="input-description-title col-2 lg:col-1">
             UI:
           </div>
-          <div class="input-description col-md-6">
+          <div class="input-description col-10 lg:col-6">
             <ngx-json-viewer [json]="getInputUi(input.name) || {}"></ngx-json-viewer>
           </div>
-          <div class="input-description-title col-md-1">
+          <div class="input-description-title col-2 lg:col-1">
             Options:
           </div>
-          <div class="input-description col-md-4">
+          <div class="input-description col-10 lg:col-4">
             <ngx-json-viewer *ngIf="input.options" [json]="input.options" [expanded]="true"></ngx-json-viewer>
             <span *ngIf="!input.options">N/A</span>
           </div>
         </div>
       </td>
-    </ng-container>
+    </tr>
+  </ng-template>
+</p-table>
 
-    <tr mat-header-row *matHeaderRowDef="columnsToDisplayInputs"></tr>
-    <tr mat-row *matRowDef="let input; columns: columnsToDisplayInputs;" class="input-row"
-      [class.expanded-row]="expandedInput === input" (click)="expandedInput = expandedInput === input ? null : input">
+<h2>Outputs</h2>
+<p-table [value]="plugin.outputs">
+  <ng-template pTemplate="header">
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+      <th>Type</th>
     </tr>
-    <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="detail-row"></tr>
-  </table>
+  </ng-template>
+  <ng-template pTemplate="body" let-output>
+    <tr>
+      <td>{{ output.name }}</td>
+      <td>{{ output.description }}</td>
+      <td>{{ output.type }}</td>
+    </tr>
+  </ng-template>
+</p-table>
 
-  <h4>Outputs</h4>
+<h2>Hardware Requirements</h2>
+<p-table [value]="resourceRequirements">
+  <ng-template pTemplate="header">
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+      <th>Value</th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-req>
+    <tr>
+      <td>{{ req.name }}</td>
+      <td>{{ req.description }}</td>
+      <td>{{ req.value }}</td>
+    </tr>
+  </ng-template>
+</p-table>
 
-  <table mat-table [dataSource]="plugin.outputs">
-    <ng-container matColumnDef="{{column}}" *ngFor="let column of columnsToDisplayOutputs">
-      <th mat-header-cell *matHeaderCellDef> {{column}} </th>
-      <!-- TODO: issue here if you have old plugin manifest -->
-      <!-- <td mat-cell *matCellDef="let output"> {{output[column] || output.options[column] || "N/A"}} </td> -->
-      <td mat-cell *matCellDef="let output"> {{output[column] || "N/A"}} </td>
-    </ng-container>
-
-    <tr mat-header-row *matHeaderRowDef="columnsToDisplayOutputs"></tr>
-    <tr mat-row *matRowDef="let output; columns: columnsToDisplayOutputs;"></tr>
-  </table>
-
-  <h4>Hardware Requirements</h4>
-
-  <table class="mat-table">
-    <tr class="mat-header-row">
-      <th class="mat-header-cell">Name</th>
-      <th class="mat-header-cell">Description</th>
-      <th class="mat-header-cell">Value</th>
-    </tr>
-    <tr class="mat-row">
-      <td class="mat-cell">ramMin</td>
-      <td class="mat-cell">Minimum RAM in mebibytes (Mi)</td>
-      <td class="mat-cell">{{plugin.resourceRequirements?.ramMin || "N/A"}}</td>
-    </tr>
-    <tr class="mat-row">
-      <td class="mat-cell">coresMin</td>
-      <td class="mat-cell">Minimum number of CPU cores</td>
-      <td class="mat-cell">{{plugin.resourceRequirements?.coresMin || "N/A"}}</td>
-    </tr>
-    <tr class="mat-row">
-      <td class="mat-cell">cpuAVX</td>
-      <td class="mat-cell">Advanced Vector Extensions (AVX) CPU capability required</td>
-      <td class="mat-cell">{{plugin.resourceRequirements?.cpuAVX}}</td>
-    </tr>
-    <tr class="mat-row">
-      <td class="mat-cell">cpuAVX2</td>
-      <td class="mat-cell">Advanced Vector Extensions 2 (AVX2) CPU capability required</td>
-      <td class="mat-cell">{{plugin.resourceRequirements?.cpuAVX2}}</td>
-    </tr>
-    <tr class="mat-row">
-      <td class="mat-cell">gpu</td>
-      <td class="mat-cell">GPU/accelerator required</td>
-      <td class="mat-cell">{{plugin.resourceRequirements?.gpu}}</td>
-    </tr>
-    <tr class="mat-row">
-      <td class="mat-cell">cudaRequirements.deviceMemoryMin</td>
-      <td class="mat-cell">GPU Cuda-related requirements - deviceMemoryMin</td>
-      <td class="mat-cell">{{plugin.resourceRequirements?.cudaRequirements?.deviceMemoryMin || "N/A"}}</td>
-    </tr>
-    <tr class="mat-row">
-      <td class="mat-cell">cudaRequirements.cudaComputeCapability</td>
-      <td class="mat-cell">GPU Cuda-related requirements - cudaComputeCapability</td>
-      <td class="mat-cell">{{plugin.resourceRequirements?.cudaRequirements?.cudaComputeCapability || "N/A"}}</td>
-    </tr>
-  </table>
-
-</div>
-
-<ng-template #showManifestModal let-c="close" let-d="dismiss" class="manifest-modal">
-  <div class="modal-header">
-    <h4 class="modal-title">Plugin Manifest</h4>
-    <button type="button" class="close" aria-label="Close" (click)="d()">
-      <span aria-hidden="true">&times;</span>
-    </button>
+<p-dialog header="Plugin Manifest" [modal]="true" [(visible)]="showManifest"
+          [style]="{ width: '50rem' }" >
+  <div>
+    <pre>{{ manifest | json }}</pre>
   </div>
-  <div class="modal-body manifest-modal">
-    <div>
-      <pre>{{ manifest | json }}</pre>
-    </div>
-  </div>
-  <div class="modal-footer">
-    <button type="button" class="btn btn-outline-dark" ngbAutofocus (click)="d()">
-      Close
-    </button>
-  </div>
-</ng-template>
+</p-dialog>
+
+<p-confirmDialog />
 
 <ng-template #notApplicable>N/A</ng-template>

@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import {forkJoin, Observable, of} from 'rxjs';
 import {debounceTime, distinctUntilChanged, map, switchMap} from 'rxjs/operators';
 import {Visualization} from '../visualization';
@@ -9,6 +9,8 @@ import {PyramidVisualizationService} from '../pyramid-visualization.service';
 import {PyramidVisualizationHelpComponent} from '../pyramid-visualization-help/pyramid-visualization-help.component';
 import {ModalErrorComponent} from '../../modal-error/modal-error.component';
 import {KeycloakService} from '../../services/keycloak/keycloak.service'
+import {ImagesCollectionService} from '../../images-collection/images-collection.service';
+import {SelectItem} from 'primeng/api';
 
 @Component({
   selector: 'app-pyramid-visualization-detail',
@@ -24,6 +26,16 @@ export class PyramidVisualizationDetailComponent implements OnInit, OnDestroy {
   layersGroups = [];
   showSettings = false;
   savedStatus = 'saved';
+
+  colorMapOptions: SelectItem[];
+  colorMapField: string;
+
+  contrastOptions: SelectItem[];
+  contrastField: string;
+
+  invertOptions: SelectItem[];
+  invertField: string;
+
   @ViewChild('instance') instance: NgbTypeahead;
 
   constructor(
@@ -31,6 +43,7 @@ export class PyramidVisualizationDetailComponent implements OnInit, OnDestroy {
     private router: Router,
     private modalService: NgbModal,
     private pyramidService: PyramidService,
+    private imagesCollectionService: ImagesCollectionService,
     private visualizationService: PyramidVisualizationService,
     private keycloakService: KeycloakService
     ) {
@@ -40,6 +53,28 @@ export class PyramidVisualizationDetailComponent implements OnInit, OnDestroy {
     this.visualizationService.getVisualization(this.visualizationId)
       .subscribe(visualization => {
         this.visualization = visualization;
+        this.colorMapOptions = [
+          { label: 'NONE', value: '' },
+          { label: 'GREY', value: 'GREY' },
+          { label: 'JET', value: 'JET' },
+          { label: 'COLD', value: 'COLD' },
+          { label: 'HOT', value: 'HOT' },
+          { label: 'RED', value: 'RED' },
+          { label: 'GREEN', value: 'GREEN' },
+          { label: 'BLUE', value: 'BLUE' }
+        ];
+        this.contrastOptions = [
+          { label: 'NONE', value: '1' },
+          { label: 'STRETCH', value: 'ST' },
+          { label: 'EQUALIZATION', value: 'EQ' },
+          { label: 'x2', value: '2' },
+          { label: 'x10', value: '10' },
+          { label: 'x100', value: '100' }
+        ];
+        this.invertOptions = [
+          { label: 'NO', value: '' },
+          { label: 'YES', value: '&INV' }
+        ];
         this.loadManifest();
       }, error => {
         this.router.navigate(['/404']);
@@ -65,12 +100,23 @@ export class PyramidVisualizationDetailComponent implements OnInit, OnDestroy {
             label: layer.id,
             // TODO : handle metadata (not handled in pyramid building yet)
             // ppm: layer.scalebar.pixelsPerMeter,
-            pyramid: {}
+            pyramid: {},
+            displayConfig: {},
+            filenamePattern: null
           };
-          self.pyramidService.getPyramidFromBaseUrl(layer.baseUrl)
-            .subscribe(function (pyramid) {
-              result.pyramid = pyramid;
-            });
+          if (self.visualization.iiifDataSource === true) {
+            self.imagesCollectionService.getById(layer.imagesCollectionId)
+              .subscribe(function (pyramid) {
+                result.pyramid = pyramid;
+              });
+            result.displayConfig = layer.displayConfig;
+            result.filenamePattern = layer.filenamePattern;
+          } else { // handle backward compatibility with legacy pyramids
+            self.pyramidService.getPyramidFromBaseUrl(layer.baseUrl)
+              .subscribe(function (pyramid) {
+                result.pyramid = pyramid;
+              });
+          }
           return result;
         }),
         newLayer: {}
@@ -120,11 +166,13 @@ export class PyramidVisualizationDetailComponent implements OnInit, OnDestroy {
       return of([]);
     } else {
       return forkJoin(layerGroup.layers.map(layer => {
-        return this.pyramidService.getPyramidManifest(layer.pyramid)
+        console.log(layer);
+        return this.imagesCollectionService.getIiifLayerManifest(layer.pyramid, layer)
           .pipe(map(manifest => {
             const layerManifest = manifest['layersGroups'][0].layers[0];
             layerManifest.id = layer.label;
             layerManifest.name = layer.label;
+            layerManifest.imagesCollectionId = layer.pyramid.id;
             if (layer.ppm) {
               layerManifest.scalebar = {
                 pixelsPerMeter: layer.ppm,
@@ -151,6 +199,12 @@ export class PyramidVisualizationDetailComponent implements OnInit, OnDestroy {
     group.layers.push({
       label: group.newLayer.label,
       pyramid: group.newLayer.pyramid,
+      displayConfig: {
+        contrast : group.newLayer.contrastField,
+        colorMap : group.newLayer.colorMapField,
+        invert : group.newLayer.invertField,
+      },
+      filenamePattern: group.newLayer.filenamePattern
       // ppm: group.newLayer.ppm,
       // acquiredIntensity: group.newLayer.acquiredIntensity
     });
@@ -248,8 +302,13 @@ export class PyramidVisualizationDetailComponent implements OnInit, OnDestroy {
   }
 
   // Typeahead functions for pyramid search
+  // filter(term) {
+  //   return this.pyramidService.getByNameContainingIgnoreCase(null, term).pipe(map(paginatedResult => {
+  //     return paginatedResult.data;
+  //   }));
+  // }
   filter(term) {
-    return this.pyramidService.getByNameContainingIgnoreCase(null, term).pipe(map(paginatedResult => {
+    return this.imagesCollectionService.getByNameContainingIgnoreCase(null, term).pipe(map(paginatedResult => {
       return paginatedResult.data;
     }));
   }
@@ -271,7 +330,7 @@ export class PyramidVisualizationDetailComponent implements OnInit, OnDestroy {
     });
   }
 
-  canEdit() : boolean {
-    return this.keycloakService.canEdit(this.visualization);
+  canEdit(): boolean {
+    return this.keycloakService.canEdit(this.visualization) && this.visualization.iiifDataSource == true;
   }
 }

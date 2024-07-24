@@ -1,5 +1,5 @@
 import {Component, Input} from '@angular/core';
-import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
+import {DialogService, DynamicDialogComponent, DynamicDialogRef} from 'primeng/dynamicdialog';
 
 @Component({
   selector: 'app-modal-error',
@@ -7,9 +7,21 @@ import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
   styleUrls: ['./modal-error.component.css']
 })
 export class ModalErrorComponent {
-  @Input() message;
-  @Input() title;
+  message: string = '';
+  instance: DynamicDialogComponent | undefined;
 
-  constructor(public activeModal: NgbActiveModal) {}
+  constructor(public modalReference: DynamicDialogRef,  private dialogService: DialogService) {
+    this.instance = this.dialogService.getInstance(this.modalReference);
+  }
+
+  ngOnInit() {
+    if (this.instance && this.instance.data) {
+      this.message = this.instance.data['message'];
+    }
+  }
+
+  close() {
+    this.modalReference.close();
+  }
 }
 

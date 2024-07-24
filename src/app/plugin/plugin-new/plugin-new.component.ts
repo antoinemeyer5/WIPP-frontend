@@ -1,16 +1,18 @@
-import {Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 import {PluginService} from '../plugin.service';
 import {Router} from '@angular/router';
+import {MessageService} from 'primeng/api';
+import {DynamicDialogRef} from 'primeng/dynamicdialog';
 
 @Component({
   selector: 'app-plugin-new',
   templateUrl: './plugin-new.component.html',
-  styleUrls: ['./plugin-new.component.css']
+  styleUrls: ['./plugin-new.component.css'],
+  providers: [MessageService]
 })
 export class PluginNewComponent implements OnInit {
 
-  @Input() modalReference: any;
 
   @ViewChild('browsePlugin') browsePlugin: ElementRef;
   @ViewChild('linkPlugin') linkPlugin: ElementRef;
@@ -23,7 +25,8 @@ export class PluginNewComponent implements OnInit {
   pluginJSON;
 
   constructor(
-    private activeModal: NgbActiveModal,
+    private activeModal: DynamicDialogRef,
+    private messageService: MessageService,
     private pluginService: PluginService,
     private router: Router) {
   }
@@ -46,8 +49,8 @@ export class PluginNewComponent implements OnInit {
         this.pluginJSON = JSON.stringify(data, undefined, 7);
       },
       err => {
-        this.displayAlertMessage('danger',
-          'Unable to get JSON from URL (for manifests hosted on Github, please use raw URL)');
+        this.messageService.add({ severity: 'error', summary: 'Error',
+          detail: 'Unable to get JSON from URL (for manifests hosted on Github, please use raw URL)' });
       }
     );
   }
@@ -56,6 +59,10 @@ export class PluginNewComponent implements OnInit {
     this.pluginJSON = null;
     this.browsePlugin.nativeElement.value = '';
     this.linkPlugin.nativeElement.value = '';
+  }
+
+  cancel() {
+    this.activeModal.close();
   }
 
   isJsonValid(textToTest) {
@@ -74,24 +81,18 @@ export class PluginNewComponent implements OnInit {
     if (jsonState[0]) {
       this.pluginService.postPlugin(pluginText).subscribe(
         plugin => {
-          this.displayAlertMessage('success', 'Success! Redirecting...');
+          this.messageService.add({ severity: 'success', summary: 'Success', detail: "Plugin registered. Redirecting..." });
           const pluginId = plugin ? plugin.id : null;
           setTimeout(() => {
             this.router.navigate(['plugins', pluginId]);
           }, 2000);
         },
         err => {
-          this.displayAlertMessage('danger', 'Could not register plugin: ' + err.error.message);
+          this.messageService.add({ severity: 'error', summary: 'Could not register plugin', detail: err.error.message });
         });
     } else {
-      this.displayAlertMessage('danger', 'Invalid JSON - ' + jsonState[1]);
+      this.messageService.add({ severity: 'error', summary: 'Invalid JSON', detail: jsonState[1] });
     }
-  }
-
-  displayAlertMessage(type, message) {
-    this.alertMessage = message;
-    this.alertType = type;
-    this.displayAlert = true;
   }
 
 }

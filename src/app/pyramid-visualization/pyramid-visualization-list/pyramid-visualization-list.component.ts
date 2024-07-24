@@ -1,14 +1,14 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import {BehaviorSubject, Observable, of as observableOf} from 'rxjs';
 import {Visualization} from '../visualization';
-import {MatPaginator, MatSort} from '@angular/material';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
 import {Router} from '@angular/router';
 import {PyramidVisualizationService} from '../pyramid-visualization.service';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {catchError, map, switchMap} from 'rxjs/operators';
 import {PyramidVisualizationNewComponent} from '../pyramid-visualization-new/pyramid-visualization-new.component';
 import {KeycloakService} from '../../services/keycloak/keycloak.service'
-
 
 @Component({
   selector: 'app-pyramid-visualization-list',

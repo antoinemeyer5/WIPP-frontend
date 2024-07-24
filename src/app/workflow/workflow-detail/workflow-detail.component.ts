@@ -1,4 +1,4 @@
-import {Component, Injector, Input, OnDestroy, OnInit} from '@angular/core';
+import { Component, Injector, Input, OnDestroy, OnInit } from '@angular/core';
 import {PluginService} from '../../plugin/plugin.service';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {WorkflowService} from '../workflow.service';
@@ -12,17 +12,18 @@ import {FormProperty, PropertyGroup} from 'ngx-schema-form/lib/model/formpropert
 import {ModalErrorComponent} from '../../modal-error/modal-error.component';
 import {NgxSpinnerService} from 'ngx-spinner';
 import {AppConfigService} from '../../app-config.service';
-import urljoin from 'url-join';
+import urlJoin from 'url-join';
 import {JobService} from '../../job/job.service';
 import {dataMap} from '../../data-service';
 import {WorkflowNewComponent} from '../workflow-new/workflow-new.component';
 import {KeycloakService} from '../../services/keycloak/keycloak.service';
-
+import {DialogService} from 'primeng/dynamicdialog';
 
 @Component({
   selector: 'app-workflow-detail',
   templateUrl: './workflow-detail.component.html',
-  styleUrls: ['./workflow-detail.component.css']
+  styleUrls: ['./workflow-detail.component.css'],
+  providers: [DialogService]
 })
 
 export class WorkflowDetailComponent implements OnInit, OnDestroy {
@@ -77,12 +78,15 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
   argoUiBaseUrl = '';
   argoUiLink;
 
+  newTaskDialogVisible = false;
+
   public data: Array<any>;
   public service: any;
 
   constructor(
     private route: ActivatedRoute,
     private modalService: NgbModal,
+    private dialogService: DialogService,
     private spinner: NgxSpinnerService,
     private pluginService: PluginService,
     private workflowService: WorkflowService,
@@ -97,17 +101,17 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     this.argoUiBaseUrl = this.appConfigService.getConfig().argoUiBaseUrl;
     this.workflowService.getWorkflow(this.workflowId).subscribe(workflow => {
       this.workflow = workflow;
+      this.pluginService.getAllPluginsOrderedByName()
+        .subscribe(plugins => {
+          this.pluginList = plugins.plugins;
+          this.generateSchema(this.pluginList);
+          this.resetForm();
+          this.getJobs();
+        });
       this.updateArgoUrl();
     }, error => {
       this.router.navigate(['/404']);
     });
-    this.pluginService.getAllPluginsOrderedByName()
-      .subscribe(plugins => {
-        this.pluginList = plugins.plugins;
-        this.generateSchema(this.pluginList);
-        this.resetForm();
-        this.getJobs();
-      });
   }
 
   resetForm() {
@@ -117,65 +121,125 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
   }
 
   open(content) {
-    this.modalService.open(content, {'size': 'lg'}).result.then((result) => {
-      const task = {};
+    this.newTaskDialogVisible = true;
+    // this.modalService.open(content, {'size': 'lg'}).result.then((result) => {
+    //   const task = {};
+    //
+    //   // configure job
+    //   if (this.editMode) {
+    //     task['id'] = this.jobModel['id'];
+    //   }
+    //   task['name'] = this.workflow.name + '-' + result.taskName;
+    //   task['wippExecutable'] = this.selectedSchema.id;
+    //   task['wippWorkflow'] = this.workflow.id;
+    //   task['type'] = this.selectedSchema.name;
+    //   task['dependencies'] = [];
+    //   task['parameters'] = {};
+    //   task['outputParameters'] = {};
+    //   // add job parameters
+    //
+    //   this.selectedSchema.outputs.forEach(output => {
+    //     task['outputParameters'][output.name] = null;
+    //   });
+    //
+    //   for (const inputEntry in result.inputs) {
+    //     if (result.inputs.hasOwnProperty(inputEntry)) {
+    //       const type = this.selectedSchema.properties.inputs.properties[inputEntry]['format'];
+    //       let value = result.inputs[inputEntry];
+    //       if (type === 'collection' ||
+    //         type === 'stitchingVector' ||
+    //         type === 'pyramid' ||
+    //         type === 'pyramidAnnotation' ||
+    //         type === 'tensorflowModel' ||
+    //         type === 'csvCollection' ||
+    //         type === 'notebook' ||
+    //         type == 'genericData') {
+    //         if (value.hasOwnProperty('virtual') && value.virtual === true && value.hasOwnProperty('sourceJob')) {
+    //           if (task['dependencies'].indexOf(value.sourceJob) === -1) {
+    //             task['dependencies'].push(value.sourceJob);
+    //           }
+    //         }
+    //         value = value.hasOwnProperty('id') ? value.id : null;
+    //       }
+    //       if (type === 'array') {
+    //         value = value.join(',');
+    //       }
+    //       task['parameters'][inputEntry] = value;
+    //     }
+    //   }
+    //
+    //   const workflowServiceCall = this.editMode ? this.workflowService.updateJob(task)
+    //     : this.workflowService.createJob(task);
+    //   workflowServiceCall.subscribe(job => {
+    //     this.resetForm();
+    //     this.getJobs();
+    //   }, error => {
+    //     this.resetForm();
+    //     const modalRefErr = this.modalService.open(ModalErrorComponent);
+    //     modalRefErr.componentInstance.title = 'Error while creating new task';
+    //     modalRefErr.componentInstance.message = error.error;
+    //   });
+    // }, (result) => {
+    //   this.resetForm();
+    // });
+  }
 
-      // configure job
-      if (this.editMode) {
-        task['id'] = this.jobModel['id'];
-      }
-      task['name'] = this.workflow.name + '-' + result.taskName;
-      task['wippExecutable'] = this.selectedSchema.id;
-      task['wippWorkflow'] = this.workflow.id;
-      task['type'] = this.selectedSchema.name;
-      task['dependencies'] = [];
-      task['parameters'] = {};
-      task['outputParameters'] = {};
-      // add job parameters
+  saveTask(result) {
+    const task = {};
 
-      this.selectedSchema.outputs.forEach(output => {
-        task['outputParameters'][output.name] = null;
-      });
+    // configure job
+    if (this.editMode) {
+      task['id'] = this.jobModel['id'];
+    }
+    task['name'] = this.workflow.name + '-' + result.taskName;
+    task['wippExecutable'] = this.selectedSchema.id;
+    task['wippWorkflow'] = this.workflow.id;
+    task['type'] = this.selectedSchema.name;
+    task['dependencies'] = [];
+    task['parameters'] = {};
+    task['outputParameters'] = {};
+    // add job parameters
 
-      for (const inputEntry in result.inputs) {
-        if (result.inputs.hasOwnProperty(inputEntry)) {
-          const type = this.selectedSchema.properties.inputs.properties[inputEntry]['format'];
-          let value = result.inputs[inputEntry];
-          if (type === 'collection' ||
-            type === 'stitchingVector' ||
-            type === 'pyramid' ||
-            type === 'pyramidAnnotation' ||
-            type === 'aiModel' ||
-            type === 'csvCollection' ||
-            type === 'notebook' ||
-            type == 'genericData') {
-            if (value.hasOwnProperty('virtual') && value.virtual === true && value.hasOwnProperty('sourceJob')) {
-              if (task['dependencies'].indexOf(value.sourceJob) === -1) {
-                task['dependencies'].push(value.sourceJob);
-              }
+    this.selectedSchema.outputs.forEach(output => {
+      task['outputParameters'][output.name] = null;
+    });
+
+    for (const inputEntry in result.inputs) {
+      if (result.inputs.hasOwnProperty(inputEntry)) {
+        const type = this.selectedSchema.properties.inputs.properties[inputEntry]['format'];
+        let value = result.inputs[inputEntry];
+        if (type === 'collection' ||
+          type === 'stitchingVector' ||
+          type === 'pyramid' ||
+          type === 'pyramidAnnotation' ||
+          type === 'aiModel' ||
+          type === 'csvCollection' ||
+          type === 'notebook' ||
+          type == 'genericData') {
+          if (value.hasOwnProperty('virtual') && value.virtual === true && value.hasOwnProperty('sourceJob')) {
+            if (task['dependencies'].indexOf(value.sourceJob) === -1) {
+              task['dependencies'].push(value.sourceJob);
             }
-            value = value.hasOwnProperty('id') ? value.id : null;
           }
-          if (type === 'array') {
-            value = value.join(',');
-          }
-          task['parameters'][inputEntry] = value;
+          value = value.hasOwnProperty('id') ? value.id : null;
         }
+        if (type === 'array') {
+          value = value.join(',');
+        }
+        task['parameters'][inputEntry] = value;
       }
+    }
 
-      const workflowServiceCall = this.editMode ? this.workflowService.updateJob(task)
-        : this.workflowService.createJob(task);
-      workflowServiceCall.subscribe(job => {
-        this.resetForm();
-        this.getJobs();
-      }, error => {
-        this.resetForm();
-        const modalRefErr = this.modalService.open(ModalErrorComponent);
-        modalRefErr.componentInstance.title = 'Error while creating new task';
-        modalRefErr.componentInstance.message = error.error;
-      });
-    }, (result) => {
+    const workflowServiceCall = this.editMode ? this.workflowService.updateJob(task)
+      : this.workflowService.createJob(task);
+    workflowServiceCall.subscribe(job => {
       this.resetForm();
+      this.getJobs();
+    }, error => {
+      this.resetForm();
+      const modalRefErr = this.modalService.open(ModalErrorComponent);
+      modalRefErr.componentInstance.title = 'Error while creating new task';
+      modalRefErr.componentInstance.message = error.error;
     });
   }
 
@@ -393,14 +457,18 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
   }
 
   displayJobModal(jobId: string) {
-    const modalRef = this.modalService.open(JobDetailComponent, {size: 'lg', backdrop: 'static'});
-    modalRef.componentInstance.modalReference = modalRef;
-    (modalRef.componentInstance as JobDetailComponent).jobId = jobId;
-    modalRef.result.then((result) => {
+    this.dialogService.open(JobDetailComponent, {
+      header: 'Job detail',
+      position: 'top',
+      width: '50vw',
+      data: {
+        jobId: jobId
+      },
+      breakpoints: {
+        '960px': '75vw',
+        '640px': '90vw'
       }
-      , (reason) => {
-        console.log('dismissed');
-      });
+    });
   }
 
   openCopy(content, jobId: string) {
@@ -546,7 +614,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
 
   updateArgoUrl() {
     if (this.workflow.generatedName) {
-      this.argoUiLink = urljoin(this.argoUiBaseUrl, this.workflow.generatedName);
+      this.argoUiLink = urlJoin(this.argoUiBaseUrl, this.workflow.generatedName);
     }
   }
 

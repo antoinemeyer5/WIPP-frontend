@@ -1,121 +1,75 @@
-<div class="modal-header">
-  <h4 class="modal-title" id="modal-basic-title">
-    <span class="glyphicon glyphicon-star"></span> Job detail
-  </h4>
-  <button type="button" class="close" aria-label="Close" (click)="modalReference.dismiss('Cross click')">
-    <span aria-hidden="true">&times;</span>
-  </button>
-</div>
-
 <!-- Job details Table -->
-<div class="modal-body top20" *ngIf="job">
-  <table class="table table-bordered">
+<div class="card" *ngIf="job">
+  <div class="p-datatable-gridlines p-datatable">
+    <table class="p-datatable-table">
+      <tbody class="p-datatable-tbody">
 
-    <!--  name line  -->
-    <tr *ngIf="job.name">
-      <th>
-        <dt>Name:</dt>
-      </th>
-      <td>
-        <dd class="col-md-8 breakLine">{{job.name}}</dd>
-      </td>
-    </tr>
+        <!--  name line  -->
+        <tr *ngIf="job.name">
+          <td class="font-semibold">Name:</td>
+          <td>{{job.name}}</td>
+        </tr>
 
-    <!--  creationDate line  -->
-    <tr *ngIf=" job.creationDate">
-      <th>
-        <dt>Creation date:</dt>
-      </th>
-      <td>
-        <dd class="col-md-8 breakLine">{{job.creationDate | date}}</dd>
-      </td>
-    </tr>
+        <!--  creationDate line  -->
+        <tr *ngIf=" job.creationDate">
+          <td  class="font-semibold">Creation date:</td>
+          <td>{{job.creationDate | date}}</td>
+        </tr>
 
-    <!--  status line  -->
-    <tr *ngIf="job.status">
-      <th>
-        <dt>Status:</dt>
-      </th>
-      <td>
-        <dd class="col-md-8 breakLine">{{job.status}}</dd>
-      </td>
-    </tr>
+        <!--  status line  -->
+        <tr *ngIf="job.status">
+          <td class="font-semibold">Status:</td>
+          <td>{{job.status}}</td>
+        </tr>
 
-    <!--  owner line  -->
-    <tr *ngIf="job.owner">
-      <th>
-        <dt>Owner:</dt>
-      </th>
-      <td>
-        <dd class="col-md-8 breakLine">{{job.owner}}</dd>
-      </td>
-    </tr>
+        <!--  owner line  -->
+        <tr *ngIf="job.owner">
+          <td class="font-semibold">Owner:</td>
+          <td>{{job.owner}}</td>
+        </tr>
 
-    <!--  workflow name line  -->
-    <tr *ngIf="workflow">
-      <th>
-        <dt>Workflow Name:</dt>
-      </th>
-      <td>
-        <dd class="col-md-8 breakLine">
-          <a routerLink="/workflows/detail/{{workflow.id}}" (click)="modalReference.dismiss('Cross click')">{{workflow.name}}</a>
-        </dd>
-      </td>
-    </tr>
+        <!--  workflow name line  -->
+        <tr *ngIf="workflow">
+          <td class="font-semibold">Workflow Name:</td>
+          <td>
+            <a routerLink="/workflows/detail/{{workflow.id}}" (click)="modalReference.close()">{{workflow.name}}</a>
+          </td>
+        </tr>
 
-    <!--  plugin name line  -->
-    <tr *ngIf="plugin">
-      <th>
-        <dt>Plugin:</dt>
-      </th>
-      <td>
-        <dd class="col-md-8 breakLine">
-          <a routerLink="/plugins/{{plugin.id}}" (click)="modalReference.dismiss('Cross click')">{{plugin.name}}:{{plugin.version}}</a>
-        </dd>
-      </td>
-    </tr>
+        <!--  plugin name line  -->
+        <tr *ngIf="plugin">
+          <td class="font-semibold">Plugin:</td>
+          <td>
+            <a routerLink="/plugins/{{plugin.id}}" (click)="modalReference.close()">{{plugin.name}}:{{plugin.version}}</a>
+          </td>
+        </tr>
 
-    <!--  startTime line  -->
-    <tr *ngIf="job.startTime">
-      <th>
-        <dt>Start time:</dt>
-      </th>
-      <td>
-        <dd class="col-md-8 breakLine">{{job.startTime}}</dd>
-      </td>
-    </tr>
+        <!--  startTime line  -->
+        <tr *ngIf="job.startTime">
+          <td class="font-semibold">Start time:
+          <td>{{job.startTime}}</td>
+        </tr>
 
-    <!--  endTime line  -->
-    <tr *ngIf="job.endTime">
-      <th>
-        <dt>End time:</dt>
-      </th>
-      <td>
-        <dd class="col-md-8 breakLine">{{job.endTime}}</dd>
-      </td>
-    </tr>
+        <!--  endTime line  -->
+        <tr *ngIf="job.endTime">
+          <td class="font-semibold">End time:</td>
+          <td>{{job.endTime}}</td>
+        </tr>
 
-    <!--  runningTime line  -->
-    <tr *ngIf="job.runningTime">
-      <th>
-        <dt>Running time:</dt>
-      </th>
-      <td>
-        <dd class="col-md-8 breakLine">{{job.runningTime}}</dd>
-      </td>
-    </tr>
+        <!--  runningTime line  -->
+        <tr *ngIf="job.runningTime">
+          <td class="font-semibold">Running time:</td>
+          <td>{{job.runningTime}}</td>
+        </tr>
 
-    <!--  wippVersion line  -->
-    <tr *ngIf="job.wippVersion">
-      <th>
-        <dt>Computed in version:</dt>
-      </th>
-      <td>
-        <dd class="col-md-8 breakLine">{{job.wippVersion}}</dd>
-      </td>
-    </tr>
-
-  </table>
+        <!--  wippVersion line  -->
+        <tr *ngIf="job.wippVersion">
+          <td>Computed in version:</td>
+          <td>{{job.wippVersion}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </div>
 
 <!--Input Table -->
@@ -137,7 +91,7 @@
         </dt>
       </th>
       <td *ngIf="job.parameters[input['name']]">
-        <dd class="col-md-8 breakLine" (click)="modalReference.dismiss('Cross click')">
+        <dd class="col-md-8 breakLine" (click)="modalReference.close()">
           <span *ngIf="!job.parameters[input['name']].includes('{{');then flatInput else linkedInput"></span>
         </dd>
       </td>
@@ -176,7 +130,7 @@
         </dt>
       </th>
       <td>
-        <dd class="col-md-8 breakLine" (click)="modalReference.dismiss('Cross click')">
+        <dd class="col-md-8 breakLine" (click)="modalReference.close()">
           <app-dynamic-content type="{{output['type']}}"
                                jobId="{{job.id}}"
                                idData="{{job.outputParameters[output['name']]}}"

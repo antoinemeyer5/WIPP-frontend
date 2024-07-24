@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {DynamicComponent} from '../../dynamic-content/dynamic.component';
 import {PyramidService} from '../pyramid.service';
 
