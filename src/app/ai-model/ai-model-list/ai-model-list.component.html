@@ -1,31 +1,17 @@
 <h1>Trained AI Models</h1>
 <div class="card">
-  <p-table #dt
-           [value]="aiModels"
-           [lazy]="true"
-           (onLazyLoad)="getAiModels($event)"
-           dataKey="id"
-           [tableStyle]="{ 'min-width': '75rem' }"
-           [paginator]="true"
-           [rows]="10"
-           [rowsPerPageOptions]="[10, 25, 50]"
-           [totalRecords]="resultsLength"
-           selectionMode="single"
-           [showCurrentPageReport]="true"
-           currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-           [globalFilterFields]="['name']"
-  >
+  <p-table #dt [value]="aiModels" [lazy]="true" (onLazyLoad)="getAiModels($event)" dataKey="id"
+    [tableStyle]="{ 'min-width': '75rem' }" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10, 25, 50]"
+    [totalRecords]="resultsLength" selectionMode="single" [showCurrentPageReport]="true"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [globalFilterFields]="['name']">
     <ng-template pTemplate="caption">
       <div class="flex align-items-center justify-content-between">
         <span></span>
         <span class="p-input-icon-left">
-                <i class="pi pi-search"></i>
-                <input
-                  pInputText
-                  type="text"
-                  (input)="dt.filterGlobal($event.target.value, 'contains')"
-                  placeholder="Search..." />
-            </span>
+          <i class="pi pi-search"></i>
+          <input pInputText type="text" (input)="dt.filterGlobal($event.target.value, 'contains')"
+            placeholder="Search..." />
+        </span>
       </div>
     </ng-template>
     <ng-template pTemplate="header">

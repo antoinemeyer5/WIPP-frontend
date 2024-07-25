@@ -8,9 +8,9 @@ describe('AiModelListComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AiModelListComponent ]
+      declarations: [AiModelListComponent]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

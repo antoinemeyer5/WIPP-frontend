@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import {AiModel} from '../ai-model';
-import {AiModelService} from '../ai-model.service';
+import { AiModel } from '../ai-model';
+import { AiModelService } from '../ai-model.service';
 
 @Component({
   selector: 'app-ai-model-list',
@@ -9,7 +9,6 @@ import {AiModelService} from '../ai-model.service';
 })
 export class AiModelListComponent implements OnInit {
   aiModels: AiModel[];
-
   resultsLength = 0;
   pageSize = 10;
 
@@ -21,16 +20,15 @@ export class AiModelListComponent implements OnInit {
     this.getAiModels(null);
   }
 
-  getAiModels(event): void {
-    const sortField = event?.sortOrder == -1 ? 'desc' : 'asc';
-    const pageIndex = event ? event.first / event.rows : 0;
-    const pageSize = event ? event.rows : this.pageSize;
+  getAiModels(event) {
+    const sortOrderStr = event.sortOrder == -1 ? 'desc' : 'asc';
+    const sortField = event.sortField ? event.sortField + ',' + sortOrderStr : 'creationDate,desc';
     const params = {
-      pageIndex: pageIndex,
-      size: pageSize,
+      pageIndex: event.first / event.rows,
+      size: event.rows,
       sort: sortField
     };
-    if(event?.filters?.global?.value) {
+    if (event?.filters?.global?.value) {
       this.aiModelService.getByNameContainingIgnoreCase(params, event.filters.global.value).subscribe(result => {
         this.aiModels = result.data;
         this.resultsLength = result.page.totalElements;
