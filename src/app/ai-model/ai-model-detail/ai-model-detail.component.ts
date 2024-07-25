@@ -108,7 +108,7 @@ export class AiModelDetailComponent implements OnInit, OnDestroy {
       .getTensorboardlogsCSV("6682f3d43149955bd95f59ab", "test", tag) // todo: use `this.tensorboardLogs.id`
       .subscribe(data => {
         // remove headers; get epochs and values
-        for (let v of data.slice(1)) { 
+        for (let v of data.slice(1)) {
           labels.push(v[1]);
           test.data.push(v[2]);
         }

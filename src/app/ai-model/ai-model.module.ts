@@ -12,6 +12,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { FieldsetModule } from 'primeng/fieldset';
 import { TooltipModule } from 'primeng/tooltip';
 import { ChartModule } from 'primeng/chart';
+import { DropdownModule } from 'primeng/dropdown';
 
 @NgModule({
   imports: [
@@ -23,7 +24,8 @@ import { ChartModule } from 'primeng/chart';
     InputTextModule,
     FieldsetModule,
     TooltipModule,
-    ChartModule
+    ChartModule,
+    DropdownModule
   ],
   declarations: [
     AiModelListComponent,

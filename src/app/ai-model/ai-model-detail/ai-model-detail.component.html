@@ -1,17 +1,11 @@
 <h1 class="wipp-title">
   AI Model: {{aiModel.name}}
   <div style="float: right;">
-    <p-button icon="pi pi-download"
-              (click)="openDownload(aiModel._links.download.href)"
-              pTooltip="Download as zip"
-              tooltipPosition="left"
-              [outlined]="true">
+    <p-button icon="pi pi-download" (click)="openDownload(aiModel._links.download.href)" pTooltip="Download as zip"
+      tooltipPosition="left" [outlined]="true">
     </p-button>
     <p-button icon="pi pi-globe" *ngIf="!aiModel.publiclyShared && canEdit()" type="button"
-              pTooltip="Make collection public"
-              tooltipPosition="left"
-              [outlined]="true"
-              (click)="makePublicAiModel();">
+      pTooltip="Make collection public" tooltipPosition="left" [outlined]="true" (click)="makePublicAiModel();">
     </p-button>
   </div>
 </h1>
@@ -48,10 +42,8 @@
           Source:
         </div>
         <div class="col-9 py-1">
-          <a *ngIf="job; else not_applicable" (click)="displayJobModal(job.id)"
-             class="wipp-link"
-             pTooltip="Show Job"
-             placement="left">
+          <a *ngIf="job; else not_applicable" (click)="displayJobModal(job.id)" class="wipp-link" pTooltip="Show Job"
+            placement="left">
             {{job.name}}
           </a>
         </div>
@@ -59,9 +51,8 @@
           Tensorboard Logs:
         </div>
         <div class="col-9 py-1">
-          <a *ngIf="tensorboardLogs; else not_applicable"
-             href={{tensorboardLink}}
-             target="_blank">{{tensorboardLogs.name}}
+          <a *ngIf="tensorboardLogs; else not_applicable" href={{tensorboardLink}}
+            target="_blank">{{tensorboardLogs.name}}
           </a>
         </div>
         <div class="col-3 py-1 font-semibold">
@@ -118,7 +109,7 @@
         <div class="col-3 py-1 font-semibold">Accuracy chart:</div>
         <p-chart class="col-9 py-1" type="line" [data]="chartdata_accu"></p-chart>
 
-        <div class="col-3 py-1 font-semibold">Loss chart:</div>  
+        <div class="col-3 py-1 font-semibold">Loss chart:</div>
         <p-chart class="col-9 py-1" type="line" [data]="chartdata_loss"></p-chart>
       </div>
     </div>
@@ -133,17 +124,11 @@
     <select name="frameworks" id="frameworks">
       <option *ngFor="let framework of aiFramework" value="{{framework}}">{{ framework }}</option>
     </select>
-    <p-button icon="pi pi-eye"
-              (click)="displayAiModelCardModal(aiModelCard.id);"
-              pTooltip="Display AI Model Card for a specific platform"
-              tooltipPosition="left"
-              [outlined]="true">
+    <p-button icon="pi pi-eye" (click)="displayAiModelCardModal(aiModelCard.id);"
+      pTooltip="Display AI Model Card for a specific platform" tooltipPosition="left" [outlined]="true">
     </p-button>
-    <p-button icon="pi pi-download"
-              (click)="exportAiModelCard(aiModelCard.id);"
-              pTooltip="Download AI Model Card"
-              tooltipPosition="left"
-              [outlined]="true">
+    <p-button icon="pi pi-download" (click)="exportAiModelCard(aiModelCard.id);" pTooltip="Download AI Model Card"
+      tooltipPosition="left" [outlined]="true">
     </p-button>
   </div>
   <div class="grid nested-grid">
@@ -179,16 +164,11 @@
         <div class="col-9 py-1">{{aiModelCard.description}}</div>
 
         <div class="col-3 py-1 font-semibold">Citation:</div>
-        <div class="col-9 py-1" style="color: red;">wip new frontend</div>
-        <!--
-        <dt class="col-md-4">Citation</dt>
-        <dd class="col-md-8">
-          <input type="text"
+        <div class="col-9 py-1">
+          <input pInputText id="citation" name="citation" class="flex-auto" autocomplete="off"
             value="{{ aiModelCard.citation ? aiModelCard.citation : 'null' }}"
-            (change)="updateAiModelCard($event.target.value, 'citation')"
-          >
-        </dd>
-        -->
+            (change)="updateAiModelCard($event.target.value, 'citation')" minlength="1" maxlength="70" />
+        </div>
 
         <div class="col-3 py-1 font-semibold">Operation Type:</div>
         <div class="col-9 py-1">{{aiModelCard.operationType || "N/A"}}</div>
@@ -201,7 +181,8 @@
           <details>
             <summary>Details</summary>
             Compute in {{ aiModelCard.training["time"] }} seconds with {{ aiModelCard.training["epochs"] }} epochs <br>
-            Achieves maxAccuracy of {{ aiModelCard.training["maxAccuracy"] }} and minLoss of {{ aiModelCard.training["minLoss"] }}
+            Achieves maxAccuracy of {{ aiModelCard.training["maxAccuracy"] }} and minLoss of {{
+            aiModelCard.training["minLoss"] }}
           </details>
         </div>
 
@@ -210,7 +191,8 @@
           <details>
             <summary>Details</summary>
             Compute in {{ aiModelCard.testing["time"] }} seconds with {{ aiModelCard.testing["epochs"] }} epochs <br>
-            Achieves maxAccuracy of {{ aiModelCard.testing["maxAccuracy"] }} and minLoss of {{ aiModelCard.testing["minLoss"] }}
+            Achieves maxAccuracy of {{ aiModelCard.testing["maxAccuracy"] }} and minLoss of {{
+            aiModelCard.testing["minLoss"] }}
           </details>
         </div>
 

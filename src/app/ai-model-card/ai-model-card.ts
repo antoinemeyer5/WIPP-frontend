@@ -1,5 +1,4 @@
-export class AiModelCard
-{
+export class AiModelCard {
     id: string;
     version: string;
 
@@ -15,7 +14,7 @@ export class AiModelCard
     citation: string;
     operationType: string;
     architecture: string;
-    
+
     training: Map<string, number>;
     testing: Map<string, number>;
 
