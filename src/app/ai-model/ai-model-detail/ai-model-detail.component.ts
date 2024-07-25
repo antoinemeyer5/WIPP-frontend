@@ -15,7 +15,6 @@ import { AiModelCardService } from 'src/app/ai-model-card/ai-model-card.service'
 import { HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-
 @Component({
   selector: 'app-ai-model-detail',
   templateUrl: './ai-model-detail.component.html',
@@ -32,8 +31,8 @@ export class AiModelDetailComponent implements OnInit, OnDestroy {
   tensorboardPlotable: boolean = false;
   job: Job = null;
 
-  chartdata_accu: any;
-  chartdata_loss: any;
+  chartdata_accu: { labels: string[], datasets: any[] };
+  chartdata_loss: { labels: string[], datasets: any[] };
 
   constructor(
     private route: ActivatedRoute,
@@ -82,8 +81,8 @@ export class AiModelDetailComponent implements OnInit, OnDestroy {
             this.tensorboardLogs = res;
             this.tensorboardLink = this.tensorboardLink + this.tensorboardLogs.name;
             this.tensorboardPlotable = true;
-            this.accuChart();
-            this.lossChart();
+            this.chartdata_accu = this.loadChart("accuracy");
+            this.chartdata_loss = this.loadChart("loss");
           });
       });
     }
@@ -102,58 +101,30 @@ export class AiModelDetailComponent implements OnInit, OnDestroy {
     });
   }
 
-  lossChart() {
-    let chartdata_loss_labels: string[] = [];
-    let chartdata_loss_TEST = { label: 'test', data: [] };
-    let chartdata_loss_TRAIN = { label: 'train', data: [] };
-
-    this.chartdata_loss = {
-      labels: chartdata_loss_labels,
-      datasets: [chartdata_loss_TEST, chartdata_loss_TRAIN]
-    };
-
+  loadChart(tag: string) {
+    let labels: string[] = [];
+    let test = { label: 'test', data: [] };
     this.aiModelService
-      .getTensorboardlogsCSV("6682f3d43149955bd95f59ab", "test", "loss") // todo: use `this.tensorboardLogs.id`, "6682c9e43149955bd95f59a8"
+      .getTensorboardlogsCSV("6682f3d43149955bd95f59ab", "test", tag) // todo: use `this.tensorboardLogs.id`
       .subscribe(data => {
-        for (let v of data.slice(1)) { // remove headers
-          chartdata_loss_labels.push(v[1]); // epoch
-          chartdata_loss_TEST.data.push(v[2]); //values
+        // remove headers; get epochs and values
+        for (let v of data.slice(1)) { 
+          labels.push(v[1]);
+          test.data.push(v[2]);
         }
       });
+
+    let train = { label: 'train', data: [] };
     this.aiModelService
-      .getTensorboardlogsCSV("6682f3d43149955bd95f59ab", "train", "loss")
+      .getTensorboardlogsCSV("6682f3d43149955bd95f59ab", "train", tag) // todo
       .subscribe(data => {
-        for (let v of data.slice(1)) { // remove headers
-          chartdata_loss_TRAIN.data.push(v[2]); //values
+        for (let v of data.slice(1)) {
+          train.data.push(v[2]);
         }
       });
-  }
 
-  accuChart() {
-    let chartdata_accu_labels: string[] = [];
-    let chartdata_accu_TEST = { label: 'test', data: [] };
-    let chartdata_accu_TRAIN = { label: 'train', data: [] };
-
-    this.chartdata_accu = {
-      labels: chartdata_accu_labels,
-      datasets: [chartdata_accu_TEST, chartdata_accu_TRAIN]
-    };
-
-    this.aiModelService
-      .getTensorboardlogsCSV("6682f3d43149955bd95f59ab", "test", "accuracy") // todo: use `this.tensorboardLogs.id`, "6682c9e43149955bd95f59a8"
-      .subscribe(data => {
-        for (let v of data.slice(1)) { // remove headers
-          chartdata_accu_labels.push(v[1]); // epoch
-          chartdata_accu_TEST.data.push(v[2]); //values
-        }
-      });
-    this.aiModelService
-      .getTensorboardlogsCSV("6682f3d43149955bd95f59ab", "train", "accuracy")
-      .subscribe(data => {
-        for (let v of data.slice(1)) { // remove headers
-          chartdata_accu_TRAIN.data.push(v[2]); //values
-        }
-      });
+    let chartdata = { labels: labels, datasets: [test, train] };
+    return chartdata;
   }
 
   /***** AiModel Methods *****/
