@@ -162,16 +162,15 @@
         <div class="col-9 py-1">{{aiModelCard.framework || "N/A"}}</div>
 
         <div class="col-3 py-1 font-semibold">Training Data:</div>
-        <div class="col-9 py-1" style="color: red;">wip new frontend</div>
-        <!--
-        <dt class="col-md-4">Training Data</dt>
-        <dd class="col-md-8 pb-4" >
+        <div class="col-9 py-1">
           <details>
             <summary>Details</summary>
-            <div *ngFor="let item of aiModelCard.trainingData | keyvalue"> {{item.key}} -> {{item.value}}</div>
+            <div class="grid" *ngFor="let item of aiModelCard.trainingData | keyvalue">
+              <div class="col-3 py-1 font-semibold">{{item.key}}:</div>
+              <div class="col-9 py-1">{{item.value}}</div>
+            </div>
           </details>
-        </dd>
-        -->
+        </div>
 
         <div class="col-3 py-1 font-semibold">Author:</div>
         <div class="col-9 py-1">{{aiModelCard.author || "null"}}</div>
