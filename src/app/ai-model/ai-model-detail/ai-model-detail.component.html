@@ -83,7 +83,6 @@
 
   <div class="grid nested-grid" *ngIf="tensorboardPlotable">
     <div class="col-12 md:col-6">
-      <p>This AI model did produce a tensorboard.</p>
       <div class="grid">
         <div class="col-3 py-1 font-semibold">
           Name:
@@ -118,9 +117,6 @@
 
 <p-fieldset legend="AI Model Card" [toggleable]="true">
   <div style="float: right;">
-    <!--
-    TODO: p-dropdown
-    -->
     <select name="frameworks" id="frameworks">
       <option *ngFor="let framework of aiFramework" value="{{framework}}">{{ framework }}</option>
     </select>
@@ -152,6 +148,17 @@
             <summary>Details</summary>
             <div class="grid" *ngFor="let item of aiModelCard.trainingData | keyvalue">
               <div class="col-3 py-1 font-semibold">{{item.key}}:</div>
+              <div class="col-9 py-1"><a href="/images-collection/{{item.value}}">link</a></div>
+            </div>
+          </details>
+        </div>
+
+        <div class="col-3 py-1 font-semibold">Training Parameters:</div>
+        <div class="col-9 py-1">
+          <details>
+            <summary>Details</summary>
+            <div class="grid" *ngFor="let item of aiModelCard.trainingParameters | keyvalue">
+              <div class="col-3 py-1 font-semibold">{{item.key}}:</div>
               <div class="col-9 py-1">{{item.value}}</div>
             </div>
           </details>
@@ -171,7 +178,15 @@
         </div>
 
         <div class="col-3 py-1 font-semibold">Operation Type:</div>
-        <div class="col-9 py-1">{{aiModelCard.operationType || "N/A"}}</div>
+        <div class="col-9 py-1">
+          <details>
+            <summary>Details</summary>
+            <div class="grid" *ngFor="let item of aiModelCard.operationType | keyvalue">
+              <div class="col-3 py-1 font-semibold">{{item.key}}:</div>
+              <div class="col-9 py-1">{{item.value}}</div>
+            </div>
+          </details>
+        </div>
 
         <div class="col-3 py-1 font-semibold">Architecture:</div>
         <div class="col-9 py-1">{{aiModelCard.architecture || "N/A"}}</div>

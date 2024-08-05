@@ -8,11 +8,12 @@ export class AiModelCard {
     framework: string;
 
     trainingData: Map<string, string>;
+    trainingParameters: Map<string, string>;
 
     author: string;
     description: string;
     citation: string;
-    operationType: string;
+    operationType: string[];
     architecture: string;
 
     training: Map<string, number>;
