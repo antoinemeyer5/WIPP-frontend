@@ -1,21 +1,23 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import {forkJoin, Observable, of} from 'rxjs';
-import {debounceTime, distinctUntilChanged, map, switchMap} from 'rxjs/operators';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {forkJoin, of} from 'rxjs';
+import {map} from 'rxjs/operators';
 import {Visualization} from '../visualization';
-import {NgbModal, NgbTypeahead} from '@ng-bootstrap/ng-bootstrap';
 import {ActivatedRoute, Router} from '@angular/router';
 import {PyramidService} from '../../pyramid/pyramid.service';
 import {PyramidVisualizationService} from '../pyramid-visualization.service';
 import {PyramidVisualizationHelpComponent} from '../pyramid-visualization-help/pyramid-visualization-help.component';
-import {ModalErrorComponent} from '../../modal-error/modal-error.component';
 import {KeycloakService} from '../../services/keycloak/keycloak.service'
 import {ImagesCollectionService} from '../../images-collection/images-collection.service';
-import {SelectItem} from 'primeng/api';
+import {MessageService, SelectItem} from 'primeng/api';
+import {ImagesCollection} from '../../images-collection/images-collection';
+import {AutoCompleteCompleteEvent} from 'primeng/autocomplete';
+import {DialogService} from 'primeng/dynamicdialog';
 
 @Component({
   selector: 'app-pyramid-visualization-detail',
   templateUrl: './pyramid-visualization-detail.component.html',
-  styleUrls: ['./pyramid-visualization-detail.component.css']
+  styleUrls: ['./pyramid-visualization-detail.component.css'],
+  providers: [DialogService, MessageService]
 })
 export class PyramidVisualizationDetailComponent implements OnInit, OnDestroy {
 
@@ -36,12 +38,13 @@ export class PyramidVisualizationDetailComponent implements OnInit, OnDestroy {
   invertOptions: SelectItem[];
   invertField: string;
 
-  @ViewChild('instance') instance: NgbTypeahead;
+  imagesCollSuggestions: Array<ImagesCollection>;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private modalService: NgbModal,
+    private dialogService: DialogService,
+    private messageService: MessageService,
     private pyramidService: PyramidService,
     private imagesCollectionService: ImagesCollectionService,
     private visualizationService: PyramidVisualizationService,
@@ -135,12 +138,10 @@ export class PyramidVisualizationDetailComponent implements OnInit, OnDestroy {
         this.savedStatus = 'saved';
       }, error => {
         this.savedStatus = 'error';
-        const modalRefErr = this.modalService.open(ModalErrorComponent);
-        modalRefErr.componentInstance.title = 'Cannot save configuration.';
-        modalRefErr.componentInstance.message =
-          'The configuration can not be saved on the server.<br>' +
-          'Your recent modifications won\'t be available when you leave ' +
-          'this page and come back later.';
+        this.messageService.add({ severity: 'error', summary: 'Cannot save configuration',
+          detail: 'The configuration can not be saved on the server.<br>' +
+            'Your recent modifications won\'t be available when you leave ' +
+            'this page and come back later.' });
       });
     });
   }
@@ -297,30 +298,26 @@ export class PyramidVisualizationDetailComponent implements OnInit, OnDestroy {
   }
 
   showHelp() {
-    const modalRef = this.modalService.open(PyramidVisualizationHelpComponent, { size: 'lg', backdrop: 'static', keyboard: true });
-    modalRef.componentInstance.modalReference = modalRef;
+    this.dialogService.open(PyramidVisualizationHelpComponent, {
+      header: 'Visualization configuration help',
+      position: 'top',
+      width: '50vw',
+      breakpoints: {
+        '960px': '75vw',
+        '640px': '90vw'
+      }
+    });
   }
 
-  // Typeahead functions for pyramid search
-  // filter(term) {
-  //   return this.pyramidService.getByNameContainingIgnoreCase(null, term).pipe(map(paginatedResult => {
-  //     return paginatedResult.data;
-  //   }));
-  // }
-  filter(term) {
-    return this.imagesCollectionService.getByNameContainingIgnoreCase(null, term).pipe(map(paginatedResult => {
-      return paginatedResult.data;
-    }));
+  // Typeahead function for image collection search
+  search(event: AutoCompleteCompleteEvent) {
+    this.imagesCollectionService.getByNameContainingIgnoreCase(null, event.query).subscribe(paginatedResult => {
+      this.imagesCollSuggestions = paginatedResult.data;
+    });
   }
-  search = (text$: Observable<string>) => text$.pipe(
-    debounceTime(200),
-    distinctUntilChanged(),
-    switchMap(term => this.filter(term))
-  )
-  formatter = (x: {name: string}) => x.name;
 
   ngOnDestroy() {
-    this.modalService.dismissAll();
+    this.dialogService.dialogComponentRefMap.forEach((dialog) => dialog.destroy());
   }
 
   makePublicVisualization(): void {

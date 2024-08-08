@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import {WorkflowService} from '../workflow.service';
 import {Workflow} from '../workflow';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
@@ -25,16 +25,17 @@ export class WorkflowListComponent {
     private workflowService: WorkflowService,
     private keycloakService: KeycloakService,
     private dialogService: DialogService,
-    private messageService: MessageService,
   ) {
   }
 
   loadData(event) {
-    const sortOrderStr = event.sortOrder == -1 ? 'desc' : 'asc';
-    const sortField = event.sortField ? event.sortField + ',' + sortOrderStr : 'creationDate,desc';
+    const sortOrderStr = event?.sortOrder == -1 ? 'desc' : 'asc';
+    const sortField = event?.sortField ? event.sortField + ',' + sortOrderStr : 'creationDate,desc';
+    const pageIndex = event ? event.first / event.rows : 0;
+    const pageSize = event ? event.rows : this.pageSize;
     const params = {
-      pageIndex: event.first / event.rows,
-      size: event.rows,
+      pageIndex: pageIndex,
+      size: pageSize,
       sort: sortField
     };
     if(event.filters?.global?.value) {
@@ -60,16 +61,6 @@ export class WorkflowListComponent {
         '640px': '90vw'
       }
     });
-    modalRef.onClose.subscribe((result) => {
-      if(result) {
-        this.workflowService.createWorkflow(result).subscribe(workflow => {
-          const workflowId = workflow ? workflow.id : null;
-          this.router.navigate(['workflows/detail', workflowId]);
-        }, error => {
-          this.messageService.add({ severity: 'error', summary: 'Unable to create workflow', detail: error.error });
-        });
-      }
-    });
   }
 
   canCreate(): boolean {
@@ -78,5 +69,9 @@ export class WorkflowListComponent {
 
   getIconByWorkflowStatus(workflow: Workflow) {
     return this.workflowService.getIconByWorkflowStatus(workflow);
+  }
+
+  ngOnDestroy() {
+    this.dialogService.dialogComponentRefMap.forEach((dialog) => dialog.destroy());
   }
 }

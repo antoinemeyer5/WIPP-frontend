@@ -18,11 +18,13 @@ export class NotebookListComponent {
   }
 
   loadData(event) {
-    const sortOrderStr = event.sortOrder == -1 ? 'desc' : 'asc';
-    const sortField = event.sortField ? event.sortField + ',' + sortOrderStr : 'creationDate,desc';
+    const sortOrderStr = event?.sortOrder == -1 ? 'desc' : 'asc';
+    const sortField = event?.sortField ? event.sortField + ',' + sortOrderStr : 'creationDate,desc';
+    const pageIndex = event ? event.first / event.rows : 0;
+    const pageSize = event ? event.rows : this.pageSize;
     const params = {
-      pageIndex: event.first / event.rows,
-      size: event.rows,
+      pageIndex: pageIndex,
+      size: pageSize,
       sort: sortField
     };
     if(event.filters?.global?.value) {

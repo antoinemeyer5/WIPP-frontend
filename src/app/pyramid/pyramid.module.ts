@@ -1,7 +1,5 @@
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
-import {NgMathPipesModule} from 'angular-pipes';
-import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {FormsModule} from '@angular/forms';
 import {PyramidRoutingModule} from './pyramid-routing.module';
 import {PyramidListComponent} from './pyramid-list/pyramid-list.component';
@@ -18,8 +16,6 @@ import {TooltipModule} from 'primeng/tooltip';
 @NgModule({
   imports: [
     CommonModule,
-    NgbModule,
-    NgMathPipesModule,
     PyramidRoutingModule,
     FormsModule,
     WdztModule,

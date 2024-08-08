@@ -22,7 +22,8 @@ export class TensorflowModelListComponent implements OnInit {
   }
 
   getTensorflowModels(event): void {
-    const sortField = event?.sortOrder == -1 ? 'desc' : 'asc';
+    const sortOrderStr = event?.sortOrder == -1 ? 'desc' : 'asc';
+    const sortField = event?.sortField ? event.sortField + ',' + sortOrderStr : 'creationDate,desc';
     const pageIndex = event ? event.first / event.rows : 0;
     const pageSize = event ? event.rows : this.pageSize;
     const params = {

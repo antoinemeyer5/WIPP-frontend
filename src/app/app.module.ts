@@ -38,6 +38,8 @@ import {HomeModule} from './home/home.module';
 import {MenubarModule} from 'primeng/menubar';
 import {DynamicDialogModule} from 'primeng/dynamicdialog';
 import {AutoFocusModule} from 'primeng/autofocus';
+import {RouteReuseStrategy} from '@angular/router';
+import {AppRouteReuseStrategy} from './app-route-reuse-strategy';
 
 @NgModule({
   declarations: [
@@ -90,7 +92,8 @@ import {AutoFocusModule} from 'primeng/autofocus';
       multi: true
     },
     KeycloakService,
-    ConfirmDialogService
+    ConfirmDialogService,
+    {provide: RouteReuseStrategy, useClass: AppRouteReuseStrategy}
   ],
   bootstrap: [AppComponent]
 })
