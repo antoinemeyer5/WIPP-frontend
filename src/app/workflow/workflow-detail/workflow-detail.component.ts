@@ -119,7 +119,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     this.editMode = false;
   }
 
-  open(content) {
+  open() {
     this.newTaskDialogVisible = true;
   }
 
@@ -403,13 +403,13 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     });
   }
 
-  openCopy(content, jobId: string) {
-    this.populateAndOpenCopyModal(content, jobId);
+  openCopy(jobId: string) {
+    this.populateAndOpenCopyModal(jobId);
   }
 
-  openEdit(content, jobId: string) {
+  openEdit(jobId: string) {
     this.editMode = true;
-    this.populateAndOpenCopyModal(content, jobId);
+    this.populateAndOpenCopyModal(jobId);
   }
 
   getDependencies(jobId: String) {
@@ -418,7 +418,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     return (jobDependencies);
   }
 
-  deleteJob(content, jobId: string) {
+  deleteJob(jobId: string) {
     const job: Job  = this.jobs.find(jobA => jobA.id === jobId);
     const jobDependencies = this.getDependencies(jobId);
     let text = 'Are you sure you want to delete the job ' + job.name + '? \n' ;
@@ -443,7 +443,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
     }
   }
 
-  populateAndOpenCopyModal(content, jobId: string) {
+  populateAndOpenCopyModal(jobId: string) {
     this.jobService.getJob(jobId).subscribe(jobToCopy => {
         this.jobService.getPlugin(jobToCopy.wippExecutable).subscribe(plugin => {
           this.selectedSchema = this.pluginList.find(x => x.id === plugin.id);
@@ -496,12 +496,12 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
             }
           }
           if (requests.length === 0) {
-            this.open(content);
+            this.open();
           } else {forkJoin(requests).subscribe(results => {
             for (const result of results) {
               this.jobModel['inputs'][result['inputName']] = result['data'];
             }
-            this.open(content);
+            this.open();
           });
           }
         });

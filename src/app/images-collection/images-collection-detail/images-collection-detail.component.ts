@@ -1,9 +1,7 @@
-import { AfterViewInit, Component, ElementRef, NgModule, NgZone, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, NgZone, OnInit, ViewChild } from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {auditTime, catchError, map, mergeMap, switchMap} from 'rxjs/operators';
+import {auditTime, catchError, map, switchMap} from 'rxjs/operators';
 import * as Flow from '@flowjs/flow.js';
-import {NgbModal, NgbModule} from '@ng-bootstrap/ng-bootstrap';
-import {NgBytesPipeModule} from 'angular-pipes';
 import {ImagesCollectionService} from '../images-collection.service';
 import {ImagesCollection} from '../images-collection';
 import {Image} from '../image';
@@ -16,10 +14,9 @@ import {Job} from '../../job/job';
 import urljoin from 'url-join';
 import {AppConfigService} from '../../app-config.service';
 import {KeycloakService} from '../../services/keycloak/keycloak.service';
-import {ModalErrorComponent} from '../../modal-error/modal-error.component';
 import {ConfirmDialogService} from '../../confirm-dialog/confirm-dialog.service';
 import OpenSeadragon from 'openseadragon';
-import {SelectItem} from 'primeng/api';
+import {MessageService, SelectItem} from 'primeng/api';
 import {environment} from '../../../environments/environment';
 import {DialogService} from 'primeng/dynamicdialog';
 
@@ -27,11 +24,7 @@ import {DialogService} from 'primeng/dynamicdialog';
   selector: 'app-images-collection-detail',
   templateUrl: './images-collection-detail.component.html',
   styleUrls: ['./images-collection-detail.component.css'],
-  providers: [DialogService]
-})
-
-@NgModule({
-  imports: [NgbModule, NgBytesPipeModule]
+  providers: [DialogService, MessageService]
 })
 export class ImagesCollectionDetailComponent implements OnInit, AfterViewInit {
 
@@ -96,8 +89,8 @@ export class ImagesCollectionDetailComponent implements OnInit, AfterViewInit {
     private route: ActivatedRoute,
     private router: Router,
     private elem: ElementRef,
-    private modalService: NgbModal,
     private dialogService: DialogService,
+    private messageService: MessageService,
     private imagesCollectionService: ImagesCollectionService,
     private appConfigService: AppConfigService,
     private keycloakService: KeycloakService,
@@ -122,46 +115,6 @@ export class ImagesCollectionDetailComponent implements OnInit, AfterViewInit {
 
   canDeletePublicData(): boolean {
     return this.keycloakService.canDeletePublicData();
-  }
-
-  imagesSortChanged(sort) {
-    // If the user changes the sort order, reset back to the first page.
-    this.imagesParamsChange.next({index: 0, size: this.imagesParamsChange.value.size, sort: sort.active + ',' + sort.direction});
-  }
-
-  imagesPageChanged(page) {
-    this.imagesParamsChange.next({index: page.pageIndex, size: page.pageSize, sort: this.imagesParamsChange.value.sort});
-    this.pageSizeImages = page.pageSize;
-  }
-
-  goToPageImage() {
-    if (this.imagesPaginator.pageIndex !== this.goToPageImages - 1) {
-      this.imagesPaginator.pageIndex = this.goToPageImages - 1;
-      this.imagesParamsChange.next({index: this.goToPageImages - 1, size: this.pageSizeImages, sort: this.imagesParamsChange.value.sort});
-      this.goToPageImages = '';
-    }
-  }
-
-  metadataSortChanged(sort) {
-    // If the user changes the sort order, reset back to the first page.
-    this.metadataParamsChange.next({index: 0, size: this.metadataParamsChange.value.size, sort: sort.active + ',' + sort.direction});
-  }
-
-  metadataPageChanged(page) {
-    this.metadataParamsChange.next({index: page.pageIndex, size: page.pageSize, sort: this.metadataParamsChange.value.sort});
-    this.pageSizeMetadataFiles = page.pageSize;
-  }
-
-  goToPageMetadata() {
-    if (this.metadataFilesPaginator.pageIndex !== this.goToPageMetadataFiles - 1) {
-      this.metadataFilesPaginator.pageIndex = this.goToPageMetadataFiles - 1;
-      this.metadataParamsChange.next({
-        index: this.goToPageMetadataFiles - 1,
-        size: this.pageSizeMetadataFiles,
-        sort: this.metadataParamsChange.value.sort
-      });
-      this.goToPageMetadataFiles = '';
-    }
   }
 
   ngOnInit() {
@@ -337,15 +290,13 @@ export class ImagesCollectionDetailComponent implements OnInit, AfterViewInit {
     const modalRefConfirm = this.confirmDialogService.createConfirmModal(
       title, message, warnings
     );
-    modalRefConfirm.result.then((confirm) => {
+    modalRefConfirm.onClose.subscribe((confirm) => {
       if (confirm) {
         this.imagesCollectionService.makePublicImagesCollection(
           this.imagesCollection).subscribe(imagesCollection => {
           this.imagesCollection = imagesCollection;
         }, error => {
-          const modalRefErr = this.modalService.open(ModalErrorComponent);
-          modalRefErr.componentInstance.title = 'Unable to make public';
-          modalRefErr.componentInstance.message = error.error;
+          this.messageService.add({ severity: 'error', summary: 'Unable to make collection public', detail: error.error });
         });
       }
     });
@@ -373,7 +324,7 @@ export class ImagesCollectionDetailComponent implements OnInit, AfterViewInit {
     const modalRefConfirm = this.confirmDialogService.createConfirmModal(
       title, message, warnings
     );
-    modalRefConfirm.result.then((confirm) => {
+    modalRefConfirm.onClose.subscribe((confirm) => {
       if (confirm) {
         this.imagesCollectionService.deleteImagesCollection(this.imagesCollection).subscribe(collection => {
           this.router.navigate(['images-collections']);
@@ -503,14 +454,6 @@ export class ImagesCollectionDetailComponent implements OnInit, AfterViewInit {
         '640px': '90vw'
       }
     });
-    // const modalRef = this.modalService.open(JobDetailComponent, {size: 'lg', backdrop: 'static'});
-    // modalRef.componentInstance.modalReference = modalRef;
-    // (modalRef.componentInstance as JobDetailComponent).jobId = jobId;
-    // modalRef.result.then((result) => {
-    //   }
-    //   , (reason) => {
-    //     console.log('dismissed');
-    //   });
   }
 
   getSourceJob() {
@@ -600,7 +543,6 @@ export class ImagesCollectionDetailComponent implements OnInit, AfterViewInit {
   }
 
   ngOnDestroy() {
-    this.modalService.dismissAll();
     this.dialogService.dialogComponentRefMap.forEach((dialog) => dialog.destroy());
   }
 }

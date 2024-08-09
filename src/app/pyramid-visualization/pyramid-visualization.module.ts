@@ -6,13 +6,6 @@ import { PyramidVisualizationNewComponent } from './pyramid-visualization-new/py
 import { PyramidVisualizationHelpComponent } from './pyramid-visualization-help/pyramid-visualization-help.component';
 import {PyramidVisualizationRoutingModule} from './pyramid-visualization-routing.module';
 import {WdztModule} from '../wdzt/wdzt.module';
-import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatPaginatorModule } from '@angular/material/paginator';
-import { MatSortModule } from '@angular/material/sort';
-import { MatTableModule } from '@angular/material/table';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {DropdownModule} from 'primeng/dropdown';
 import {TableModule} from 'primeng/table';
@@ -26,18 +19,11 @@ import {AutoCompleteModule} from 'primeng/autocomplete';
 @NgModule({
   imports: [
     CommonModule,
-    MatPaginatorModule,
-    MatTableModule,
-    MatSortModule,
-    MatFormFieldModule,
-    MatInputModule,
     FormsModule,
     ReactiveFormsModule,
-    MatCheckboxModule,
     PyramidVisualizationRoutingModule,
     WdztModule,
     DropdownModule,
-    NgbModule,
     TableModule,
     ToastModule,
     ButtonModule,

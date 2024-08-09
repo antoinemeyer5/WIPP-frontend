@@ -1,16 +1,14 @@
-<div class="modal-header bg-light">
-  <h4 class="modal-title">{{title}}</h4>
-  <button type="button" class="close" aria-label="Close" (click)="onDismiss()">
-    <span aria-hidden="true">&times;</span>
-  </button>
-</div>
-<div class="modal-body">
-  <div class="alert alert-warning" *ngFor="let warning of warnings" role="alert">
-    Warning: {{warning}}
-  </div>
+<div class="flex flex-column gap-2">
+  <p-messages severity="warn" *ngFor="let warning of warnings">
+    <ng-template pTemplate>
+      <div>
+        Warning: {{warning}}
+      </div>
+    </ng-template>
+  </p-messages>
   <div>{{message}}</div>
 </div>
-<div class="modal-footer">
-  <button type="button" class="btn btn-outline-dark" (click)="onDismiss()">Cancel</button>
-  <button type="button" class="btn btn-danger" ngbAutofocus (click)="onConfirm()">Confirm</button>
+<div class="flex justify-content-end gap-2 mt-4">
+  <p-button label="Cancel" severity="secondary" (onClick)="onDismiss()" />
+  <p-button label="Confirm" severity="danger" (onClick)="onConfirm()" type="submit"/>
 </div>

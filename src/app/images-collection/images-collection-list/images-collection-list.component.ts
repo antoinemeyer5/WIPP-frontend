@@ -14,7 +14,6 @@ import {DialogService} from 'primeng/dynamicdialog';
   styleUrls: ['./images-collection-list.component.css'],
   providers: [DialogService, MessageService]
 })
-@NgModule()
 export class ImagesCollectionListComponent implements OnInit, OnDestroy {
   imagesCollections: ImagesCollection[];
   resultsLength = 0;

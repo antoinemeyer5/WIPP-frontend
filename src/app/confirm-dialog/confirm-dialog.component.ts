@@ -1,5 +1,6 @@
-import { Component, Input, OnInit } from '@angular/core';
-import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
+import { Component, OnInit } from '@angular/core';
+import {DialogService, DynamicDialogComponent, DynamicDialogRef} from 'primeng/dynamicdialog';
+import {Message} from 'primeng/api';
 
 @Component({
   selector: 'app-confirm-dialog',
@@ -8,23 +9,33 @@ import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 })
 export class ConfirmDialogComponent implements OnInit {
 
-  @Input() title: string;
-  @Input() message: string;
-  @Input() warnings: string[]
+  title: string;
+  message: string;
+  warnings: string[]
+  messages: Message[] | undefined;
+
+  instance: DynamicDialogComponent | undefined;
 
   constructor(
-    public activeModal: NgbActiveModal
-  ) { }
+    public modalReference: DynamicDialogRef,
+    private dialogService: DialogService,
+  ) {
+    this.instance = this.dialogService.getInstance(this.modalReference);
+  }
 
   ngOnInit() {
+    if (this.instance && this.instance.data) {
+      this.message = this.instance.data['message'];
+      this.warnings = this.instance.data['warnings'];
+    }
   }
 
   onConfirm(): void {
-    this.activeModal.close(true);
+    this.modalReference.close(true);
   }
 
   onDismiss(): void {
-    this.activeModal.close(false);
+    this.modalReference.close(false);
   }
 
 }

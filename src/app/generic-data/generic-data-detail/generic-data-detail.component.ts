@@ -10,7 +10,6 @@ import {KeycloakService} from '../../services/keycloak/keycloak.service';
 import {Subject} from 'rxjs';
 import * as Flow from '@flowjs/flow.js';
 import {auditTime, map, switchMap} from 'rxjs/operators';
-import {NgBytesPipeModule} from 'angular-pipes';
 import {DialogService} from 'primeng/dynamicdialog';
 
 @Component({
@@ -18,10 +17,6 @@ import {DialogService} from 'primeng/dynamicdialog';
   templateUrl: './generic-data-detail.component.html',
   styleUrls: ['./generic-data-detail.component.css'],
   providers: [DialogService]
-})
-
-@NgModule({
-  imports: [NgBytesPipeModule]
 })
 export class GenericDataDetailComponent implements OnInit, AfterViewInit {
 

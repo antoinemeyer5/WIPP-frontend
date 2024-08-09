@@ -16,7 +16,6 @@ import {TensorflowModelTemplateComponent} from '../tensorflow-model/tensorflow-m
 import {TensorboardLogsTemplateComponent} from '../tensorflow-model/tensorflow-model-template/tensorboard-logs-template.component';
 import {CsvCollectionTemplateComponent} from '../csv-collection/csv-collection-template/csv-collection-template.component';
 import {NotebookTemplateComponent} from '../notebook/notebook-template/notebook-template.component';
-import {PyramidAnnotationTemplateComponent} from '../pyramid-annotation/pyramid-annotation-template/pyramid-annotation-template.component';
 import {GenericDataTemplateComponent} from '../generic-data/generic-data-template/generic-data-template.component';
 
 @Component({
@@ -72,9 +71,6 @@ export class DynamicContentComponent implements OnDestroy, AfterViewInit {
         break;
       case "notebook":
         dynamicComponent = NotebookTemplateComponent;
-        break;
-      case "pyramidannotation":
-        dynamicComponent = PyramidAnnotationTemplateComponent;
         break;
       case "genericdata":
         dynamicComponent = GenericDataTemplateComponent;

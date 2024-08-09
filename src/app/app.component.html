@@ -1,5 +1,5 @@
 <header>
-  <div id="logo" *ngIf="router.url === '/home'">
+  <div id="logo" *ngIf="currentRouterUrl === '/home'">
     <img src="assets/img/logo-wipp.png">
   </div>
 
@@ -54,7 +54,7 @@
     WIPP v{{version}} - <a href="https://www.nist.gov/disclaimer">Disclaimer</a>
     - Logo
           <span
-            [ngbTooltip]="wippLogoCredits"
+            [pTooltip]="wippLogoCredits"
             triggers="click:blur"
             placement="auto"
             aria-hidden="true"><i class="far fa-question-circle"></i>
