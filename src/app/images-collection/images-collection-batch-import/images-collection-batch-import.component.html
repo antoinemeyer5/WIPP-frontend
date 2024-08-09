@@ -1,53 +1,30 @@
-<div class="modal-header">
-  <h4 class="modal-title" id="modal-basic-title">
-    <span class="glyphicon glyphicon-star"></span> Batch import images collections
-  </h4>
-  <button type="button" class="close" aria-label="Close" (click)="modalReference.dismiss('Cross click')">
-    <span aria-hidden="true">&times;</span>
-  </button>
-</div>
-<div class="modal-body">
-  <ngb-alert *ngIf="displayAlert" [type]='alertType' (close)="displayAlert = false">{{alertMessage}}</ngb-alert>
-  <form name="configurationDialog">
-    <div class="form-group">
-      <label for="name">Experiment name</label>
-      <span style="color: #e32"> * </span>
-      <input type="text" [(ngModel)]="name" id="name" class="form-control" name="name" autofocus
-             required>
-      <small class="form-text text-muted">Enter the experiment name (this will be the prefix of all collection names).</small>
-    </div>
-
-    <div class="form-group">
-      <label for="sourceBackendImport">Source folder</label>
-      <span style="color: #e32"> * </span>
-      <input type="text"
-             id="sourceBackendImport"
-             class="form-control" [(ngModel)]="sourceBackendImport" name="sourceBackendImport"
-             placeholder="Enter the name of the folder to import">
-    </div>
-
-    <div class="form-group">
-      <label for="description">Description/notes (optional)</label>
-      <textarea type="text"
-             id="description"
-             class="form-control" [(ngModel)]="description" name="description"
-             placeholder="Enter any text that you would like to have added to the Notes section of each collection">
+<form>
+  <div class="flex flex-column gap-2">
+    <label for="name" class="font-semibold">Experiment name<span style="color: #ee3322"> * </span></label>
+    <input pInputText [(ngModel)]="name" id="name" name="name" class="flex-auto" autocomplete="off" />
+    <span class="p-text-secondary block mb-5">Enter the experiment name (this will be the prefix of all collection names).</span>
+  </div>
+  <div  class="flex flex-column gap-2">
+    <label for="sourceBackendImport" class="font-semibold">Source folder<span style="color: #e32"> * </span></label>
+    <input pInputText [(ngModel)]="sourceBackendImport"
+           id="sourceBackendimport" name="sourceBackendimport" placeholder="Enter the name of the folder to import"
+           class="flex-auto mb-5" autocomplete="off" />
+  </div>
+  <div class="flex flex-column gap-2">
+    <label for="description" class="font-semibold">Description/notes (optional)</label>
+    <textarea type="text"
+              id="description"
+              rows="5"
+              cols="30"
+              class="flex-auto"
+              pInputTextarea
+              [(ngModel)]="description" name="description"
+              placeholder="Enter any text that you would like to have added to the Notes section of each collection">
       </textarea>
-    </div>
-
-  </form>
-</div>
-<div class="modal-footer">
-  <button type="button" class="btn btn-danger" (click)="cancel()">
-    <i class="fas fa-times-circle" style="margin-right: 10px">
-      <p style="margin-left: 10px; display: inline; font-family: 'Roboto', sans-serif ; font-weight: normal">Cancel</p>
-    </i>
-  </button>
-  <button type="button" class="btn btn-success" (click)="postConfiguration()"
-          [disabled]="!name || !sourceBackendImport">
-    <i class="fas fa-save" style="margin-right: 10px">
-      <p style="margin-left: 10px; display: inline; font-family: 'Roboto', sans-serif ; font-weight: normal">Save</p>
-    </i>
-  </button>
-</div>
-
+  </div>
+  <div class="flex justify-content-end gap-2 mt-4">
+    <p-button label="Cancel" severity="secondary" (onClick)="cancel()" />
+    <p-button label="Save" (onClick)="postConfiguration()" [disabled]="!name || !sourceBackendImport" type="submit"/>
+  </div>
+</form>
+<p-toast position="top-center"/>

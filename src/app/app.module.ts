@@ -31,12 +31,14 @@ import { PyramidVisualizationModule } from './pyramid-visualization/pyramid-visu
 import { ForbiddenAccessComponent } from './forbidden-access/forbidden-access.component';
 import { PyramidAnnotationModule } from './pyramid-annotation/pyramid-annotation.module';
 import { GenericDataModule } from './generic-data/generic-data.module';
-import { ConfirmDialogService } from './confirm-dialog/confirm-dialog.service';
-import { ConfirmDialogModule } from './confirm-dialog/confirm-dialog.module';
-import { HomeModule } from './home/home.module';
-import { MenubarModule } from 'primeng/menubar';
-import { DynamicDialogModule } from 'primeng/dynamicdialog';
-import { AutoFocusModule } from 'primeng/autofocus';
+import {ConfirmDialogService} from './confirm-dialog/confirm-dialog.service';
+import {ConfirmDialogModule} from './confirm-dialog/confirm-dialog.module';
+import {HomeModule} from './home/home.module';
+import {MenubarModule} from 'primeng/menubar';
+import {DynamicDialogModule} from 'primeng/dynamicdialog';
+import {AutoFocusModule} from 'primeng/autofocus';
+import {RouteReuseStrategy} from '@angular/router';
+import {AppRouteReuseStrategy} from './app-route-reuse-strategy';
 
 @NgModule({
   declarations: [
@@ -88,7 +90,8 @@ import { AutoFocusModule } from 'primeng/autofocus';
       multi: true
     },
     KeycloakService,
-    ConfirmDialogService
+    ConfirmDialogService,
+    {provide: RouteReuseStrategy, useClass: AppRouteReuseStrategy}
   ],
   bootstrap: [AppComponent]
 })

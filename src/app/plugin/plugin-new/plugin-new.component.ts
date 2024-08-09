@@ -1,5 +1,4 @@
-import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
-import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import {PluginService} from '../plugin.service';
 import {Router} from '@angular/router';
 import {MessageService} from 'primeng/api';

@@ -1,15 +1,13 @@
-import { Component, Injector, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Injector, OnDestroy, OnInit } from '@angular/core';
 import {PluginService} from '../../plugin/plugin.service';
-import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {WorkflowService} from '../workflow.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Workflow} from '../workflow';
-import {forkJoin, interval, of as observableOf, Subject} from 'rxjs';
+import {forkJoin, of as observableOf, Subject} from 'rxjs';
 import {catchError, map} from 'rxjs/operators';
 import {JobDetailComponent} from '../../job/job-detail/job-detail.component';
 import {Job} from '../../job/job';
 import {FormProperty, PropertyGroup} from 'ngx-schema-form/lib/model/formproperty';
-import {ModalErrorComponent} from '../../modal-error/modal-error.component';
 import {NgxSpinnerService} from 'ngx-spinner';
 import {AppConfigService} from '../../app-config.service';
 import urlJoin from 'url-join';
@@ -18,12 +16,13 @@ import {dataMap} from '../../data-service';
 import {WorkflowNewComponent} from '../workflow-new/workflow-new.component';
 import {KeycloakService} from '../../services/keycloak/keycloak.service';
 import {DialogService} from 'primeng/dynamicdialog';
+import {MessageService} from 'primeng/api';
 
 @Component({
   selector: 'app-workflow-detail',
   templateUrl: './workflow-detail.component.html',
   styleUrls: ['./workflow-detail.component.css'],
-  providers: [DialogService]
+  providers: [DialogService, MessageService]
 })
 
 export class WorkflowDetailComponent implements OnInit, OnDestroy {
@@ -85,7 +84,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
 
   constructor(
     private route: ActivatedRoute,
-    private modalService: NgbModal,
+    private messageService: MessageService,
     private dialogService: DialogService,
     private spinner: NgxSpinnerService,
     private pluginService: PluginService,
@@ -122,66 +121,6 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
 
   open(content) {
     this.newTaskDialogVisible = true;
-    // this.modalService.open(content, {'size': 'lg'}).result.then((result) => {
-    //   const task = {};
-    //
-    //   // configure job
-    //   if (this.editMode) {
-    //     task['id'] = this.jobModel['id'];
-    //   }
-    //   task['name'] = this.workflow.name + '-' + result.taskName;
-    //   task['wippExecutable'] = this.selectedSchema.id;
-    //   task['wippWorkflow'] = this.workflow.id;
-    //   task['type'] = this.selectedSchema.name;
-    //   task['dependencies'] = [];
-    //   task['parameters'] = {};
-    //   task['outputParameters'] = {};
-    //   // add job parameters
-    //
-    //   this.selectedSchema.outputs.forEach(output => {
-    //     task['outputParameters'][output.name] = null;
-    //   });
-    //
-    //   for (const inputEntry in result.inputs) {
-    //     if (result.inputs.hasOwnProperty(inputEntry)) {
-    //       const type = this.selectedSchema.properties.inputs.properties[inputEntry]['format'];
-    //       let value = result.inputs[inputEntry];
-    //       if (type === 'collection' ||
-    //         type === 'stitchingVector' ||
-    //         type === 'pyramid' ||
-    //         type === 'pyramidAnnotation' ||
-    //         type === 'tensorflowModel' ||
-    //         type === 'csvCollection' ||
-    //         type === 'notebook' ||
-    //         type == 'genericData') {
-    //         if (value.hasOwnProperty('virtual') && value.virtual === true && value.hasOwnProperty('sourceJob')) {
-    //           if (task['dependencies'].indexOf(value.sourceJob) === -1) {
-    //             task['dependencies'].push(value.sourceJob);
-    //           }
-    //         }
-    //         value = value.hasOwnProperty('id') ? value.id : null;
-    //       }
-    //       if (type === 'array') {
-    //         value = value.join(',');
-    //       }
-    //       task['parameters'][inputEntry] = value;
-    //     }
-    //   }
-    //
-    //   const workflowServiceCall = this.editMode ? this.workflowService.updateJob(task)
-    //     : this.workflowService.createJob(task);
-    //   workflowServiceCall.subscribe(job => {
-    //     this.resetForm();
-    //     this.getJobs();
-    //   }, error => {
-    //     this.resetForm();
-    //     const modalRefErr = this.modalService.open(ModalErrorComponent);
-    //     modalRefErr.componentInstance.title = 'Error while creating new task';
-    //     modalRefErr.componentInstance.message = error.error;
-    //   });
-    // }, (result) => {
-    //   this.resetForm();
-    // });
   }
 
   saveTask(result) {
@@ -237,9 +176,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
       this.getJobs();
     }, error => {
       this.resetForm();
-      const modalRefErr = this.modalService.open(ModalErrorComponent);
-      modalRefErr.componentInstance.title = 'Error while creating new task';
-      modalRefErr.componentInstance.message = error.error;
+      this.messageService.add({ severity: 'error', summary: 'Error while creating new task', detail: error.error });
     });
   }
 
@@ -266,9 +203,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
         },
         error => {
           this.spinner.hide();
-          const modalRef = this.modalService.open(ModalErrorComponent);
-          modalRef.componentInstance.title = 'Workflow submission failed';
-          modalRef.componentInstance.message = error.error;
+          this.messageService.add({ severity: 'error', summary: 'Workflow submission failed', detail: error.error });
         }
       ).add(() => {
       this.workflowService.getWorkflow(this.workflowId).subscribe(workflow => {
@@ -280,25 +215,18 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
   }
 
   copyWorkflow() {
-    const modalRef = this.modalService.open(WorkflowNewComponent);
-    modalRef.componentInstance.modalReference = modalRef;
-    modalRef.componentInstance.isCopy = true;
-    modalRef.result.then((result) => {
-       this.spinner.show();
-      this.workflowService.copyWorkflow(this.workflow, result.name).subscribe(workflow => {
-        const workflowId = workflow ? workflow.id : null;
-        this.router.navigate(['../workflows/detail', workflowId]).then(() => {
-           this.spinner.hide();
-          this.refreshPage(); } );
-      }, error => {
-          this.spinner.hide();
-          const modalRefErr = this.modalService.open(ModalErrorComponent);
-          modalRefErr.componentInstance.title = 'Workflow copy failed';
-          modalRefErr.componentInstance.message = error.error;
+    let modalRef = this.dialogService.open(WorkflowNewComponent, {
+      header: 'New workflow',
+      position: 'top',
+      width: '50vw',
+      data: {
+        isCopy: true,
+        sourceWorkflow: this.workflow
+      },
+      breakpoints: {
+        '960px': '75vw',
+        '640px': '90vw'
       }
-          );
-    }, (reason) => {
-      console.log('dismissed');
     });
   }
 
@@ -308,6 +236,10 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
 
   generateSchema(pluginList) {
     pluginList.forEach(plugin => {
+      // group title and description together for better display
+      plugin.title = plugin.title + " - " + plugin.description;
+      plugin.description = "";
+      // set up for properties
       plugin.properties = {
         // task name field
         'taskName': {
@@ -395,7 +327,8 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
               const inputName = conditionElements[0].split('.');
               if (inputName.length > 0) {
                 inputSchema['visibleIf'] = {};
-                inputSchema['visibleIf'][inputName[inputName.length - 1]] = conditionElements[1];
+                console.log(conditionElements[1]);
+                inputSchema['visibleIf'][inputName[inputName.length - 1]] = conditionElements[1].replace(/'/g, "");
               }
             }
           }
@@ -430,7 +363,6 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
         }
         plugin.isSchemaValid = true;
       } catch (error) {
-        console.log(error);
         plugin.properties = {};
         plugin.isSchemaValid = false;
       }
@@ -624,9 +556,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
         this.refreshPage();
       },
       error => {
-        const modalRefErr = this.modalService.open(ModalErrorComponent);
-        modalRefErr.componentInstance.title = 'Unable to set workflow to public';
-        modalRefErr.componentInstance.message = error.error;
+        this.messageService.add({ severity: 'error', summary: 'Unable to set workflow to public', detail: error.error });
       });
   }
 
@@ -639,6 +569,6 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.modalService.dismissAll();
+    this.dialogService.dialogComponentRefMap.forEach((dialog) => dialog.destroy());
   }
 }

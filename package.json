@@ -45,7 +45,7 @@
     "marked": "^0.7.0",
     "ng2-charts": "^6.0.1",
     "ngx-json-viewer": "^3.2.1",
-    "ngx-schema-form": "^2.10.1",
+    "ngx-schema-form": "^2.11.0",
     "ngx-spinner": "^17.0.0",
     "notebookjs": "^0.4.2",
     "openseadragon": "^3.1.0",

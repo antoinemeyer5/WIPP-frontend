@@ -1,13 +1,17 @@
 <form>
   <div class="flex flex-column gap-2">
-
-    <input #browsePlugin type="file" (change)="onFileSelected($event)" name="browsePlugin" class="flex-auto" id="browsePlugin"
-           accept=".json, .txt">
-
+    <input #browsePlugin type="file" (change)="onFileSelected($event)" name="browsePlugin" class="flex-auto p-component"
+           id="browsePlugin" accept=".json, .txt">
+    <div class="flex">
+      <button id="getJsonBtn" (click)="getByUrl(linkPlugin.value); linkPlugin.value=''" class="p-component"
+              [disabled]="!linkPlugin.checkValidity()">Get JSON
+      </button>
+      <input #linkPlugin (change)="browsePlugin.value=null;" type="url" required id="linkPlugin" name="linkPlugin"
+             placeholder="Enter the URL of the JSON plugin manifest" class="p-component flex-auto ml-2">
+    </div>
     <textarea #pluginDescriptorText (change)="browsePlugin.value=null;" [(ngModel)]="pluginJSON" class="flex-auto"
               id="pluginDescriptorText" rows="10" placeholder="Or copy your JSON file content here" name="pluginDescriptorText">
     </textarea>
-    <span class="p-text-secondary block mb-5">Enter the stitching vector message.</span>
   </div>
   <div class="flex justify-content-end gap-2">
     <p-button label="Cancel" severity="secondary" (onClick)="cancel()" />
@@ -16,42 +20,3 @@
   </div>
 </form>
 <p-toast position="top-center"/>
-
-<!--<div class="modal-header">-->
-<!--  <h4 class="modal-title">New plugin</h4>-->
-<!--  <button type="button" class="close" aria-label="Close" (click)="modalReference.dismiss('Cross click')">-->
-<!--    <span aria-hidden="true">&times;</span>-->
-<!--  </button>-->
-<!--</div>-->
-<!--<div class="modal-body">-->
-<!--  <ngb-alert *ngIf="displayAlert" [type]='alertType' (close)="displayAlert = false">{{alertMessage}}</ngb-alert>-->
-<!--  <div class="row">-->
-<!--    <div class="col-md-10">-->
-<!--      <div class="form-group">-->
-<!--        <input #browsePlugin type="file" (change)="onFileSelected($event)" name="browsePlugin" class="col-md-12" id="browsePlugin"-->
-<!--               accept=".json, .txt">-->
-<!--        <div>-->
-<!--          <button id="getJsonBtn" (click)="getByUrl(linkPlugin.value); linkPlugin.value=''"-->
-<!--                  [disabled]="!linkPlugin.checkValidity()">Get JSON-->
-<!--          </button>-->
-<!--          <input #linkPlugin (change)="browsePlugin.value=null;" type="url" required id="linkPlugin" name="linkPlugin"-->
-<!--                 placeholder="Enter the URL of the JSON plugin manifest" class="top5 width80">-->
-<!--        </div>-->
-<!--        <textarea #pluginDescriptorText (change)="browsePlugin.value=null;" [(ngModel)]="pluginJSON"-->
-<!--                  id="pluginDescriptorText"-->
-<!--                  class="form-control top5" rows="10" placeholder="Or copy your JSON file content here">  </textarea>-->
-<!--      </div>-->
-<!--    </div>-->
-<!--    <div class="col-md-2">-->
-<!--      <button class="btn btn-danger" (click)="clearAll()"><a>clear form</a></button>-->
-<!--    </div>-->
-<!--  </div>-->
-<!--</div>-->
-<!--<div class="modal-footer">-->
-<!--  <button type="button" class="btn btn-primary" id="registerBtn"-->
-<!--          (click)="postPlugin(pluginDescriptorText.value)" [disabled]="pluginDescriptorText.value.length<2">-->
-<!--    <i class="fas fa-save right10">-->
-<!--      <p id="registerText">Register plugin</p>-->
-<!--    </i></button>-->
-<!--</div>-->
-

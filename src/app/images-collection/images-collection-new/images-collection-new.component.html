@@ -5,7 +5,7 @@
     <span class="p-text-secondary block mb-5">Enter the collection name.</span>
 
     <label class="font-semibold">Import method</label>
-    <div class="flex flex-column gap-3">
+    <div class="formgroup-inline">
       <div class="field-checkbox">
         <p-radioButton
           [(ngModel)]="imagesCollection.importMethod"
@@ -30,27 +30,35 @@
             <i class="pi pi-question-circle"></i></span>
         </label>
       </div>
+    </div>
+    <div>
       <input *ngIf="imagesCollection.importMethod==ImagesCollectionImportMethod.BACKEND_IMPORT"
              pInputText [(ngModel)]="imagesCollection.sourceBackendImport"
              id="sourceBackendimport" name="sourceBackendimport" placeholder="Enter the name of the folder to import"
-             class="flex-auto" autocomplete="off" />
+             class="w-full" autocomplete="off" />
 
-      <div class="field-checkbox">
-        <p-checkbox *ngIf="imagesCollection.importMethod==ImagesCollectionImportMethod.UPLOADED"
-          value="New York"
+      <div class="field-checkbox w-full" *ngIf="imagesCollection.importMethod==ImagesCollectionImportMethod.UPLOADED">
+        <p-checkbox
+          label="Filter images upon upload using a filename pattern"
+          value="usePattern"
           name="usePattern"
           inputId="usePattern"
+          [binary]="true"
           [(ngModel)]="usePattern" />
-        <label for="usePattern">Filter images upon upload using a filename pattern</label>
         <span class="text-danger" *ngIf="!usePattern && imagesCollection.pattern">
           Warning: pattern is not empty, but this option is not checked
         </span>
       </div>
-      <div *ngIf="usePattern">
-        <input pInputText [(ngModel)]="imagesCollection.pattern" id="pattern" name="pattern" class="flex-auto" autocomplete="off" />
-        <span class="p-text-secondary block mb-5">Enter the filename pattern.</span>
-        <p-button (onClick)="op.toggle($event)" label="Regex cheatsheet" severity="secondary" />
-        <p-overlayPanel #op>
+      <div *ngIf="usePattern" class="formgrid grid">
+        <div class="field col">
+          <input pInputText [(ngModel)]="imagesCollection.pattern" id="pattern" name="pattern" autocomplete="off" class="w-full" />
+          <span class="p-text-secondary block mb-5">Enter the filename pattern.</span>
+        </div>
+        <div class="field col">
+          <p-button (onClick)="op.toggle($event)" label="Regex cheatsheet" severity="secondary" />
+        </div>
+
+        <p-overlayPanel [showCloseIcon]="true" aria-label="Regex cheatsheet panel" #op>
           <div class="card">
             <ng-container *ngTemplateOutlet="popContent">
             </ng-container>
@@ -60,7 +68,7 @@
 
     </div>
   </div>
-  <div class="flex justify-content-end gap-2">
+  <div class="flex justify-content-end gap-2 mt-4">
     <p-button label="Cancel" severity="secondary" (onClick)="cancel()" />
     <p-button label="Save" (onClick)="save()" [disabled]="!imagesCollection.name" type="submit"/>
   </div>

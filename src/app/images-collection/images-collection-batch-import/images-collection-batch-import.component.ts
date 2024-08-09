@@ -1,37 +1,31 @@
-import { Component, Input, OnInit } from '@angular/core';
-import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
+import { Component } from '@angular/core';
 import {AppConfigService} from '../../app-config.service';
 import {ImagesCollectionService} from '../images-collection.service';
 import {Router} from '@angular/router';
-import {DialogService} from 'primeng/dynamicdialog';
+import {DynamicDialogRef} from 'primeng/dynamicdialog';
+import {MessageService} from 'primeng/api';
 
 @Component({
   selector: 'app-images-collection-batch-import',
   templateUrl: './images-collection-batch-import.component.html',
-  styleUrls: ['./images-collection-batch-import.component.css']
+  styleUrls: ['./images-collection-batch-import.component.css'],
+  providers: [MessageService]
 })
-export class ImagesCollectionBatchImportComponent implements OnInit {
+export class ImagesCollectionBatchImportComponent {
 
-  @Input() modalReference: any;
   sourceBackendImport: string;
   name: string;
   description: string;
 
-  displayAlert = false;
-  alertMessage = '';
-  alertType = 'danger';
-
-  constructor(//private activeModal: NgbActiveModal,
+  constructor(public modalReference: DynamicDialogRef,
+              private messageService: MessageService,
               private appConfigService: AppConfigService,
               private imagesCollectionService: ImagesCollectionService,
               private router: Router) {
   }
 
-  ngOnInit() {
-  }
-
   cancel() {
-    this.modalReference.dismiss();
+    this.modalReference.close();
   }
 
   postConfiguration() {
@@ -41,24 +35,13 @@ export class ImagesCollectionBatchImportComponent implements OnInit {
       description: this.description
     }).subscribe(
       message => {
-        console.log(message);
-        this.displayAlertMessage('success', 'Success! ' + message['message'] + ' Redirecting...');
+        this.messageService.add({ severity: 'success', summary: 'Success', detail: message['message'] + " Redirecting..." });
         setTimeout(() => {
-          this.router.navigate(['images-collections']).then(() => {
-              window.location.reload();
-          });
+          this.router.navigate(['images-collections']);
         }, 2000);
       },
       err => {
-        console.log(err);
-        this.displayAlertMessage('danger', 'Could not start import: ' + err.error);
+        this.messageService.add({ severity: 'error', summary: 'Could not start import', detail: err.error });
       });
   }
-
-  displayAlertMessage(type, message) {
-    this.alertMessage = message;
-    this.alertType = type;
-    this.displayAlert = true;
-  }
-
 }

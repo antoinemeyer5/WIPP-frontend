@@ -65,6 +65,12 @@
         {{imagesCollection.owner}}
       </div>
       <div class="col-3 py-1 font-semibold">
+        Format:
+      </div>
+      <div class="col-9 py-1">
+        <span *ngIf="imagesCollection.format; else jobNonAvailable">{{imagesCollection.format}}</span>
+      </div>
+      <div class="col-3 py-1 font-semibold">
         Number of files:
       </div>
       <div class="col-9 py-1">
@@ -92,7 +98,6 @@
              placement="left">
             {{sourceJob.name}}
           </a>
-          <ng-template #jobNonAvailable>N/A</ng-template>
         </ng-template>
         <ng-template #importTemplate>
           <div *ngIf="imagesCollection.importMethod == 'CATALOG'">
@@ -458,3 +463,5 @@
           [style]="{ width: '50rem' }" >
   <div id="openseadragon-img" style="height: 450px"></div>
 </p-dialog>
+
+<ng-template #jobNonAvailable>N/A</ng-template>
