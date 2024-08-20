@@ -30,7 +30,8 @@ interface License{
   imports: [FormsModule, DropdownModule]
 })
 export class AiModelDetailComponent implements OnInit, OnDestroy {
-  aiFramework: string[] = ["TENSORFLOW", "HUGGINGFACE", "BIOIMAGEIO", "PYTORCH"];
+  aiFramework: string[] = [ "TENSORFLOW", "HUGGINGFACE", "BIOIMAGEIO",
+                            "CDCS record" ];
   selectedFramework: string | undefined;
   aiModel: AiModel = new AiModel();
   aiModelId = this.route.snapshot.paramMap.get('id');
@@ -157,6 +158,18 @@ export class AiModelDetailComponent implements OnInit, OnDestroy {
       .subscribe(downloadUrl => window.location.href = downloadUrl['url']);
   }
 
+  getHttpFromCurrentFramework(id: string): Observable<HttpResponse<Blob>> {
+    switch (this.selectedFramework) {
+      case "TENSORFLOW": return this.aiModelCardService.exportTensorflow(id);
+      case "HUGGINGFACE": return this.aiModelCardService.exportHuggingface(id);
+      case "BIOIMAGEIO": return this.aiModelCardService.exportBioimageio(id);
+      case "CDCS record": return this.aiModelCardService.exportCDCS(id);
+      default:
+        alert("ERROR: you can't take any action on this framework.");
+        return null;
+    }
+  }
+
   displayAiModelCardModal(aiModelId: string) {
     // get
     this.getHttpFromCurrentFramework(aiModelId)
@@ -177,17 +190,6 @@ export class AiModelDetailComponent implements OnInit, OnDestroy {
           }
         });
       });
-  }
-
-  getHttpFromCurrentFramework(id: string): Observable<HttpResponse<Blob>> {
-    switch (this.selectedFramework) {
-      case "TENSORFLOW": return this.aiModelCardService.exportTensorflow(id);
-      case "HUGGINGFACE": return this.aiModelCardService.exportHuggingface(id);
-      case "BIOIMAGEIO": return this.aiModelCardService.exportBioimageio(id);
-      default:
-        alert("ERROR: you can't take any action on this framework.");
-        return null;
-    }
   }
 
   exportAiModelCard(id: string): void {

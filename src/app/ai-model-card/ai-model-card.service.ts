@@ -33,6 +33,10 @@ export class AiModelCardService {
     return this.http.get(`${this.AiModelCardUrl}/${id}/export/bioimageio`, { observe: 'response', responseType: 'blob' });
   }
 
+  exportCDCS(id: string): Observable<HttpResponse<Blob>> {
+    return this.http.get(`${this.AiModelCardUrl}/${id}/export/cdcs`, { observe: 'response', responseType: 'blob' });
+  }
+
   updateAiModelCard(aiModelCard: AiModelCard): Observable<AiModelCard> {
     const httpOptions = {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
