@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { AiModelListComponent } from './ai-model-list/ai-model-list.component';
 import { AiModelDetailComponent } from './ai-model-detail/ai-model-detail.component';
 import { AiModelRoutingModule } from './ai-model-routing.module';
@@ -17,6 +18,7 @@ import { DropdownModule } from 'primeng/dropdown';
 @NgModule({
   imports: [
     CommonModule,
+    FormsModule,
     AiModelRoutingModule,
     TableModule,
     ToastModule,

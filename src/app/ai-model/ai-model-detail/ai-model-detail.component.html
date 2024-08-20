@@ -10,6 +10,8 @@
   </div>
 </h1>
 
+<!-- AI Model Details -->
+
 <p-fieldset legend="AI Model Details" [toggleable]="true">
   <div class="grid nested-grid">
     <div class="col-12 md:col-6">
@@ -69,7 +71,7 @@
 
 <ng-template #not_applicable>N/A</ng-template>
 
-<!-- AI MODEL CARD addings below -->
+<!-- Tensorboard Logs Charts -->
 
 <p-fieldset legend="Tensorboard Logs Charts" [toggleable]="true" [collapsed]="true">
   <div class="grid nested-grid" *ngIf="!tensorboardPlotable">
@@ -115,17 +117,31 @@
   </div>
 </p-fieldset>
 
+<!-- AI Model Card -->
+
 <p-fieldset legend="AI Model Card" [toggleable]="true">
   <div style="float: right;">
-    <select name="frameworks" id="frameworks">
-      <option *ngFor="let framework of aiFramework" value="{{framework}}">{{ framework }}</option>
-    </select>
-    <p-button icon="pi pi-eye" (click)="displayAiModelCardModal(aiModelCard.id);"
-      pTooltip="Display AI Model Card for a specific platform" tooltipPosition="left" [outlined]="true">
-    </p-button>
-    <p-button icon="pi pi-download" (click)="exportAiModelCard(aiModelCard.id);" pTooltip="Download AI Model Card"
-      tooltipPosition="left" [outlined]="true">
-    </p-button>
+
+    <div style="display: flex;">
+      <p>CDCS: </p>
+      <p-button icon="pi pi-eye" pTooltip="Preview JSON for CDCS" [outlined]="true"></p-button>
+      <p-button icon="pi pi-download"  pTooltip="Download JSON for CDCS" [outlined]="true"></p-button>
+      <p-button icon="pi pi-upload"  pTooltip="Upload JSON to CDCS" [outlined]="true"></p-button>
+    </div>
+
+    <div>
+      <p-dropdown
+        [options]="aiFramework"
+        [(ngModel)]="selectedFramework"
+        placeholder="Select a Framework" />
+      <p-button icon="pi pi-eye" (click)="displayAiModelCardModal(aiModelCard.id);"
+        pTooltip="Display AI Model Card for a specific platform" tooltipPosition="left" [outlined]="true">
+      </p-button>
+      <p-button icon="pi pi-download" (click)="exportAiModelCard(aiModelCard.id);" pTooltip="Download AI Model Card"
+        tooltipPosition="left" [outlined]="true">
+      </p-button>
+    </div>
+
   </div>
   <div class="grid nested-grid">
     <div class="col-12 md:col-6">
@@ -212,13 +228,23 @@
         </div>
 
         <div class="col-3 py-1 font-semibold" *ngIf="tensorboardPlotable">License:</div>
-        <select class="col-md-2" (change)="updateAiModelCard($event.target.value, 'license')">
+        <p-dropdown
+          [options]="licenses"
+          [(ngModel)]="selectedLicense"
+          optionLabel="name" 
+          optionValue="id"
+          [placeholder]="selectedLicense.name"
+          (onChange)="updateAiModelCard($event.value, 'license')" />
+        
+        <!--
+          <select class="col-md-2" >
           <option id="Unlicense" value="Unlicense">Unlicense</option>
           <option id="Apache-2.0" value="Apache-2.0">Apache-2.0</option>
           <option id="GPL" value="GPL">GPL</option>
           <option id="MPL-2.0" value="MPL-2.0">MPL-2.0</option>
           <option id="BSD-3-Clause" value="BSD-3-Clause">BSD-3-Clause</option>
         </select>
+        -->
 
       </div>
     </div>

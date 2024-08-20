@@ -21,8 +21,8 @@ export class AiModelListComponent implements OnInit {
   }
 
   getAiModels(event) {
-    const sortOrderStr = event.sortOrder == -1 ? 'desc' : 'asc';
-    const sortField = event.sortField ? event.sortField + ',' + sortOrderStr : 'creationDate,desc';
+    const sortOrderStr = event?.sortOrder == -1 ? 'desc' : 'asc';
+    const sortField = event?.sortField ? event.sortField + ',' + sortOrderStr : 'creationDate,desc';
     const params = {
       pageIndex: event.first / event.rows,
       size: event.rows,

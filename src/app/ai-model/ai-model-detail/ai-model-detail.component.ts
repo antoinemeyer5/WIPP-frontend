@@ -14,15 +14,24 @@ import { AiModelCardDetailComponent } from 'src/app/ai-model-card/ai-model-card-
 import { AiModelCardService } from 'src/app/ai-model-card/ai-model-card.service';
 import { HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { FormsModule } from '@angular/forms';
+import { DropdownModule } from 'primeng/dropdown';
+
+interface License{
+  id: String;
+  name: String;
+}
 
 @Component({
   selector: 'app-ai-model-detail',
   templateUrl: './ai-model-detail.component.html',
   styleUrls: ['./ai-model-detail.component.css'],
-  providers: [DialogService]
+  providers: [DialogService],
+  imports: [FormsModule, DropdownModule]
 })
 export class AiModelDetailComponent implements OnInit, OnDestroy {
   aiFramework: string[] = ["TENSORFLOW", "HUGGINGFACE", "BIOIMAGEIO", "PYTORCH"];
+  selectedFramework: string | undefined;
   aiModel: AiModel = new AiModel();
   aiModelId = this.route.snapshot.paramMap.get('id');
   aiModelCard: AiModelCard = new AiModelCard();
@@ -30,6 +39,12 @@ export class AiModelDetailComponent implements OnInit, OnDestroy {
   tensorboardLink = '';
   tensorboardPlotable: boolean = false;
   job: Job = null;
+  licenses: License[] = [ { id: "Unlicense", name: "Unlicense" },
+                          { id: "Apache-2.0", name: "Apache-2.0" },
+                          { id: "GPL", name: "GPL" },
+                          { id: "MPL-2.0", name: "MPL-2.0" },
+                          { id: "BSD-3-Clause", name: "BSD-3-Clause" } ];
+  selectedLicense: License | undefined;
 
   chartdata_accu: { labels: string[], datasets: any[] };
   chartdata_loss: { labels: string[], datasets: any[] };
@@ -47,6 +62,7 @@ export class AiModelDetailComponent implements OnInit, OnDestroy {
   /***** NgOn Methods *****/
 
   ngOnInit() {
+    this.selectedLicense = this.licenses[0]; // by default
     this.tensorboardLink = urljoin(this.appConfigService.getConfig().tensorboardUrl, '#scalars&regexInput=');
     this.aiModelService.getById(this.aiModelId)
       .subscribe(aiModel => {
@@ -59,7 +75,7 @@ export class AiModelDetailComponent implements OnInit, OnDestroy {
     this.aiModelCardService.getAiModelCard(this.aiModelId)
       .subscribe(aiModelCard => {
         this.aiModelCard = aiModelCard;
-        document.getElementById(this.aiModelCard.license).setAttribute("selected", "selected");
+        this.selectedLicense = { id: this.aiModelCard.license, name: this.aiModelCard.license };
       }, error => {
         this.router.navigate(['/404']);
       });
@@ -164,10 +180,7 @@ export class AiModelDetailComponent implements OnInit, OnDestroy {
   }
 
   getHttpFromCurrentFramework(id: string): Observable<HttpResponse<Blob>> {
-    // get current framework
-    var framework = (<HTMLInputElement>document.getElementById("frameworks")).value;
-    // choose
-    switch (framework) {
+    switch (this.selectedFramework) {
       case "TENSORFLOW": return this.aiModelCardService.exportTensorflow(id);
       case "HUGGINGFACE": return this.aiModelCardService.exportHuggingface(id);
       case "BIOIMAGEIO": return this.aiModelCardService.exportBioimageio(id);
