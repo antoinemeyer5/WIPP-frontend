@@ -17,7 +17,7 @@ import { Observable } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import { DropdownModule } from 'primeng/dropdown';
 
-interface License{
+interface License {
   id: String;
   name: String;
 }
@@ -30,8 +30,8 @@ interface License{
   imports: [FormsModule, DropdownModule]
 })
 export class AiModelDetailComponent implements OnInit, OnDestroy {
-  aiFramework: string[] = [ "TENSORFLOW", "HUGGINGFACE", "BIOIMAGEIO",
-                            "CDCS record" ];
+  aiFramework: string[] = ["TENSORFLOW", "HUGGINGFACE", "BIOIMAGEIO",
+    "CDCS record"];
   selectedFramework: string | undefined;
   aiModel: AiModel = new AiModel();
   aiModelId = this.route.snapshot.paramMap.get('id');
@@ -40,11 +40,13 @@ export class AiModelDetailComponent implements OnInit, OnDestroy {
   tensorboardLink = '';
   tensorboardPlotable: boolean = false;
   job: Job = null;
-  licenses: License[] = [ { id: "Unlicense", name: "Unlicense" },
-                          { id: "Apache-2.0", name: "Apache-2.0" },
-                          { id: "GPL", name: "GPL" },
-                          { id: "MPL-2.0", name: "MPL-2.0" },
-                          { id: "BSD-3-Clause", name: "BSD-3-Clause" } ];
+  licenses: License[] = [
+    { id: "Unlicense", name: "Unlicense" },
+    { id: "Apache-2.0", name: "Apache-2.0" },
+    { id: "GPL", name: "GPL" },
+    { id: "MPL-2.0", name: "MPL-2.0" },
+    { id: "BSD-3-Clause", name: "BSD-3-Clause" }
+  ];
   selectedLicense: License | undefined;
 
   chartdata_accu: { labels: string[], datasets: any[] };
@@ -212,6 +214,17 @@ export class AiModelDetailComponent implements OnInit, OnDestroy {
       alert("ALERT: can't modify this field.");
     }
   }
+
+  /*uploadAiModelCardInCDCS(id: string): void {
+    this.aiModelCardService.uploadCDCS(id).subscribe({
+      next: data => {
+        console.log("Uploaded this: " + data);
+      },
+      error: error => {
+        console.error('There was an error!', error.message);
+      }
+    });
+  }*/
 
   /***** Keycloak Methods *****/
 
