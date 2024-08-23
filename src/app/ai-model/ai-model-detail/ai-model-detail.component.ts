@@ -95,7 +95,7 @@ export class AiModelDetailComponent implements OnInit, OnDestroy {
       this.aiModelService.getJob(this.aiModel._links['sourceJob']['href']).subscribe(job => {
         this.job = job;
         this.aiModelService
-          .getTensorboardLogsByJob("6682c9e43149955bd95f59a8")  // todo: use `this.job.id`, 6682c9e43149955bd95f59a8
+          .getTensorboardLogsByJob(this.job.id)
           .subscribe(res => {
             this.tensorboardLogs = res;
             this.tensorboardLink = this.tensorboardLink + this.tensorboardLogs.name;
@@ -121,10 +121,11 @@ export class AiModelDetailComponent implements OnInit, OnDestroy {
   }
 
   loadChart(tag: string) {
+    let tensorboard_id = this.tensorboardLogs.id;
     let labels: string[] = [];
     let test = { label: 'test', data: [] };
     this.aiModelService
-      .getTensorboardlogsCSV("6682f3d43149955bd95f59ab", "test", tag) // todo: use `this.tensorboardLogs.id`
+      .getTensorboardlogsCSV(tensorboard_id, "test", tag)
       .subscribe(data => {
         // remove headers; get epochs and values
         for (let v of data.slice(1)) {
@@ -135,7 +136,7 @@ export class AiModelDetailComponent implements OnInit, OnDestroy {
 
     let train = { label: 'train', data: [] };
     this.aiModelService
-      .getTensorboardlogsCSV("6682f3d43149955bd95f59ab", "train", tag) // todo
+      .getTensorboardlogsCSV(tensorboard_id, "train", tag) // todo
       .subscribe(data => {
         for (let v of data.slice(1)) {
           train.data.push(v[2]);
