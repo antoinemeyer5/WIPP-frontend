@@ -138,15 +138,6 @@
       pTooltip="Export AI model card for selected framework"
       [outlined]="true">
     </p-button>
-
-    <p class="font-semibold">Upload AI model card in CDCS: (wip)</p>
-    <p-button
-      icon="pi pi-upload"
-      (click)="uploadAiModelCardInCDCS(aiModelCard.id);"
-      pTooltip="Upload AI model card in CDCS"
-      [outlined]="true"
-      [disabled]="true">
-    </p-button>
   </div>
 
   <div class="grid nested-grid">
@@ -233,7 +224,7 @@
           </details>
         </div>
 
-        <div class="col-3 py-1 font-semibold" *ngIf="tensorboardPlotable">License:</div>
+        <div class="col-3 py-1 font-semibold">License:</div>
         <p-dropdown
           [options]="licenses"
           [(ngModel)]="selectedLicense"
