@@ -1,20 +1,38 @@
 <form>
   <div class="flex flex-column gap-2">
     <label for="name" class="font-semibold w-6rem">Name</label>
-    <input pInputText required id="name" name="name" placeholder="Enter the name of the model to import" />
+    <input
+      pInputText
+      [(ngModel)]="newAiModel.name"
+      name="name"
+      placeholder="Enter the name of the model to import" />
 
     <label for="framework" class="font-semibold w-6rem">Framework</label>
-    <p-dropdown optionLabel="framework" placeholder="Select a Framework" />
+    <p-dropdown required
+      [options]="['WIPP', 'TensorFlow', 'HuggingFace', 'BioImageIO']"
+      [(ngModel)]="newAiModel.framework"
+      name="framework"
+      placeholder="Select a framework" />
 
     <label for="model" class="font-semibold w-6rem">Model</label>
-    <input type="file" name="model" class="flex-auto p-component" id="model" accept=".zip">
-
+    <p-fileUpload required
+      #modelUpload
+      mode="basic" chooseLabel="Choose" chooseIcon="pi pi-upload"
+      accept=".zip" 
+      customUpload="true"
+      (uploadHandler)="modelUploadCustom($event.files)" />
+    
     <label for="visibility" class="font-semibold w-6rem">Visibility</label>
-    <p-checkbox [binary]="true" inputId="binary" label="Check if you want to publicly shared" />
+    <p-checkbox
+      [binary]="true"
+      inputId="binary"
+      [(ngModel)]="newAiModel.publiclyShared"
+      name="publiclyShared"
+      label="Check if you want to publicly shared" />
   </div>
   <div class="flex justify-content-end gap-2">
     <p-button label="Cancel" (onClick)="cancel()" severity="secondary" />
-    <p-button label="Save" [disabled]="true" />
+    <p-button label="Save" (onClick)="createAiModel()" [disabled]="!newAiModel.name || !newAiModel.framework" type="submit" />
   </div>
 </form>
 <p-toast position="top-center" />

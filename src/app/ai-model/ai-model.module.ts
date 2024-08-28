@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AiModelListComponent } from './ai-model-list/ai-model-list.component';
 import { AiModelDetailComponent } from './ai-model-detail/ai-model-detail.component';
 import { AiModelRoutingModule } from './ai-model-routing.module';
@@ -16,11 +16,13 @@ import { TooltipModule } from 'primeng/tooltip';
 import { ChartModule } from 'primeng/chart';
 import { DropdownModule } from 'primeng/dropdown';
 import { CheckboxModule } from 'primeng/checkbox';
+import { FileUploadModule } from 'primeng/fileupload';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
+    ReactiveFormsModule,
     AiModelRoutingModule,
     TableModule,
     ToastModule,
@@ -31,6 +33,7 @@ import { CheckboxModule } from 'primeng/checkbox';
     ChartModule,
     DropdownModule,
     CheckboxModule,
+    FileUploadModule,
   ],
   declarations: [
     AiModelListComponent,
