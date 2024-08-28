@@ -30,15 +30,18 @@ interface License {
   imports: [FormsModule, DropdownModule]
 })
 export class AiModelDetailComponent implements OnInit, OnDestroy {
-  aiFramework: string[] = ["TENSORFLOW", "HUGGINGFACE", "BIOIMAGEIO",
+  aiFramework: string[] = ["WIPP", "TensorFlow", "HuggingFace", "BioImageIO",
     "CDCS record"];
   selectedFramework: string | undefined;
   aiModel: AiModel = new AiModel();
   aiModelId = this.route.snapshot.paramMap.get('id');
   aiModelCard: AiModelCard = new AiModelCard();
-  tensorboardLogs: TensorboardLogs = new TensorboardLogs();
+  aiModelCardPlotable: boolean = false;
+
+  tensorboardLogs: TensorboardLogs = null;
   tensorboardLink = '';
   tensorboardPlotable: boolean = false;
+
   job: Job = null;
   licenses: License[] = [
     { id: "Unlicense", name: "Unlicense" },
@@ -78,9 +81,11 @@ export class AiModelDetailComponent implements OnInit, OnDestroy {
     this.aiModelCardService.getAiModelCard(this.aiModelId)
       .subscribe(aiModelCard => {
         this.aiModelCard = aiModelCard;
+        this.aiModelCardPlotable = true;
         this.selectedLicense = { id: this.aiModelCard.license, name: this.aiModelCard.license };
       }, error => {
-        this.router.navigate(['/404']);
+        // TODO
+        console.log("getAiModelCard():", error);
       });
   }
 
@@ -102,9 +107,13 @@ export class AiModelDetailComponent implements OnInit, OnDestroy {
             this.tensorboardPlotable = true;
             this.chartdata_accu = this.loadChart("accuracy");
             this.chartdata_loss = this.loadChart("loss");
+          }, error => {
+            // TODO
+            console.log("getTensorboardLogsAndJob():", error);
           });
       });
     }
+
   }
 
   displayJobModal(jobId: string) {
@@ -163,9 +172,11 @@ export class AiModelDetailComponent implements OnInit, OnDestroy {
 
   getHttpFromCurrentFramework(id: string): Observable<HttpResponse<Blob>> {
     switch (this.selectedFramework) {
-      case "TENSORFLOW": return this.aiModelCardService.exportTensorflow(id);
-      case "HUGGINGFACE": return this.aiModelCardService.exportHuggingface(id);
-      case "BIOIMAGEIO": return this.aiModelCardService.exportBioimageio(id);
+      // TODO
+      // case "WIPP": return this. (comme CDCS record sans les 3 premiers champs ("id","owner", "publiclyShared")
+      case "TensorFlow": return this.aiModelCardService.exportTensorflow(id);
+      case "HuggingFace": return this.aiModelCardService.exportHuggingface(id);
+      case "BioImageIO": return this.aiModelCardService.exportBioimageio(id);
       case "CDCS record": return this.aiModelCardService.exportCDCS(id);
       default:
         alert("ERROR: you can't take any action on this framework.");
@@ -180,7 +191,7 @@ export class AiModelDetailComponent implements OnInit, OnDestroy {
         let content: string = await response.body['text']();
         // display
         this.dialogService.open(AiModelCardDetailComponent, {
-          header: 'Preview',
+          header: 'Preview for ' + this.selectedFramework,
           position: 'top',
           width: '50vw',
           data: {
@@ -215,17 +226,6 @@ export class AiModelDetailComponent implements OnInit, OnDestroy {
       alert("ALERT: can't modify this field.");
     }
   }
-
-  /*uploadAiModelCardInCDCS(id: string): void {
-    this.aiModelCardService.uploadCDCS(id).subscribe({
-      next: data => {
-        console.log("Uploaded this: " + data);
-      },
-      error: error => {
-        console.error('There was an error!', error.message);
-      }
-    });
-  }*/
 
   /***** Keycloak Methods *****/
 

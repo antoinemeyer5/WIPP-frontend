@@ -120,92 +120,91 @@
 <!-- AI Model Card -->
 
 <p-fieldset legend="AI Model Card" [toggleable]="true">
-  <div style="float: right;">
+
+  <div class="grid nested-grid" *ngIf="!aiModelCardPlotable">
+    <div class="col-12 md:col-6">
+      <p>This AI model did not have a AI model card.</p>
+      <p-fileUpload mode="basic" chooseLabel="(WIP) Upload model card" chooseIcon="pi pi-upload" accept=".json" [disabled]="true" />
+    </div>
+  </div>
+
+  <div style="float: right;" *ngIf="aiModelCardPlotable">
     <p class="font-semibold">Display/Download AI model card or CDCS record:</p>
-    <p-dropdown
-      [options]="aiFramework"
-      [(ngModel)]="selectedFramework"
-      placeholder="Select a framework" />
-    <p-button
-      icon="pi pi-eye"
-      (click)="displayAiModelCardModal(aiModelCard.id);"
-      pTooltip="Display AI model card for selected framework"
-      [outlined]="true">
+    <p-dropdown [options]="aiFramework" [(ngModel)]="selectedFramework" placeholder="Select a framework" />
+    <p-button icon="pi pi-eye" (click)="displayAiModelCardModal(aiModelCard.id);"
+      pTooltip="Display AI model card for selected framework" [outlined]="true">
     </p-button>
-    <p-button
-      icon="pi pi-download"
-      (click)="exportAiModelCard(aiModelCard.id);"
-      pTooltip="Export AI model card for selected framework"
-      [outlined]="true">
+    <p-button icon="pi pi-download" (click)="exportAiModelCard(aiModelCard.id);"
+      pTooltip="Export AI model card for selected framework" [outlined]="true">
     </p-button>
   </div>
 
-  <div class="grid nested-grid">
+  <div class="grid nested-grid" *ngIf="aiModelCardPlotable">
     <div class="col-12 md:col-6">
       <div class="grid">
-        <div class="col-3 py-1 font-semibold">Version:</div>
-        <div class="col-9 py-1">{{aiModelCard.version}}</div>
+        <div class="col-4 py-1 font-semibold">Version:</div>
+        <div class="col-8 py-1">{{aiModelCard.version}}</div>
 
-        <div class="col-3 py-1 font-semibold">Name:</div>
-        <div class="col-9 py-1">{{aiModelCard.name}}</div>
+        <div class="col-4 py-1 font-semibold">Name:</div>
+        <div class="col-8 py-1">{{aiModelCard.name}}</div>
 
-        <div class="col-3 py-1 font-semibold">Date:</div>
-        <div class="col-9 py-1">{{aiModelCard.date}}</div>
+        <div class="col-4 py-1 font-semibold">Date:</div>
+        <div class="col-8 py-1">{{aiModelCard.date}}</div>
 
-        <div class="col-3 py-1 font-semibold">Framework:</div>
-        <div class="col-9 py-1">{{aiModelCard.framework || "N/A"}}</div>
+        <div class="col-4 py-1 font-semibold">Framework:</div>
+        <div class="col-8 py-1">{{aiModelCard.framework || "N/A"}}</div>
 
-        <div class="col-3 py-1 font-semibold">Training Data:</div>
-        <div class="col-9 py-1">
+        <div class="col-4 py-1 font-semibold">Training Data:</div>
+        <div class="col-8 py-1">
           <details>
             <summary>Details</summary>
             <div class="grid" *ngFor="let item of aiModelCard.trainingData | keyvalue">
-              <div class="col-3 py-1 font-semibold">{{item.key}}:</div>
-              <div class="col-9 py-1"><a href="/images-collection/{{item.value}}">link</a></div>
+              <div class="col-4 py-1 font-semibold">{{item.key}}:</div>
+              <div class="col-8 py-1"><a href="/images-collection/{{item.value}}">link</a></div>
             </div>
           </details>
         </div>
 
-        <div class="col-3 py-1 font-semibold">Training Parameters:</div>
-        <div class="col-9 py-1">
+        <div class="col-4 py-1 font-semibold">Training Parameters:</div>
+        <div class="col-8 py-1">
           <details>
             <summary>Details</summary>
             <div class="grid" *ngFor="let item of aiModelCard.trainingParameters | keyvalue">
-              <div class="col-3 py-1 font-semibold">{{item.key}}:</div>
-              <div class="col-9 py-1">{{item.value}}</div>
+              <div class="col-4 py-1 font-semibold">{{item.key}}:</div>
+              <div class="col-8 py-1">{{item.value}}</div>
             </div>
           </details>
         </div>
 
-        <div class="col-3 py-1 font-semibold">Author:</div>
-        <div class="col-9 py-1">{{aiModelCard.author || "null"}}</div>
+        <div class="col-4 py-1 font-semibold">Author:</div>
+        <div class="col-8 py-1">{{aiModelCard.author || "null"}}</div>
 
-        <div class="col-3 py-1 font-semibold">Description:</div>
-        <div class="col-9 py-1">{{aiModelCard.description}}</div>
+        <div class="col-4 py-1 font-semibold">Description:</div>
+        <div class="col-8 py-1">{{aiModelCard.description}}</div>
 
-        <div class="col-3 py-1 font-semibold">Citation:</div>
-        <div class="col-9 py-1">
+        <div class="col-4 py-1 font-semibold">Citation:</div>
+        <div class="col-8 py-1">
           <input pInputText id="citation" name="citation" class="flex-auto" autocomplete="off"
             value="{{ aiModelCard.citation ? aiModelCard.citation : 'null' }}"
             (change)="updateAiModelCard($event.target.value, 'citation')" minlength="1" maxlength="70" />
         </div>
 
-        <div class="col-3 py-1 font-semibold">Operation Type:</div>
-        <div class="col-9 py-1">
+        <div class="col-4 py-1 font-semibold">Operation Type:</div>
+        <div class="col-8 py-1">
           <details>
             <summary>Details</summary>
             <div class="grid" *ngFor="let item of aiModelCard.operationType | keyvalue">
-              <div class="col-3 py-1 font-semibold">{{item.key}}:</div>
-              <div class="col-9 py-1">{{item.value}}</div>
+              <div class="col-4 py-1 font-semibold">{{item.key}}:</div>
+              <div class="col-8 py-1">{{item.value}}</div>
             </div>
           </details>
         </div>
 
-        <div class="col-3 py-1 font-semibold">Architecture:</div>
-        <div class="col-9 py-1">{{aiModelCard.architecture || "N/A"}}</div>
+        <div class="col-4 py-1 font-semibold">Architecture:</div>
+        <div class="col-8 py-1">{{aiModelCard.architecture || "N/A"}}</div>
 
-        <div class="col-3 py-1 font-semibold" *ngIf="tensorboardPlotable">Training:</div>
-        <div class="col-9 py-1" *ngIf="tensorboardPlotable">
+        <div class="col-4 py-1 font-semibold" *ngIf="tensorboardPlotable">Training:</div>
+        <div class="col-8 py-1" *ngIf="tensorboardPlotable">
           <details>
             <summary>Details</summary>
             Compute in {{ aiModelCard.training["time"] }} seconds with {{ aiModelCard.training["epochs"] }} epochs <br>
@@ -214,8 +213,8 @@
           </details>
         </div>
 
-        <div class="col-3 py-1 font-semibold" *ngIf="tensorboardPlotable">Testing:</div>
-        <div class="col-9 py-1" *ngIf="tensorboardPlotable">
+        <div class="col-4 py-1 font-semibold" *ngIf="tensorboardPlotable">Testing:</div>
+        <div class="col-8 py-1" *ngIf="tensorboardPlotable">
           <details>
             <summary>Details</summary>
             Compute in {{ aiModelCard.testing["time"] }} seconds with {{ aiModelCard.testing["epochs"] }} epochs <br>
@@ -224,14 +223,9 @@
           </details>
         </div>
 
-        <div class="col-3 py-1 font-semibold">License:</div>
-        <p-dropdown
-          [options]="licenses"
-          [(ngModel)]="selectedLicense"
-          optionLabel="name" 
-          optionValue="id"
-          [placeholder]="selectedLicense.name"
-          (onChange)="updateAiModelCard($event.value, 'license')" />
+        <div class="col-4 py-1 font-semibold">License:</div>
+        <p-dropdown [options]="licenses" [(ngModel)]="selectedLicense" optionLabel="name" optionValue="id"
+          [placeholder]="selectedLicense.name" (onChange)="updateAiModelCard($event.value, 'license')" />
       </div>
     </div>
   </div>
