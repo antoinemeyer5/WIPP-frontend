@@ -145,7 +145,7 @@ export class AiModelDetailComponent implements OnInit, OnDestroy {
 
     let train = { label: 'train', data: [] };
     this.aiModelService
-      .getTensorboardlogsCSV(tensorboard_id, "train", tag) // todo
+      .getTensorboardlogsCSV(tensorboard_id, "train", tag)
       .subscribe(data => {
         for (let v of data.slice(1)) {
           train.data.push(v[2]);
