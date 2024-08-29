@@ -82,6 +82,10 @@ export class AiModelService implements DataService<AiModel, PaginatedAiModels> {
     return this.http.post<AiModel>(this.aiModelUrl, aiModel);
   }
 
+  deleteAiModel(aiModel: AiModel) {
+    return this.http.delete<AiModel>(aiModel._links.self.href);
+  }
+
   /***** TensorBoard Services *****/
 
   getTensorboardLogsByJob(jobId: string): Observable<TensorboardLogs> {
