@@ -7,6 +7,12 @@
     <p-button icon="pi pi-globe" *ngIf="!aiModel.publiclyShared && canEdit()" type="button"
       pTooltip="Make collection public" tooltipPosition="left" [outlined]="true" (click)="makePublicAiModel();">
     </p-button>
+    <p-button icon="pi pi-trash" type="button"
+              pTooltip="Delete AI model"
+              tooltipPosition="left"
+              [outlined]="true"
+              (click)="deleteAiModel();">
+    </p-button>
   </div>
 </h1>
 
@@ -123,8 +129,17 @@
 
   <div class="grid nested-grid" *ngIf="!aiModelCardPlotable">
     <div class="col-12 md:col-6">
-      <p>This AI model did not have a AI model card.</p>
-      <p-fileUpload mode="basic" chooseLabel="(WIP) Upload model card" chooseIcon="pi pi-upload" accept=".json" [disabled]="true" />
+      <p>This AI model did not have a AI model card yet.</p>
+      <p-fileUpload
+        mode="basic"
+        chooseLabel="(WIP) Upload"
+        chooseIcon="pi pi-upload"
+        accept=".json"
+        [disabled]="true" />
+      <p-button
+        label="Create"
+        (click)="displayNewAiModelCardModel()"
+        icon="pi pi-plus-circle"></p-button>
     </div>
   </div>
 
@@ -230,3 +245,5 @@
     </div>
   </div>
 </p-fieldset>
+
+<p-confirmDialog />

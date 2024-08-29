@@ -8,9 +8,11 @@ import { AppConfigService } from '../../app-config.service';
 import urljoin from 'url-join';
 import { KeycloakService } from '../../services/keycloak/keycloak.service';
 import { DialogService } from 'primeng/dynamicdialog';
+import { ConfirmationService } from 'primeng/api';
 
 import { AiModelCard } from '../../ai-model-card/ai-model-card';
 import { AiModelCardDetailComponent } from 'src/app/ai-model-card/ai-model-card-detail/ai-model-card-detail.component'
+import { AiModelCardNewComponent } from 'src/app/ai-model-card/ai-model-card-new/ai-model-card-new.component';
 import { AiModelCardService } from 'src/app/ai-model-card/ai-model-card.service';
 import { HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -26,7 +28,7 @@ interface License {
   selector: 'app-ai-model-detail',
   templateUrl: './ai-model-detail.component.html',
   styleUrls: ['./ai-model-detail.component.css'],
-  providers: [DialogService],
+  providers: [DialogService, ConfirmationService],
   imports: [FormsModule, DropdownModule]
 })
 export class AiModelDetailComponent implements OnInit, OnDestroy {
@@ -59,6 +61,7 @@ export class AiModelDetailComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private dialogService: DialogService,
+    private confirmationService: ConfirmationService,
     private appConfigService: AppConfigService,
     private aiModelService: AiModelService,
     private aiModelCardService: AiModelCardService,
@@ -206,6 +209,18 @@ export class AiModelDetailComponent implements OnInit, OnDestroy {
       });
   }
 
+  displayNewAiModelCardModel() {
+    this.dialogService.open(AiModelCardNewComponent, {
+      header: 'Fill-in model card',
+      position: 'top',
+      width: '50vw',
+      breakpoints: {
+        '960px': '75vw',
+        '640px': '90vw'
+      }
+    });
+  }
+
   exportAiModelCard(id: string): void {
     // get content
     this.getHttpFromCurrentFramework(id)
@@ -225,6 +240,22 @@ export class AiModelDetailComponent implements OnInit, OnDestroy {
     } else {
       alert("ALERT: can't modify this field.");
     }
+  }
+
+  deleteAiModel(): void {
+    this.confirmationService.confirm({
+      message: 'Are you sure you want to delete the AI model <b>' + this.aiModel.name + '</b> created on <b>' + this.aiModel.creationDate + '</b>?',
+      header: 'Confirmation',
+      icon: 'pi pi-exclamation-triangle',
+      acceptIcon:"none",
+      rejectIcon:"none",
+      rejectButtonStyleClass:"p-button-text",
+      accept: () => {
+        this.aiModelService.deleteAiModel(this.aiModel).subscribe(aimodel => {
+          this.router.navigate(['ai-models']);
+        });
+      }
+    });
   }
 
   /***** Keycloak Methods *****/
