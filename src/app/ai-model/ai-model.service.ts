@@ -91,14 +91,13 @@ export class AiModelService implements DataService<AiModel, PaginatedAiModels> {
   getTensorboardLogsByJob(jobId: string): Observable<TensorboardLogs> {
     const httpOptions = {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
-      params: {}
+      params: {},
     };
     const httpParams = new HttpParams().set('sourceJob', jobId);
     httpOptions.params = httpParams;
-    return this.http.get<any>(this.tensorboardLogsUrl + '/search/findOneBySourceJob', httpOptions).pipe(
-      map((result: any) => {
-        return result;
-      }));
+    return this.http
+      .get<any>(this.tensorboardLogsUrl + '/search/findOneBySourceJob', httpOptions)
+      .pipe(map((result: any) => { return result; }));
   }
 
   getTensorboardlogsCSV(id: string, type: string, tag: string): Observable<any> {
