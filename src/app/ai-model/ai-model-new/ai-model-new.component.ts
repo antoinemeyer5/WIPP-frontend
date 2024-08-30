@@ -37,7 +37,7 @@ export class AiModelNewComponent implements OnInit {
   createAiModel() {
     // get upload zip
     this.modelUpload.upload();
-    // check uploaf file
+    // check upload file
     if (this.modelUpload.content != null) {
       this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Form valid' });
       // create new AI model
