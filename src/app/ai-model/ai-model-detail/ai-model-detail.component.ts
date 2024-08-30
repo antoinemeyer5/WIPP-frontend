@@ -18,6 +18,9 @@ import { HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import { DropdownModule } from 'primeng/dropdown';
+import { MessageService } from 'primeng/api';
+import { FileUploadModule } from 'primeng/fileupload';
+import { ToastModule } from 'primeng/toast';
 
 interface License {
   id: String;
@@ -28,13 +31,14 @@ interface License {
   selector: 'app-ai-model-detail',
   templateUrl: './ai-model-detail.component.html',
   styleUrls: ['./ai-model-detail.component.css'],
-  providers: [DialogService, ConfirmationService],
-  imports: [FormsModule, DropdownModule]
+  providers: [DialogService, ConfirmationService, MessageService],
+  imports: [FormsModule, DropdownModule, FileUploadModule, ToastModule]
 })
 export class AiModelDetailComponent implements OnInit, OnDestroy {
-  aiFramework: string[] = ["WIPP", "TensorFlow", "HuggingFace", "BioImageIO",
+  aiFramework: string[] = ["TensorFlow", "HuggingFace", "BioImageIO",
     "CDCS record"];
   selectedFramework: string | undefined;
+
   aiModel: AiModel = new AiModel();
   aiModelId = this.route.snapshot.paramMap.get('id');
   aiModelCard: AiModelCard = new AiModelCard();
@@ -62,6 +66,7 @@ export class AiModelDetailComponent implements OnInit, OnDestroy {
     private router: Router,
     private dialogService: DialogService,
     private confirmationService: ConfirmationService,
+    private messageService: MessageService,
     private appConfigService: AppConfigService,
     private aiModelService: AiModelService,
     private aiModelCardService: AiModelCardService,
@@ -87,8 +92,7 @@ export class AiModelDetailComponent implements OnInit, OnDestroy {
         this.aiModelCardPlotable = true;
         this.selectedLicense = { id: this.aiModelCard.license, name: this.aiModelCard.license };
       }, error => {
-        // TODO
-        console.log("getAiModelCard():", error);
+        this.messageService.add({ severity: 'info', summary: 'Info', detail: 'There is no model card associated with this model' });
       });
   }
 
@@ -100,23 +104,25 @@ export class AiModelDetailComponent implements OnInit, OnDestroy {
 
   getTensorboardLogsAndJob() {
     if (this.aiModel._links['sourceJob']) {
-      this.aiModelService.getJob(this.aiModel._links['sourceJob']['href']).subscribe(job => {
-        this.job = job;
-        this.aiModelService
-          .getTensorboardLogsByJob(this.job.id)
-          .subscribe(res => {
-            this.tensorboardLogs = res;
-            this.tensorboardLink = this.tensorboardLink + this.tensorboardLogs.name;
-            this.tensorboardPlotable = true;
-            this.chartdata_accu = this.loadChart("accuracy");
-            this.chartdata_loss = this.loadChart("loss");
-          }, error => {
-            // TODO
-            console.log("getTensorboardLogsAndJob():", error);
-          });
-      });
+      this.aiModelService
+        .getJob(this.aiModel._links['sourceJob']['href'])
+        .subscribe(job => {
+          this.job = job;
+          this.aiModelService
+            .getTensorboardLogsByJob(this.job.id)
+            .subscribe(res => {
+              this.tensorboardLogs = res;
+              this.tensorboardLink = this.tensorboardLink + this.tensorboardLogs.name;
+              this.tensorboardPlotable = true;
+              this.chartdata_accu = this.loadChart("accuracy");
+              this.chartdata_loss = this.loadChart("loss");
+            }, error => {
+              this.messageService.add({ severity: 'info', summary: 'Info', detail: 'There is no Tensorboard logs associated with this AI model' });
+            });
+        }, error => {
+          this.messageService.add({ severity: 'info', summary: 'Info', detail: 'There is no job associated with this AI model' });
+        });
     }
-
   }
 
   displayJobModal(jobId: string) {
@@ -175,8 +181,6 @@ export class AiModelDetailComponent implements OnInit, OnDestroy {
 
   getHttpFromCurrentFramework(id: string): Observable<HttpResponse<Blob>> {
     switch (this.selectedFramework) {
-      // TODO
-      // case "WIPP": return this. (comme CDCS record sans les 3 premiers champs ("id","owner", "publiclyShared")
       case "TensorFlow": return this.aiModelCardService.exportTensorflow(id);
       case "HuggingFace": return this.aiModelCardService.exportHuggingface(id);
       case "BioImageIO": return this.aiModelCardService.exportBioimageio(id);
@@ -251,11 +255,55 @@ export class AiModelDetailComponent implements OnInit, OnDestroy {
       rejectIcon:"none",
       rejectButtonStyleClass:"p-button-text",
       accept: () => {
+        // delete model card
+        if (this.aiModelCardPlotable) {
+          this.aiModelCardService.deleteAiModelCard(this.aiModelCard).subscribe(aimodelcard => {
+            this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Model card deleted' });
+          }, err => {
+            this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Model card suppression failed' });
+          })
+        }
+        // delete model
         this.aiModelService.deleteAiModel(this.aiModel).subscribe(aimodel => {
+          this.messageService.add({ severity: 'success', summary: 'Success', detail: 'AI Model deleted' });
           this.router.navigate(['ai-models']);
         });
       }
     });
+  }
+
+  myreader(file, callback) {
+    const fr = new FileReader();
+    fr.onload = () => {
+      const fileContent = fr.result as string;
+      const jsonData = JSON.parse(fileContent);
+      callback(null, jsonData);
+    }
+    fr.onerror = (err) => callback(err);
+    fr.readAsText(file);
+  }
+
+  modelCardUploader(event) {
+    // read file 
+    this.myreader(event.files[0], (err, aimodelcard) => {
+      aimodelcard["version"] = this.aiModel.creationDate;
+      aimodelcard["owner"] = this.aiModel.owner;
+      aimodelcard["aiModelId"] = this.aiModelId;
+      aimodelcard["name"] = this.aiModel.name;
+      
+      // create aimodelcard
+      this.aiModelCardService.postAiModelCard(aimodelcard).subscribe(
+        aimodelcard_response => {
+          this.aiModelCard = aimodelcard_response;
+          this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Model card uploaded' });
+          this.aiModelCardPlotable = true;
+        },
+        error => {
+          this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Upload model card failed' });
+        }
+      );
+    });
+
   }
 
   /***** Keycloak Methods *****/

@@ -130,16 +130,23 @@
   <div class="grid nested-grid" *ngIf="!aiModelCardPlotable">
     <div class="col-12 md:col-6">
       <p>This AI model did not have a AI model card yet.</p>
-      <p-fileUpload
-        mode="basic"
-        chooseLabel="(WIP) Upload"
-        chooseIcon="pi pi-upload"
-        accept=".json"
-        [disabled]="true" />
-      <p-button
-        label="Create"
-        (click)="displayNewAiModelCardModel()"
-        icon="pi pi-plus-circle"></p-button>
+      <div style="display: flex;">
+        <p-toast />
+        <p-fileUpload
+          mode="basic"
+          name="myaimodelcard[]"
+          chooseIcon="pi pi-upload"
+          accept=".json"
+          maxFileSize="100000"
+          customUpload="true"
+          (uploadHandler)="modelCardUploader($event)"
+          chooseLabel="Upload" />
+        <!--<p-button
+          label="(wip) Create"
+          (click)="displayNewAiModelCardModel()"
+          icon="pi pi-plus-circle"
+          [disabled]="true"></p-button>-->
+      </div>
     </div>
   </div>
 
