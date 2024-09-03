@@ -186,6 +186,28 @@ export class AiModelDetailComponent implements OnInit, OnDestroy {
       .subscribe(downloadUrl => window.location.href = downloadUrl['url']);
   }
 
+  popupDeleteModel(): void {
+    this.confirmationService.confirm({
+      message: 'Are you sure you want to delete the AI model <b>' + this.aiModel.name + '</b> created on <b>' + this.aiModel.creationDate + '</b>?',
+      header: 'Confirmation',
+      icon: 'pi pi-exclamation-triangle',
+      rejectButtonStyleClass: "p-button-text",
+      accept: () => {
+        // card
+        this.deleteAiModelCard();
+
+        // model
+        this.aiModelService.deleteAiModel(this.aiModel)
+          .subscribe(aimodel => {
+            this.messageService.add({ severity: 'success', summary: 'Success', detail: 'AI Model deleted' });
+            this.router.navigate(['ai-models']);
+          });
+      }
+    });
+  }
+
+  /***** AiModelCard Methods *****/
+
   getHttpFromCurrentFramework(id: string): Observable<HttpResponse<Blob>> {
     switch (this.selectedFramework) {
       case "TensorFlow": return this.aiModelCardService.exportTensorflow(id);
@@ -222,7 +244,7 @@ export class AiModelDetailComponent implements OnInit, OnDestroy {
 
   displayNewAiModelCardModel() {
     this.dialogService.open(AiModelCardNewComponent, {
-      header: 'Fill-in model card',
+      header: 'Fill-in AI model card',
       position: 'top',
       width: '50vw',
       breakpoints: {
@@ -253,28 +275,24 @@ export class AiModelDetailComponent implements OnInit, OnDestroy {
     }
   }
 
-  deleteAiModel(): void {
+  deleteAiModelCard() {
+    this.aiModelCardService.deleteAiModelCard(this.aiModelCard)
+      .subscribe(aimodelcard => {
+        this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Model card deleted' });
+        this.aiModelCardPlotable = false;
+      }, err => {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Model card suppression failed' });
+      });
+  }
+
+  popupDeleteCard(): void {
     this.confirmationService.confirm({
-      message: 'Are you sure you want to delete the AI model <b>' + this.aiModel.name + '</b> created on <b>' + this.aiModel.creationDate + '</b>?',
+      message: 'Are you sure you want to delete the AI model card?',
       header: 'Confirmation',
       icon: 'pi pi-exclamation-triangle',
-      acceptIcon: "none",
-      rejectIcon: "none",
       rejectButtonStyleClass: "p-button-text",
       accept: () => {
-        // delete model card
-        if (this.aiModelCardPlotable) {
-          this.aiModelCardService.deleteAiModelCard(this.aiModelCard).subscribe(aimodelcard => {
-            this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Model card deleted' });
-          }, err => {
-            this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Model card suppression failed' });
-          })
-        }
-        // delete model
-        this.aiModelService.deleteAiModel(this.aiModel).subscribe(aimodel => {
-          this.messageService.add({ severity: 'success', summary: 'Success', detail: 'AI Model deleted' });
-          this.router.navigate(['ai-models']);
-        });
+        this.deleteAiModelCard();
       }
     });
   }
@@ -290,7 +308,8 @@ export class AiModelDetailComponent implements OnInit, OnDestroy {
     fr.readAsText(file);
   }
 
-  modelCardUploader(event) {
+  // TODO: TO FIX!!
+  modelCardUploader(event: { files: any[]; }) {
     // read file 
     this.myreader(event.files[0], (err, aimodelcard) => {
       aimodelcard["version"] = this.aiModel.creationDate;
@@ -299,18 +318,15 @@ export class AiModelDetailComponent implements OnInit, OnDestroy {
       aimodelcard["name"] = this.aiModel.name;
 
       // create aimodelcard
-      this.aiModelCardService.postAiModelCard(aimodelcard).subscribe(
-        aimodelcard_response => {
+      this.aiModelCardService.postAiModelCard(aimodelcard)
+        .subscribe(aimodelcard_response => {
           this.aiModelCard = aimodelcard_response;
           this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Model card uploaded' });
           this.aiModelCardPlotable = true;
-        },
-        error => {
+        }, err => {
           this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Upload model card failed' });
-        }
-      );
+        });
     });
-
   }
 
   /***** Keycloak Methods *****/

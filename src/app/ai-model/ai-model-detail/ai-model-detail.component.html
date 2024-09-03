@@ -8,7 +8,7 @@
       pTooltip="Make collection public" tooltipPosition="left" [outlined]="true" (click)="makePublicAiModel();">
     </p-button>
     <p-button icon="pi pi-trash" type="button" pTooltip="Delete AI model" tooltipPosition="left" [outlined]="true"
-      (click)="deleteAiModel();">
+      (click)="popupDeleteModel();">
     </p-button>
   </div>
 </h1>
@@ -136,13 +136,23 @@
 
   <ng-template #displayAIModelCard>
     <div style="float: right;">
-      <p class="font-semibold">Display/Download AI model card or CDCS record:</p>
+      <p class="font-semibold">Tools:</p>
+      <p-button icon="pi pi-file-plus"
+        pTooltip="Upload new AI model card" [outlined]="true" [disabled]="true">
+      </p-button>
+
+      <p class="font-semibold"></p>
       <p-dropdown [options]="aiFramework" [(ngModel)]="selectedFramework" placeholder="Select a framework" />
       <p-button icon="pi pi-eye" (click)="displayAiModelCardModal(aiModelCard.id);"
         pTooltip="Display AI model card for selected framework" [outlined]="true">
       </p-button>
       <p-button icon="pi pi-download" (click)="exportAiModelCard(aiModelCard.id);"
         pTooltip="Export AI model card for selected framework" [outlined]="true">
+      </p-button>
+
+      <p class="font-semibold"></p>
+      <p-button icon="pi pi-trash" (click)="popupDeleteCard();"
+        pTooltip="Delete AI model card" [outlined]="true">
       </p-button>
     </div>
 
