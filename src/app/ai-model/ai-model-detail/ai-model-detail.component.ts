@@ -75,25 +75,55 @@ export class AiModelDetailComponent implements OnInit, OnDestroy {
 
   /***** NgOn Methods *****/
 
-  ngOnInit() {
+  async ngOnInit(): Promise<void> {
     this.selectedLicense = this.licenses[0]; // by default
     this.tensorboardLink = urljoin(this.appConfigService.getConfig().tensorboardUrl, '#scalars&regexInput=');
-    this.aiModelService.getById(this.aiModelId)
-      .subscribe(aiModel => {
-        this.aiModel = aiModel;
-        this.getTensorboardLogsAndJob();
-      }, error => {
-        this.router.navigate(['/404']);
-      });
-    // loads the AI ModelCard associated with the model
-    this.aiModelCardService.getAiModelCard(this.aiModelId)
-      .subscribe(aiModelCard => {
-        this.aiModelCard = aiModelCard;
-        this.aiModelCardPlotable = true;
-        this.selectedLicense = { id: this.aiModelCard.license, name: this.aiModelCard.license };
-      }, error => {
-        this.messageService.add({ severity: 'info', summary: 'Info', detail: 'There is no model card associated with this model' });
-      });
+
+    // model
+    try {
+      const aiModel = await this.aiModelService.getById(this.aiModelId).toPromise();
+      this.aiModel = aiModel;
+
+      // job
+      if (this.aiModel._links['sourceJob'] !== undefined) {
+        const job = await this.aiModelService.getJob(this.aiModel._links['sourceJob']['href']).toPromise();
+        this.job = job;
+
+        // logs
+        try {
+          const logs = await this.aiModelService.getTensorboardLogsByJob(this.job.id).toPromise();
+          this.tensorboardLogs = logs;
+          this.tensorboardLink = this.tensorboardLink + this.tensorboardLogs.name;
+          this.tensorboardPlotable = true;
+          this.chartdata_accu = this.loadChart("accuracy");
+          this.chartdata_loss = this.loadChart("loss");
+        } catch (err) {
+
+          // no logs
+          this.messageService.add({ severity: 'info', summary: 'Info', detail: 'No logs associated with this job' });
+        }
+      } else {
+
+        // no job
+        this.messageService.add({ severity: 'info', summary: 'Info', detail: 'No job or logs associated with this AI model' });
+      }
+    } catch (err) {
+
+      // no model
+      this.router.navigate(['/404']);
+    }
+
+    // card
+    try {
+      const card = await this.aiModelCardService.getAiModelCard(this.aiModelId).toPromise();
+      this.aiModelCard = card;
+      this.aiModelCardPlotable = true;
+      this.selectedLicense = { id: this.aiModelCard.license, name: this.aiModelCard.license };
+    } catch (err) {
+
+      // no card
+      this.messageService.add({ severity: 'info', summary: 'Info', detail: 'No AI model card associated with this model' });
+    }
   }
 
   ngOnDestroy() {
@@ -101,29 +131,6 @@ export class AiModelDetailComponent implements OnInit, OnDestroy {
   }
 
   /***** TensorBoard Methods *****/
-
-  getTensorboardLogsAndJob() {
-    if (this.aiModel._links['sourceJob']) {
-      this.aiModelService
-        .getJob(this.aiModel._links['sourceJob']['href'])
-        .subscribe(job => {
-          this.job = job;
-          this.aiModelService
-            .getTensorboardLogsByJob(this.job.id)
-            .subscribe(res => {
-              this.tensorboardLogs = res;
-              this.tensorboardLink = this.tensorboardLink + this.tensorboardLogs.name;
-              this.tensorboardPlotable = true;
-              this.chartdata_accu = this.loadChart("accuracy");
-              this.chartdata_loss = this.loadChart("loss");
-            }, error => {
-              this.messageService.add({ severity: 'info', summary: 'Info', detail: 'There is no Tensorboard logs associated with this AI model' });
-            });
-        }, error => {
-          this.messageService.add({ severity: 'info', summary: 'Info', detail: 'There is no job associated with this AI model' });
-        });
-    }
-  }
 
   displayJobModal(jobId: string) {
     this.dialogService.open(JobDetailComponent, {
@@ -251,9 +258,9 @@ export class AiModelDetailComponent implements OnInit, OnDestroy {
       message: 'Are you sure you want to delete the AI model <b>' + this.aiModel.name + '</b> created on <b>' + this.aiModel.creationDate + '</b>?',
       header: 'Confirmation',
       icon: 'pi pi-exclamation-triangle',
-      acceptIcon:"none",
-      rejectIcon:"none",
-      rejectButtonStyleClass:"p-button-text",
+      acceptIcon: "none",
+      rejectIcon: "none",
+      rejectButtonStyleClass: "p-button-text",
       accept: () => {
         // delete model card
         if (this.aiModelCardPlotable) {
@@ -290,7 +297,7 @@ export class AiModelDetailComponent implements OnInit, OnDestroy {
       aimodelcard["owner"] = this.aiModel.owner;
       aimodelcard["aiModelId"] = this.aiModelId;
       aimodelcard["name"] = this.aiModel.name;
-      
+
       // create aimodelcard
       this.aiModelCardService.postAiModelCard(aimodelcard).subscribe(
         aimodelcard_response => {
