@@ -128,7 +128,7 @@
       <p>This AI model did not have a AI model card yet.</p>
       <div style="display: flex;">
         <p-fileUpload mode="basic" name="myaimodelcard[]" chooseIcon="pi pi-upload" accept=".json" maxFileSize="100000"
-          customUpload="true" (uploadHandler)="modelCardUploader($event)" chooseLabel="Upload" />
+          customUpload="true" (uploadHandler)="modelCardUploader($event)" chooseLabel="Upload" [disabled]="true" />
         <p-button label="Create" (click)="displayNewAiModelCardModel()" icon="pi pi-plus-circle"></p-button>
       </div>
     </div>
@@ -137,22 +137,20 @@
   <ng-template #displayAIModelCard>
     <div style="float: right;">
       <p class="font-semibold">Tools:</p>
-      <p-button icon="pi pi-file-plus"
-        pTooltip="Upload new AI model card" [outlined]="true" [disabled]="true">
+      <p-button icon="pi pi-file-plus" pTooltip="Upload new AI model card" [outlined]="true" [disabled]="true">
       </p-button>
 
       <p class="font-semibold"></p>
       <p-dropdown [options]="aiFramework" [(ngModel)]="selectedFramework" placeholder="Select a framework" />
       <p-button icon="pi pi-eye" (click)="displayAiModelCardModal(aiModelCard.id);"
-        pTooltip="Display AI model card for selected framework" [outlined]="true">
+        pTooltip="Display AI model card for selected framework" [outlined]="true" [disabled]="!selectedFramework">
       </p-button>
       <p-button icon="pi pi-download" (click)="exportAiModelCard(aiModelCard.id);"
-        pTooltip="Export AI model card for selected framework" [outlined]="true">
+        pTooltip="Export AI model card for selected framework" [outlined]="true" [disabled]="!selectedFramework">
       </p-button>
 
       <p class="font-semibold"></p>
-      <p-button icon="pi pi-trash" (click)="popupDeleteCard();"
-        pTooltip="Delete AI model card" [outlined]="true">
+      <p-button icon="pi pi-trash" (click)="popupDeleteCard();" pTooltip="Delete AI model card" [outlined]="true">
       </p-button>
     </div>
 
