@@ -19,6 +19,7 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { FileUploadModule } from 'primeng/fileupload';
 import { DialogModule } from 'primeng/dialog';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { MultiSelectModule } from 'primeng/multiselect';
 
 @NgModule({
   imports: [
@@ -38,6 +39,7 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
     FileUploadModule,
     DialogModule,
     ConfirmDialogModule,
+    MultiSelectModule
   ],
   declarations: [
     AiModelListComponent,
