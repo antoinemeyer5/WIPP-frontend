@@ -1,37 +1,69 @@
 <form>
-  <div class="flex flex-column gap-2">
-    <label for="name" class="font-semibold w-6rem">Name</label>
-    <input pInputText [(ngModel)]="newModel.name" name="model-name"
-      placeholder="Enter the name of the model to import" />
+  <div class="flex flex-column gap-5">
 
-    <label for="framework" class="font-semibold w-6rem">Framework</label>
-    <p-dropdown required [options]="listModelFramework" [(ngModel)]="newModel.framework" name="model-framework"
-      placeholder="Select a framework" />
+    <div class="flex flex-column">
+      <label for="name" class="font-semibold">Name</label>
+      <input pInputText [(ngModel)]="newModel.name" name="model-name"
+        placeholder="Enter the name of the model to import" />
+    </div>
 
-    <label for="model" class="font-semibold w-6rem">Model</label>
-    <p-fileUpload required #modelUpload mode="basic" chooseLabel="Choose" chooseIcon="pi pi-upload" accept=".zip"
-      customUpload="true" (uploadHandler)="modelUploadCustom($event.files)" />
+    <div class="flex flex-row">
 
-    <label for="description" class="font-semibold w-6rem">Description</label>
-    <input pInputText [(ngModel)]="newCard.description" name="card-name" placeholder="Enter a description" />
+      <div class="flex flex-column w-6">
+        <label for="framework" class="font-semibold">Framework</label>
+        <p-dropdown required [options]="listModelFramework" [(ngModel)]="newModel.framework" name="model-framework"
+          placeholder="Select a framework" />
+      </div>
 
-    <label for="operationtype" class="font-semibold">Operation type(s)</label>
-    <p-multiSelect [options]="listCardOperationType" [(ngModel)]="newCard.operationType" name="model-operation-type"
-      placeholder="Select operation type(s)" />
+      <div class="flex flex-column w-6">
+        <label for="architecture" class="font-semibold">Architecture</label>
+        <p-dropdown required [options]="listCardArchitecture" [(ngModel)]="newCard.architecture"
+          name="card-architecture" placeholder="Select an architecture" />
+      </div>
+    </div>
 
-    <label for="architecture" class="font-semibold">Architecture</label>
-    <p-dropdown required [options]="listCardArchitecture" [(ngModel)]="newCard.architecture" name="card-architecture"
-      placeholder="Select an architecture" />
+    <div class="flex flex-row">
 
-    <label for="visibility" class="font-semibold w-6rem">Visibility</label>
-    <p-checkbox [binary]="true" inputId="binary" [(ngModel)]="newModel.publiclyShared" name="publiclyShared"
-      label="Check if you want to publicly shared" />
-  </div>
-  <div class="flex justify-content-end gap-2">
-    <p-button label="Cancel" (onClick)="cancel()" severity="secondary" />
-    <p-button label="Save" (onClick)="createModelAndCard()"
-      [disabled]="!newModel.name || !newModel.framework || !newCard.description || newCard.operationType.length == 0 || !newCard.architecture"
-      type="submit" />
+      <div class="flex flex-column w-6">
+        <label for="model" class="font-semibold">Model</label>
+        <p-fileUpload required #modelUpload mode="basic" chooseLabel="Choose" chooseIcon="pi pi-upload" accept=".zip"
+          customUpload="true" (uploadHandler)="modelUploadCustom($event.files)" />
+      </div>
+
+      <div class="flex flex-column w-6">
+        <label for="model" class="font-semibold">Card (optional)</label>
+        <p-fileUpload mode="basic" chooseLabel="Choose" chooseIcon="pi pi-upload" accept=".zip" customUpload="true"
+          [disabled]="true" />
+      </div>
+    </div>
+
+    <div class="flex flex-row">
+
+      <div class="flex flex-column w-6">
+        <label for="operationtype" class="font-semibold">Operation type(s)</label>
+        <p-multiSelect [options]="listCardOperationType" [(ngModel)]="newCard.operationType" name="model-operation-type"
+          placeholder="Select operation type(s)" />
+      </div>
+
+      <div class="flex flex-column w-6">
+        <label for="visibility" class="font-semibold">Visibility</label>
+        <p-checkbox [binary]="true" inputId="binary" [(ngModel)]="newModel.publiclyShared" name="publiclyShared"
+          label="Check if you want to publicly shared" />
+      </div>
+    </div>
+
+    <div class="flex flex-column">
+      <label for="description" class="font-semibold">Description</label>
+      <input pInputText [(ngModel)]="newCard.description" name="card-name" placeholder="Enter a description" />
+    </div>
+
+    <div class="flex justify-content-end gap-2">
+      <p-button label="Cancel" (onClick)="cancel()" severity="secondary" />
+      <p-button label="Save" (onClick)="createModelAndCard()"
+        [disabled]="!newModel.name || !newModel.framework || !newCard.description || newCard.operationType.length == 0 || !newCard.architecture"
+        type="submit" />
+    </div>
   </div>
 </form>
+
 <p-toast position="top-center" />
