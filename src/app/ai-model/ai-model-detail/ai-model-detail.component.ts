@@ -16,16 +16,11 @@ import { AiModelCardNewComponent } from 'src/app/ai-model-card/ai-model-card-new
 import { AiModelCardService } from 'src/app/ai-model-card/ai-model-card.service';
 import { HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, FormsModule, Validators } from '@angular/forms';
 import { DropdownModule } from 'primeng/dropdown';
 import { MessageService } from 'primeng/api';
 import { FileUploadModule } from 'primeng/fileupload';
 import { ToastModule } from 'primeng/toast';
-
-interface License {
-  id: String;
-  name: String;
-}
 
 @Component({
   selector: 'app-ai-model-detail',
@@ -43,20 +38,18 @@ export class AiModelDetailComponent implements OnInit, OnDestroy {
   aiModelId = this.route.snapshot.paramMap.get('id');
   aiModelCard: AiModelCard = new AiModelCard();
   aiModelCardPlotable: boolean = false;
+  
+  // dynamic edit model card
+  form: FormGroup;
+  editing: boolean;
+  cancel: boolean;
+  save: boolean;
 
   tensorboardLogs: TensorboardLogs = null;
   tensorboardLink = '';
   tensorboardPlotable: boolean = false;
 
   job: Job = null;
-  licenses: License[] = [
-    { id: "Unlicense", name: "Unlicense" },
-    { id: "Apache-2.0", name: "Apache-2.0" },
-    { id: "GPL", name: "GPL" },
-    { id: "MPL-2.0", name: "MPL-2.0" },
-    { id: "BSD-3-Clause", name: "BSD-3-Clause" }
-  ];
-  selectedLicense: License | undefined;
 
   chartdata_accu: { labels: string[], datasets: any[] };
   chartdata_loss: { labels: string[], datasets: any[] };
@@ -70,13 +63,17 @@ export class AiModelDetailComponent implements OnInit, OnDestroy {
     private appConfigService: AppConfigService,
     private aiModelService: AiModelService,
     private aiModelCardService: AiModelCardService,
-    private keycloakService: KeycloakService
-  ) { }
+    private keycloakService: KeycloakService,
+    private formBuilder: FormBuilder,
+  ) {
+    this.editing = true;
+    this.cancel = false;
+    this.save = false;
+  }
 
   /***** NgOn Methods *****/
 
   async ngOnInit(): Promise<void> {
-    this.selectedLicense = this.licenses[0]; // by default
     this.tensorboardLink = urljoin(this.appConfigService.getConfig().tensorboardUrl, '#scalars&regexInput=');
 
     // model
@@ -118,7 +115,14 @@ export class AiModelDetailComponent implements OnInit, OnDestroy {
       const card = await this.aiModelCardService.getAiModelCard(this.aiModelId).toPromise();
       this.aiModelCard = card;
       this.aiModelCardPlotable = true;
-      this.selectedLicense = { id: this.aiModelCard.license, name: this.aiModelCard.license };
+
+      // form
+      this.form = this.formBuilder.group({
+        name: new FormControl(this.aiModelCard.name, Validators.required),
+        author: new FormControl(this.aiModelCard.author, Validators.required),
+        description: new FormControl(this.aiModelCard.description, Validators.required),
+        citation: new FormControl(this.aiModelCard.citation, Validators.required),
+      });
     } catch (err) {
 
       // no card
@@ -266,15 +270,6 @@ export class AiModelDetailComponent implements OnInit, OnDestroy {
       });
   }
 
-  updateAiModelCard(value: string, field: string): void {
-    if (this.aiModelCard.hasOwnProperty(field)) {
-      this.aiModelCard[field] = value ? value : "null";
-      this.aiModelCardService.updateAiModelCard(this.aiModelCard).subscribe(mc => this.aiModelCard = mc);
-    } else {
-      alert("ALERT: can't modify this field.");
-    }
-  }
-
   deleteAiModelCard() {
     this.aiModelCardService.deleteAiModelCard(this.aiModelCard)
       .subscribe(aimodelcard => {
@@ -285,31 +280,8 @@ export class AiModelDetailComponent implements OnInit, OnDestroy {
       });
   }
 
-  popupDeleteCard(): void {
-    this.confirmationService.confirm({
-      message: 'Are you sure you want to delete the AI model card?',
-      header: 'Confirmation',
-      icon: 'pi pi-exclamation-triangle',
-      rejectButtonStyleClass: "p-button-text",
-      accept: () => {
-        this.deleteAiModelCard();
-      }
-    });
-  }
 
-  myreader(file, callback) {
-    const fr = new FileReader();
-    fr.onload = () => {
-      const fileContent = fr.result as string;
-      const jsonData = JSON.parse(fileContent);
-      callback(null, jsonData);
-    }
-    fr.onerror = (err) => callback(err);
-    fr.readAsText(file);
-  }
-
-  // TODO: TO FIX!!
-  modelCardUploader(event: { files: any[]; }) {
+  /*modelCardUploader(event: { files: any[]; }) {
     // read file 
     this.myreader(event.files[0], (err, aimodelcard) => {
       aimodelcard["version"] = this.aiModel.creationDate;
@@ -327,6 +299,31 @@ export class AiModelDetailComponent implements OnInit, OnDestroy {
           this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Upload model card failed' });
         });
     });
+  }*/
+
+  toggleEdit() {
+    this.editing = !this.editing;
+    this.cancel = !this.cancel;
+    this.save = !this.save;
+  }
+
+  toggleCancel() {
+    this.toggleEdit();
+
+    this.form.setValue(this.aiModelCard);
+  }
+
+  toggleSave() {
+    this.toggleEdit();
+
+    // to optimize before merge
+    this.aiModelCard.name = this.form.get('name').value;
+    this.aiModelCard.author = this.form.get('author').value;
+    this.aiModelCard.description = this.form.get('description').value;
+    this.aiModelCard.citation = this.form.get('citation').value;
+   
+    this.aiModelCardService.updateAiModelCard(this.aiModelCard)
+      .subscribe(mc => this.aiModelCard = mc);
   }
 
   /***** Keycloak Methods *****/
