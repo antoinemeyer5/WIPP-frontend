@@ -6,6 +6,7 @@ import { map } from 'rxjs/operators';
 import { PaginatedAiModels, TensorboardLogs, AiModel } from './ai-model';
 import { Job } from '../job/job';
 import { DataService } from '../data-service';
+import { FileUpload } from 'primeng/fileupload';
 
 @Injectable({
   providedIn: 'root'
@@ -84,6 +85,12 @@ export class AiModelService implements DataService<AiModel, PaginatedAiModels> {
 
   deleteAiModel(aiModel: AiModel) {
     return this.http.delete<AiModel>(aiModel._links.self.href);
+  }
+
+  uploadAiModel(aiModel: AiModel, content: FileUpload): Observable<AiModel> {
+    const formData = new FormData();
+    formData.append('file', content._files[0], content.name);
+    return this.http.post<AiModel>(`${this.aiModelUrl}/${aiModel.id}/upload`, formData);
   }
 
   /***** TensorBoard Services *****/

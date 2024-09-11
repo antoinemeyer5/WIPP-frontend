@@ -28,7 +28,7 @@ export class AiModelNewComponent implements OnInit {
   listCardOperationType!: String[];
   listCardArchitecture!: String[];
 
-  @ViewChild('modelUpload') public modelUpload!: FileUpload;
+  @ViewChild('modelUpload') public modelUpload: FileUpload = null;
 
   constructor(
     private activeModal: DynamicDialogRef,
@@ -46,8 +46,7 @@ export class AiModelNewComponent implements OnInit {
   }
 
   // notes: used when call `this.modelUpload.upload()`
-  modelUploadCustom(files: any) {
-    this.modelUpload.uploading = true;
+  modelUploadCustom(files) {
     this.modelUpload.content = files[0];
   }
 
@@ -60,16 +59,21 @@ export class AiModelNewComponent implements OnInit {
     if (this.modelUpload.content != null) {
       this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Form valid' });
 
-      // save model files
-      // TODO: call API
-
       // create new model
       this.modelService.postAiModel(this.newModel)
         .subscribe(model => {
           this.messageService.add({ severity: 'success', summary: 'Success', detail: 'New model uploaded!' });
-          const aiModelId = model ? model.id : null;
+          
+          // save model files
+          this.modelService.uploadAiModel(model, this.modelUpload)
+            .subscribe(res => {
+              this.messageService.add({ severity: 'success', summary: 'Success', detail: "Model saved." });
+            }, err => {
+              this.messageService.add({ severity: 'error', summary: 'Unable to upload model files', detail: err.error });
+            });
 
           // fill-in new card
+          const aiModelId = model ? model.id : null;
           this.newCard.aiModelId = aiModelId;
           this.newCard.name = model.name;
           this.newCard.date = model.creationDate;
