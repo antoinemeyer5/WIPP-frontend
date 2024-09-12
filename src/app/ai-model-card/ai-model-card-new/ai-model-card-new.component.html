@@ -16,18 +16,31 @@
     <div class="flex flex-column w-6">
       <label for="trainingdata" class="font-semibold">Training data</label>
       <p-inputGroup>
-        <input pInputText placeholder="key" />
-        <input pInputText placeholder="value" />
-        <button pButton type="button" icon="pi pi-plus-circle"></button>
+        <input pInputText [(ngModel)]="train_data[0]" name="mc-traindata-key" placeholder="key" />
+        <input pInputText [(ngModel)]="train_data[1]" name="mc-traindata-val" placeholder="value" />
+        <p-button type="button" icon="pi pi-plus-circle" (onClick)="add_training('data', train_data[0], train_data[1])"
+          [disabled]="!train_data[0] || !train_data[1]" />
       </p-inputGroup>
+      <ul>
+        <li *ngFor="let data of form.trainingData | keyvalue">
+          {{data.key}} -> {{data.value}}
+        </li>
+      </ul>
     </div>
     <div class="flex flex-column w-6">
       <label for="trainingparameters" class="font-semibold">Training parameters</label>
       <p-inputGroup>
-        <input pInputText placeholder="key" />
-        <input pInputText placeholder="value" />
-        <button pButton type="button" icon="pi pi-plus-circle"></button>
+        <input pInputText [(ngModel)]="train_params[0]" name="mc-trainparams-key" placeholder="key" />
+        <input pInputText [(ngModel)]="train_params[1]" name="mc-trainparams-val" placeholder="value" />
+        <p-button type="button" icon="pi pi-plus-circle"
+          (onClick)="add_training('params', train_params[0], train_params[1])"
+          [disabled]="!train_params[0] || !train_params[1]" />
       </p-inputGroup>
+      <ul>
+        <li *ngFor="let params of form.trainingParameters | keyvalue">
+          {{params.key}} -> {{params.value}}
+        </li>
+      </ul>
     </div>
   </div>
 
@@ -38,30 +51,34 @@
     </div>
     <div class="flex flex-column w-6">
       <label for="description" class="font-semibold">Description *</label>
-      <input pInputText required [(ngModel)]="form.description" name="model-card-description" placeholder="Model card description" />
+      <input pInputText required [(ngModel)]="form.description" name="model-card-description"
+        placeholder="Model card description" />
     </div>
   </div>
 
   <div class="flex flex-row gap-3">
     <div class="flex flex-column w-6">
       <label for="citation" class="font-semibold">Citation *</label>
-      <input pInputText required [(ngModel)]="form.citation" name="model-card-citation" placeholder="Model card citation" />
+      <input pInputText required [(ngModel)]="form.citation" name="model-card-citation"
+        placeholder="Model card citation" />
     </div>
     <div class="flex flex-column w-6">
       <label for="operationtype" class="font-semibold">Operation type *</label>
-      <p-multiSelect required [options]="list_operation_type" [(ngModel)]="form.operationType" name="model-card-operation-type"
-          placeholder="Select operation type(s)" />
+      <p-multiSelect required [options]="list_operation_type" [(ngModel)]="form.operationType"
+        name="model-card-operation-type" placeholder="Select operation type(s)" />
     </div>
   </div>
 
   <div class="flex flex-row gap-3">
     <div class="flex flex-column w-6">
       <label for="architecture" class="font-semibold">Architecture *</label>
-      <input pInputText required [(ngModel)]="form.architecture" name="model-card-architecture" placeholder="Model card architecture" />
+      <input pInputText required [(ngModel)]="form.architecture" name="model-card-architecture"
+        placeholder="Model card architecture" />
     </div>
     <div class="flex flex-column w-6">
       <label for="license" class="font-semibold">License *</label>
-      <input pInputText required [(ngModel)]="form.license" name="model-card-license" placeholder="Model card license" />
+      <input pInputText required [(ngModel)]="form.license" name="model-card-license"
+        placeholder="Model card license" />
     </div>
   </div>
 
