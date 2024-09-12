@@ -20,6 +20,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { StitchingVectorModule } from './stitching-vector/stitching-vector.module';
 import { PyramidModule } from './pyramid/pyramid.module';
 import { AiModelModule } from './ai-model/ai-model.module';
+import { AiModelCardModule } from './ai-model-card/ai-model-card.module';
 import { CsvCollectionModule } from './csv-collection/csv-collection.module';
 import { NotebookModule } from './notebook/notebook.module';
 import { AppConfigService } from './app-config.service';
@@ -31,14 +32,14 @@ import { PyramidVisualizationModule } from './pyramid-visualization/pyramid-visu
 import { ForbiddenAccessComponent } from './forbidden-access/forbidden-access.component';
 import { PyramidAnnotationModule } from './pyramid-annotation/pyramid-annotation.module';
 import { GenericDataModule } from './generic-data/generic-data.module';
-import {ConfirmDialogService} from './confirm-dialog/confirm-dialog.service';
-import {ConfirmDialogModule} from './confirm-dialog/confirm-dialog.module';
-import {HomeModule} from './home/home.module';
-import {MenubarModule} from 'primeng/menubar';
-import {DynamicDialogModule} from 'primeng/dynamicdialog';
-import {AutoFocusModule} from 'primeng/autofocus';
-import {RouteReuseStrategy} from '@angular/router';
-import {AppRouteReuseStrategy} from './app-route-reuse-strategy';
+import { ConfirmDialogService } from './confirm-dialog/confirm-dialog.service';
+import { ConfirmDialogModule } from './confirm-dialog/confirm-dialog.module';
+import { HomeModule } from './home/home.module';
+import { MenubarModule } from 'primeng/menubar';
+import { DynamicDialogModule } from 'primeng/dynamicdialog';
+import { AutoFocusModule } from 'primeng/autofocus';
+import { RouteReuseStrategy } from '@angular/router';
+import { AppRouteReuseStrategy } from './app-route-reuse-strategy';
 
 @NgModule({
   declarations: [
@@ -56,6 +57,7 @@ import {AppRouteReuseStrategy} from './app-route-reuse-strategy';
     PyramidModule,
     PyramidVisualizationModule,
     AiModelModule,
+    AiModelCardModule,
     CsvCollectionModule,
     NotebookModule,
     GenericDataModule,
@@ -91,7 +93,7 @@ import {AppRouteReuseStrategy} from './app-route-reuse-strategy';
     },
     KeycloakService,
     ConfirmDialogService,
-    {provide: RouteReuseStrategy, useClass: AppRouteReuseStrategy}
+    { provide: RouteReuseStrategy, useClass: AppRouteReuseStrategy }
   ],
   bootstrap: [AppComponent]
 })
