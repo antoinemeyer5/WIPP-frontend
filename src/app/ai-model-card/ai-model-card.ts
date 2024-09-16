@@ -1,14 +1,14 @@
 export class AiModelCard {
     id: string;
-    version: string;
+    version: Date;
 
     aiModelId: string;
     name: string;
     date: Date;
     framework: string;
 
-    trainingData: Map<string, string>;
-    trainingParameters: Map<string, string>;
+    trainingData: { [key: string]: string };
+    trainingParameters: { [key: string]: string };
 
     author: string;
     description: string;
@@ -16,8 +16,8 @@ export class AiModelCard {
     operationType: string[];
     architecture: string;
 
-    training: Map<string, number>;
-    testing: Map<string, number>;
+    training: { [key: string]: number };
+    testing: { [key: string]: number };
 
     license: string;
 
