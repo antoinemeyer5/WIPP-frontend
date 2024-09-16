@@ -15,7 +15,10 @@ export class AiModelCardNewComponent implements OnInit
 {
   form: AiModelCard = new AiModelCard();
 
+  list_framework: string[] = ['TensorFlow', 'HuggingFace', 'BioImageIO'];
   list_operation_type: string[] = ['Segmentation', 'Augmentation', 'Other'];
+  list_architecture: string[] = ['U-Net', 'LeNet', 'AlexNet', 'DeepDream'];
+  list_license: string[] = ['Apache-2.0', 'BSL-1.0', 'GPL'];
 
   train_data: [key: string, val: string] = [null, null];
   train_params: [key: string, val: string] = [null, null];

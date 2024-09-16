@@ -7,8 +7,8 @@
     </div>
     <div class="flex flex-column w-6">
       <label for="framework" class="font-semibold">Framework *</label>
-      <input pInputText required [(ngModel)]="form.framework" name="model-card-framework"
-        placeholder="Model card framework" />
+      <p-dropdown required [options]="list_framework" [(ngModel)]="form.framework"
+        name="model-card-framework" placeholder="Model card framework" />
     </div>
   </div>
 
@@ -72,13 +72,13 @@
   <div class="flex flex-row gap-3">
     <div class="flex flex-column w-6">
       <label for="architecture" class="font-semibold">Architecture *</label>
-      <input pInputText required [(ngModel)]="form.architecture" name="model-card-architecture"
-        placeholder="Model card architecture" />
+      <p-dropdown required [options]="list_architecture" [(ngModel)]="form.architecture"
+        name="model-card-architecture" placeholder="Model card architecture" />
     </div>
     <div class="flex flex-column w-6">
       <label for="license" class="font-semibold">License *</label>
-      <input pInputText required [(ngModel)]="form.license" name="model-card-license"
-        placeholder="Model card license" />
+      <p-dropdown required [options]="list_license" [(ngModel)]="form.license"
+        name="model-card-license" placeholder="Model card license" />
     </div>
   </div>
 
