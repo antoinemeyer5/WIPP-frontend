@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 import { AiModelCard } from '../ai-model-card';
 import { AiModelCardService } from '../ai-model-card.service';
+import { frameworks, operation_types, architectures, licenses } from 'src/app/ai-model-data';
 
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { MessageService } from 'primeng/api';
@@ -15,10 +16,10 @@ export class AiModelCardNewComponent implements OnInit
 {
   form: AiModelCard = new AiModelCard();
 
-  list_framework: string[] = ['TensorFlow', 'HuggingFace', 'BioImageIO'];
-  list_operation_type: string[] = ['Segmentation', 'Augmentation', 'Other'];
-  list_architecture: string[] = ['U-Net', 'LeNet', 'AlexNet', 'DeepDream'];
-  list_license: string[] = ['Apache-2.0', 'BSL-1.0', 'GPL'];
+  list_framework = frameworks;
+  list_operation_type = operation_types;
+  list_architecture = architectures;
+  list_license = licenses;
 
   train_data: [key: string, val: string] = [null, null];
   train_params: [key: string, val: string] = [null, null];
