@@ -1,12 +1,14 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
 import { AiModelListComponent } from './ai-model-list/ai-model-list.component';
 import { AiModelDetailComponent } from './ai-model-detail/ai-model-detail.component';
 import { AiModelRoutingModule } from './ai-model-routing.module';
 import { AiModelTemplateComponent } from './ai-model-template/ai-model-template.component';
 import { AiModelNewComponent } from './ai-model-new/ai-model-new.component';
 import { TensorboardLogsTemplateComponent } from './ai-model-template/tensorboard-logs-template.component';
+
 import { TableModule } from 'primeng/table';
 import { ToastModule } from 'primeng/toast';
 import { ButtonModule } from 'primeng/button';
@@ -20,6 +22,8 @@ import { FileUploadModule } from 'primeng/fileupload';
 import { DialogModule } from 'primeng/dialog';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { MultiSelectModule } from 'primeng/multiselect';
+import { InputTextareaModule } from 'primeng/inputtextarea';
+import { InputGroupModule } from 'primeng/inputgroup';
 
 @NgModule({
   imports: [
@@ -39,7 +43,9 @@ import { MultiSelectModule } from 'primeng/multiselect';
     FileUploadModule,
     DialogModule,
     ConfirmDialogModule,
-    MultiSelectModule
+    MultiSelectModule,
+    InputTextareaModule,
+    InputGroupModule,
   ],
   declarations: [
     AiModelListComponent,
