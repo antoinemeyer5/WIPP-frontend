@@ -152,6 +152,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
           type === 'pyramid' ||
           type === 'pyramidAnnotation' ||
           type === 'aiModel' ||
+          type === 'tensorflowModel' || // legacy
           type === 'csvCollection' ||
           type === 'notebook' ||
           type == 'genericData') {
@@ -278,6 +279,7 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
             case  'pyramidAnnotation':
             case 'pyramid':
             case 'aiModel':
+            case 'tensorflowModel': // legacy
             case 'csvCollection':
             case 'notebook':
             case 'genericData':
