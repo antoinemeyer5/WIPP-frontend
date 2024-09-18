@@ -22,9 +22,7 @@ export const dataMap = new Map<string, any>([
   ['collection', ImagesCollectionService],
   ['csvCollection', CsvCollectionService],
   ['notebook', NotebookService],
-  ['AiModel', AiModelService],
+  ['aiModel', AiModelService],
   ['pyramid', PyramidService],
   ['genericData', GenericDataService]
 ]);
-
-
