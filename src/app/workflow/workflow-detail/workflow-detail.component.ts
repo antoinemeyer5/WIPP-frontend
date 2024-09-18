@@ -276,10 +276,8 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
           switch (input.type) {
             case 'collection':
             case 'stitchingVector':
-            case  'pyramidAnnotation':
+            case 'pyramidAnnotation':
             case 'pyramid':
-            case 'aiModel':
-            case 'tensorflowModel': // legacy
             case 'csvCollection':
             case 'notebook':
             case 'genericData':
@@ -287,6 +285,13 @@ export class WorkflowDetailComponent implements OnInit, OnDestroy {
               inputSchema['widget'] = 'search';
               inputSchema['format'] = input.type;
               inputSchema['getOutputs'] = () => this.jobOutputs[input.type];
+              break;
+            case 'aiModel':
+            case 'tensorflowModel': // legacy
+              inputSchema['type'] = 'string';
+              inputSchema['widget'] = 'search';
+              inputSchema['format'] = 'aiModel';
+              inputSchema['getOutputs'] = () => this.jobOutputs['aiModel'];
               break;
             case 'enum':
               inputSchema['type'] = 'string';
