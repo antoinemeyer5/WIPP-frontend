@@ -12,8 +12,7 @@ import { MessageService } from 'primeng/api';
   templateUrl: './ai-model-card-new.component.html',
   styleUrls: ['./ai-model-card-new.component.css']
 })
-export class AiModelCardNewComponent implements OnInit
-{
+export class AiModelCardNewComponent implements OnInit {
   form: AiModelCard = new AiModelCard();
 
   list_framework = frameworks;
@@ -24,12 +23,12 @@ export class AiModelCardNewComponent implements OnInit
   train_data: [key: string, val: string] = [null, null];
   train_params: [key: string, val: string] = [null, null];
 
-  constructor( public config: DynamicDialogConfig,
+  constructor(public config: DynamicDialogConfig,
     private ref: DynamicDialogRef,
     private card_service: AiModelCardService,
-    private message_service: MessageService ) { }
+    private message_service: MessageService) { }
 
-  ngOnInit() { this.form.trainingData = this.form.trainingParameters = {}; }
+  ngOnInit() { this.form.trainingData = {}; this.form.trainingParameters = {}; }
 
   cancel() { this.ref.close(); }
 
@@ -52,14 +51,18 @@ export class AiModelCardNewComponent implements OnInit
     // create card
     this.card_service.postAiModelCard(this.form)
       .subscribe(card => {
-        this.message_service.add({ severity: 'success', summary: 'Success',
-          detail: card.name + ' card created!' });  
+        this.message_service.add({
+          severity: 'success', summary: 'Success',
+          detail: card.name + ' card created!'
+        });
         // close dialog and refresh page
         setTimeout(() => { this.cancel(); window.location.reload(); }, 1000);
       }, err => {
-        this.message_service.add({ severity: 'error',
+        this.message_service.add({
+          severity: 'error',
           summary: 'Could not upload AI model card',
-          detail: err.error.message });
+          detail: err.error.message
+        });
       });
   }
 
