@@ -28,7 +28,7 @@ export class AiModelNewComponent implements OnInit {
   newCard: AiModelCard = new AiModelCard();
   list_operation_type = operation_types;
   list_architecture = architectures;
-  
+
   inputs: [key: string, val: string] = [null, null];
   outputs: [key: string, val: string] = [null, null];
 
@@ -57,7 +57,8 @@ export class AiModelNewComponent implements OnInit {
   add_data(type: string, val: string) {
     let i = Object.keys(this.newCard.trainingData).length;
     this.newCard.trainingData[type + '_' + i] = val;
-    this.inputs = [null, null];
+    if (type == 'input') { this.inputs = [null, null]; }
+    else { this.outputs = [null, null]; }
   }
 
   createModelAndCard() {
@@ -65,24 +66,32 @@ export class AiModelNewComponent implements OnInit {
 
     // check presence of a file
     if (this.modelUpload.content != null) {
-      this.messageService.add({ severity: 'success', summary: 'Success',
-        detail: 'Form valid' });
+      this.messageService.add({
+        severity: 'success', summary: 'Success',
+        detail: 'Form valid'
+      });
 
       // create new model
       this.modelService.postAiModel(this.newModel)
         .subscribe(model => {
-          this.messageService.add({ severity: 'success', summary: 'Success',
-            detail: 'New model uploaded!' });
-          
+          this.messageService.add({
+            severity: 'success', summary: 'Success',
+            detail: 'New model uploaded!'
+          });
+
           // save model files
           this.modelService.uploadAiModel(model, this.modelUpload)
             .subscribe(res => {
-              this.messageService.add({ severity: 'success', summary: 'Success',
-                detail: "Model saved." });
+              this.messageService.add({
+                severity: 'success', summary: 'Success',
+                detail: "Model saved."
+              });
             }, err => {
-              this.messageService.add({ severity: 'error',
+              this.messageService.add({
+                severity: 'error',
                 summary: 'Unable to upload model files',
-                detail: err.error.message });
+                detail: err.error.message
+              });
             });
 
           // fill-in new card
@@ -97,10 +106,14 @@ export class AiModelNewComponent implements OnInit {
           // create new card
           this.cardService.postAiModelCard(this.newCard)
             .subscribe(card => {
-              this.messageService.add({ severity: 'success', summary: 'Success',
-                detail: 'New model card created!' });
-              this.messageService.add({ severity: 'info', summary: 'Infos',
-                detail: 'Redirecting...' });
+              this.messageService.add({
+                severity: 'success', summary: 'Success',
+                detail: 'New model card created!'
+              });
+              this.messageService.add({
+                severity: 'info', summary: 'Infos',
+                detail: 'Redirecting...'
+              });
 
               // redirection to new model
               setTimeout(() => {
@@ -108,20 +121,26 @@ export class AiModelNewComponent implements OnInit {
                 this.cancel();
               }, 2000);
             }, err => {
-              this.messageService.add({ severity: 'error',
+              this.messageService.add({
+                severity: 'error',
                 summary: 'Could not upload AI model card',
-                detail: err.error.message });
+                detail: err.error.message
+              });
             });
         }, err => {
-          this.messageService.add({ severity: 'error',
+          this.messageService.add({
+            severity: 'error',
             summary: 'Could not upload AI model',
-            detail: err.error.message });
+            detail: err.error.message
+          });
         });
     } else {
 
       // bad form
-      this.messageService.add({ severity: 'error', summary: 'Message',
-        detail: "Form invalid: don't forget to upload a model" });
+      this.messageService.add({
+        severity: 'error', summary: 'Message',
+        detail: "Form invalid: don't forget to upload a model"
+      });
     }
   }
 
