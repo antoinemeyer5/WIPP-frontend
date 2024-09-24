@@ -1,120 +1,77 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {MatPaginator, MatSort} from '@angular/material';
+import { Component } from '@angular/core';
 import {WorkflowService} from '../workflow.service';
-import {catchError, map, startWith, switchMap} from 'rxjs/operators';
-import {BehaviorSubject, Observable, of as observableOf} from 'rxjs';
 import {Workflow} from '../workflow';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {Router} from '@angular/router';
 import {WorkflowNewComponent} from '../workflow-new/workflow-new.component';
 import {KeycloakService} from '../../services/keycloak/keycloak.service';
+import {DialogService} from 'primeng/dynamicdialog';
+import {MessageService} from 'primeng/api';
 
 @Component({
   selector: 'app-workflow-list',
   templateUrl: './workflow-list.component.html',
-  styleUrls: ['./workflow-list.component.css']
+  styleUrls: ['./workflow-list.component.css'],
+  providers: [DialogService, MessageService]
 })
-export class WorkflowListComponent implements OnInit {
-  displayedColumns: string[] = ['name', 'status', 'creationDate', 'endTime', 'owner', 'publiclyShared'];
-  // displayedColumns: string[] = ['name', 'status', 'creationDate', 'startTime', 'endTime'];
-  workflows: Observable<Workflow[]>;
+export class WorkflowListComponent {
+  workflows: Workflow[];
   resultsLength = 0;
   pageSize = 10;
-  pageSizeOptions: number[] = [10, 25, 50, 100];
-  paramsChange: BehaviorSubject<{ index: number, size: number, sort: string, filter: string }>;
-
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
 
   constructor(
     private modalService: NgbModal,
     private router: Router,
     private workflowService: WorkflowService,
-    private keycloakService: KeycloakService
+    private keycloakService: KeycloakService,
+    private dialogService: DialogService,
   ) {
-    this.paramsChange = new BehaviorSubject({
-      index: 0,
-      size: this.pageSize,
-      sort: 'creationDate,desc',
-      filter: ''
-    });
   }
 
-  sortChanged(sort) {
-    // If the user changes the sort order, reset back to the first page.
-    console.log('sorting');
-    this.paramsChange.next({
-      index: 0, size: this.paramsChange.value.size,
-      sort: sort.active + ',' + sort.direction, filter: this.paramsChange.value.filter
-    });
-  }
-
-  pageChanged(page) {
-    this.paramsChange.next({
-      index: page.pageIndex, size: page.pageSize,
-      sort: this.paramsChange.value.sort, filter: this.paramsChange.value.filter
-    });
-  }
-
-  applyFilterByName(filterValue: string) {
-    // if the user filters by name, reset back to the first page
-    this.paramsChange.next({
-      index: 0, size: this.paramsChange.value.size, sort: this.paramsChange.value.sort, filter: filterValue
-    });
-  }
-
-  ngOnInit() {
-    this.getWorkflows();
-  }
-
-  getWorkflows(): void {
-    const paramsObservable = this.paramsChange.asObservable();
-    this.workflows = paramsObservable.pipe(
-      switchMap((page) => {
-        console.log(page);
-        const params = {
-          pageIndex: page.index,
-          size: page.size,
-          sort: page.sort
-        };
-        if (page.filter) {
-          return this.workflowService.getWorkflowsByNameContainingIgnoreCase(params, page.filter).pipe(
-            map((data) => {
-              this.resultsLength = data.page.totalElements;
-              return data.workflows;
-            }),
-            catchError(() => {
-              return observableOf([]);
-            })
-          );
-        }
-        return this.workflowService.getWorkflows(params).pipe(
-          map((data) => {
-            this.resultsLength = data.page.totalElements;
-            return data.workflows;
-          }),
-          catchError(() => {
-            return observableOf([]);
-          })
-        );
-      })
-    );
+  loadData(event) {
+    const sortOrderStr = event?.sortOrder == -1 ? 'desc' : 'asc';
+    const sortField = event?.sortField ? event.sortField + ',' + sortOrderStr : 'creationDate,desc';
+    const pageIndex = event ? event.first / event.rows : 0;
+    const pageSize = event ? event.rows : this.pageSize;
+    const params = {
+      pageIndex: pageIndex,
+      size: pageSize,
+      sort: sortField
+    };
+    if(event.filters?.global?.value) {
+      this.workflowService.getWorkflowsByNameContainingIgnoreCase(params, event.filters.global.value).subscribe(result => {
+        this.workflows = result.workflows;
+        this.resultsLength = result.page.totalElements;
+      });
+    } else {
+      this.workflowService.getWorkflows(params).subscribe(result => {
+        this.workflows = result.workflows;
+        this.resultsLength = result.page.totalElements;
+      });
+    }
   }
 
   createNew() {
-    const modalRef = this.modalService.open(WorkflowNewComponent);
-    modalRef.componentInstance.modalReference = modalRef;
-    modalRef.result.then((result) => {
-      this.workflowService.createWorkflow(result).subscribe(workflow => {
-        const workflowId = workflow ? workflow.id : null;
-        this.router.navigate(['workflows/detail', workflowId]);
-      });
-    }, (reason) => {
-      console.log('dismissed');
+    let modalRef = this.dialogService.open(WorkflowNewComponent, {
+      header: 'New workflow',
+      position: 'top',
+      width: '50vw',
+      breakpoints: {
+        '960px': '75vw',
+        '640px': '90vw'
+      }
     });
   }
 
   canCreate(): boolean {
     return(this.keycloakService.isLoggedIn());
+  }
+
+  getIconByWorkflowStatus(workflow: Workflow) {
+    return this.workflowService.getIconByWorkflowStatus(workflow);
+  }
+
+  ngOnDestroy() {
+    this.dialogService.dialogComponentRefMap.forEach((dialog) => dialog.destroy());
   }
 }

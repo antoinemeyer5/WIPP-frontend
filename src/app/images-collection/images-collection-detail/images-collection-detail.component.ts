@@ -1,16 +1,16 @@
-import {AfterViewInit, Component, ElementRef, NgModule, OnInit, ViewChild} from '@angular/core';
+import { AfterViewInit, Component, ElementRef, NgModule, NgZone, OnInit, ViewChild } from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {auditTime, catchError, map, mergeMap, switchMap} from 'rxjs/operators';
 import * as Flow from '@flowjs/flow.js';
 import {NgbModal, NgbModule} from '@ng-bootstrap/ng-bootstrap';
-import {BytesPipe, NgMathPipesModule} from 'angular-pipes';
+import {NgBytesPipeModule} from 'angular-pipes';
 import {ImagesCollectionService} from '../images-collection.service';
 import {ImagesCollection} from '../images-collection';
 import {Image} from '../image';
-import {MatPaginator, MatSort} from '@angular/material';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
 import {BehaviorSubject, from, Observable, of as observableOf, Subject} from 'rxjs';
 import {MetadataFile} from '../metadata-file';
-import {InlineEditorModule} from '@qontu/ngx-inline-editor';
 import {JobDetailComponent} from '../../job/job-detail/job-detail.component';
 import {Job} from '../../job/job';
 import urljoin from 'url-join';
@@ -18,29 +18,50 @@ import {AppConfigService} from '../../app-config.service';
 import {KeycloakService} from '../../services/keycloak/keycloak.service';
 import {ModalErrorComponent} from '../../modal-error/modal-error.component';
 import {ConfirmDialogService} from '../../confirm-dialog/confirm-dialog.service';
+import OpenSeadragon from 'openseadragon';
+import {SelectItem} from 'primeng/api';
+import {environment} from '../../../environments/environment';
+import {DialogService} from 'primeng/dynamicdialog';
 
 @Component({
   selector: 'app-images-collection-detail',
   templateUrl: './images-collection-detail.component.html',
-  styleUrls: ['./images-collection-detail.component.css']
+  styleUrls: ['./images-collection-detail.component.css'],
+  providers: [DialogService]
 })
 
 @NgModule({
-  imports: [NgbModule, NgMathPipesModule, BytesPipe, InlineEditorModule]
+  imports: [NgbModule, NgBytesPipeModule]
 })
 export class ImagesCollectionDetailComponent implements OnInit, AfterViewInit {
 
   flowHolder: Flow.IFlow;
   imagesCollection: ImagesCollection = new ImagesCollection();
   images: Observable<Image[]>;
+  imagesTest: Image[];
   metadataFiles: Observable<MetadataFile[]>;
+  metadataFiles2: MetadataFile[];
   sourceJob: Job = null;
-  showNotes = false;
+  showNotes = true;
   editNotes = false;
   imageCollectionNotes;
 
-  displayedColumnsImages: string[] = ['index', 'fileName', 'fileSize', 'actions'];
+  displayedColumnsImages: string[] = ['index', 'thumbnail', 'fileName', 'fileSize', 'actions'];
   displayedColumnsMetadata: string[] = ['index', 'fileName', 'fileSize', 'actions'];
+
+  layout: string = 'grid';
+
+  sortOptions: SelectItem[];
+  sortField: string;
+
+  colorMapOptions: SelectItem[];
+  colorMapField: string;
+
+  contrastOptions: SelectItem[];
+  contrastField: string;
+
+  invertOptions: SelectItem[];
+  invertField: string;
 
   pageSizeOptions: number[] = [10, 25, 50, 100];
   imagesParamsChange: BehaviorSubject<{ index: number, size: number, sort: string }>;
@@ -55,6 +76,11 @@ export class ImagesCollectionDetailComponent implements OnInit, AfterViewInit {
   goToPageMetadataFiles;
   imageCollectionId = this.route.snapshot.paramMap.get('id');
   sourceCatalogLink = '';
+
+  iipRootUrl: string = environment.iipRootUrl;
+  dzvVisible: boolean = false;
+  selectedImage: Image = undefined;
+  osdViewer: OpenSeadragon.Viewer | undefined;
 
   @ViewChild('browseBtn') browseBtn: ElementRef;
   @ViewChild('browseDirBtn') browseDirBtn: ElementRef;
@@ -71,10 +97,12 @@ export class ImagesCollectionDetailComponent implements OnInit, AfterViewInit {
     private router: Router,
     private elem: ElementRef,
     private modalService: NgbModal,
+    private dialogService: DialogService,
     private imagesCollectionService: ImagesCollectionService,
     private appConfigService: AppConfigService,
     private keycloakService: KeycloakService,
-    private confirmDialogService: ConfirmDialogService
+    private confirmDialogService: ConfirmDialogService,
+    private ngZone: NgZone
     ) {
     this.imagesParamsChange = new BehaviorSubject({
       index: 0,
@@ -145,6 +173,34 @@ export class ImagesCollectionDetailComponent implements OnInit, AfterViewInit {
         return {Authorization: `Bearer ${self.keycloakService.getKeycloakAuth().token}`};
       }
     });
+    this.sortOptions = [
+      { label: 'Name (asc)', value: 'fileName,asc' },
+      { label: 'Name (desc)', value: 'fileName,desc' },
+      { label: 'Size (asc)', value: 'fileSize,asc' },
+      { label: 'Size (desc)', value: 'fileSize,desc' }
+    ];
+    this.colorMapOptions = [
+      { label: 'NONE', value: '' },
+      { label: 'GREY', value: 'GREY' },
+      { label: 'JET', value: 'JET' },
+      { label: 'COLD', value: 'COLD' },
+      { label: 'HOT', value: 'HOT' },
+      { label: 'RED', value: 'RED' },
+      { label: 'GREEN', value: 'GREEN' },
+      { label: 'BLUE', value: 'BLUE' }
+    ];
+    this.contrastOptions = [
+      { label: 'NONE', value: '1' },
+      { label: 'STRETCH', value: 'ST' },
+      { label: 'EQUALIZATION', value: 'EQ' },
+      { label: 'x2', value: '2' },
+      { label: 'x10', value: '10' },
+      { label: 'x100', value: '100' }
+    ];
+    this.invertOptions = [
+      { label: 'NO', value: '' },
+      { label: 'YES', value: '&INV' }
+    ];
     this.$throttleRefresh.pipe(
       auditTime(1000),
       switchMap(() => this.refresh()))
@@ -166,8 +222,6 @@ export class ImagesCollectionDetailComponent implements OnInit, AfterViewInit {
     }, error => {
       this.router.navigate(['/404']);
     });
-    // If the user changes the sort order, reset back to the first page.
-    // this.sort.sortChange.subscribe(() => this.imagesPaginator.pageIndex = 0);
   }
 
   refresh() {
@@ -177,8 +231,22 @@ export class ImagesCollectionDetailComponent implements OnInit, AfterViewInit {
         if (this.imagesCollection.sourceCatalog) {
           this.sourceCatalogLink = urljoin(this.appConfigService.getConfig().catalogUiUrl, this.imagesCollection.sourceCatalog);
         }
+        this.imageCollectionNotes = this.imagesCollection.notes;
         this.getImages();
         this.getMetadataFiles();
+        const params = {
+          pageIndex: 0,
+          size: 10,
+          sort: "fileName,asc"
+        };
+        this.imagesCollectionService.getImages(this.imagesCollection, params).subscribe(val => {
+          this.resultsLengthImages = val.page.totalElements;
+          this.imagesTest = val.data;
+        });
+        this.imagesCollectionService.getMetadataFiles(this.imagesCollection, params).subscribe(val => {
+          this.resultsLengthMetadataFiles = val.page.totalElements;
+          this.metadataFiles2 = val.data;
+        });
         if (this.imagesCollection.numberImportingImages !== 0) {
           this.$throttleRefresh.next();
         }
@@ -225,6 +293,7 @@ export class ImagesCollectionDetailComponent implements OnInit, AfterViewInit {
         return this.imagesCollectionService.getMetadataFiles(this.imagesCollection, metadataParams).pipe(
           map((paginatedResult) => {
             this.resultsLengthMetadataFiles = paginatedResult.page.totalElements;
+            this.metadataFiles2 = paginatedResult.data;
             return paginatedResult.data;
           }),
           catchError(() => {
@@ -356,7 +425,7 @@ export class ImagesCollectionDetailComponent implements OnInit, AfterViewInit {
     const metadataFilesUploadUrl = this.imagesCollectionService.getMetadataFilesUrl(this.imagesCollection);
 
     this.flowHolder.opts.target = function (file) {
-      const imagesExtensions = ['tif', 'tiff', 'jpg', 'jpeg', 'png'];
+      const imagesExtensions = ['tif', 'tiff', 'jpg', 'jpeg', 'png', 'mrc', 'dm4', 'svs'];
       const isImage = imagesExtensions.indexOf(
         file.getExtension()) >= 0;
       return isImage ? imagesUploadUrl : metadataFilesUploadUrl;
@@ -422,14 +491,26 @@ export class ImagesCollectionDetailComponent implements OnInit, AfterViewInit {
   }
 
   displayJobModal(jobId: string) {
-    const modalRef = this.modalService.open(JobDetailComponent, {size: 'lg', backdrop: 'static'});
-    modalRef.componentInstance.modalReference = modalRef;
-    (modalRef.componentInstance as JobDetailComponent).jobId = jobId;
-    modalRef.result.then((result) => {
+    this.dialogService.open(JobDetailComponent, {
+      header: 'Job detail',
+      position: 'top',
+      width: '50vw',
+      data: {
+        jobId: jobId
+      },
+      breakpoints: {
+        '960px': '75vw',
+        '640px': '90vw'
       }
-      , (reason) => {
-        console.log('dismissed');
-      });
+    });
+    // const modalRef = this.modalService.open(JobDetailComponent, {size: 'lg', backdrop: 'static'});
+    // modalRef.componentInstance.modalReference = modalRef;
+    // (modalRef.componentInstance as JobDetailComponent).jobId = jobId;
+    // modalRef.result.then((result) => {
+    //   }
+    //   , (reason) => {
+    //     console.log('dismissed');
+    //   });
   }
 
   getSourceJob() {
@@ -463,4 +544,63 @@ export class ImagesCollectionDetailComponent implements OnInit, AfterViewInit {
       window.location.href = downloadUrl['url']);
   }
 
+  openDeepZoomImage(wdztContent, image: Image): void {
+    this.dzvVisible = true;
+    this.selectedImage = image;
+  }
+
+  displayDeepZoomImage() {
+    this.ngZone.runOutsideAngular(() => {
+      const contrastParam = this.contrastField ? this.contrastField : '1';
+      const colorMapParam = this.colorMapField ? ('&CMP=' + this.colorMapField) : '';
+      const invertParam = this.invertField ? this.invertField : '';
+      this.osdViewer = OpenSeadragon({
+        id: 'openseadragon-img',
+        prefixUrl: "https://cdn.jsdelivr.net/npm/openseadragon@4.1/build/openseadragon/images/",
+        tileSources: [
+          this.iipRootUrl
+          + '?CNT='
+          + contrastParam
+          + colorMapParam
+          + invertParam
+          + '&IIIF='
+          + this.imagesCollection.id + '/images/' + this.selectedImage.fileName + '/info.json'
+        ]
+      });
+    });
+ }
+
+  closeDeepZoomImage() {
+    if(this.osdViewer)
+      this.osdViewer.destroy();
+  }
+
+  loadData(event) {
+    const sortField = event.sortField ? event.sortField : 'fileName,asc';
+    const params = {
+      pageIndex: event.first / event.rows,
+      size: event.rows,
+      sort: sortField
+    };
+    this.imagesCollectionService.getImages(this.imagesCollection, params).subscribe(val =>
+      this.imagesTest = val.data
+    );
+  }
+
+  loadMetaFiles(event) {
+    const sortField = event.sortField ? event.sortField : 'fileName,asc';
+    const params = {
+      pageIndex: event.first / event.rows,
+      size: event.rows,
+      sort: sortField
+    };
+    this.imagesCollectionService.getMetadataFiles(this.imagesCollection, params).subscribe(val =>
+      this.metadataFiles2 = val.data
+    );
+  }
+
+  ngOnDestroy() {
+    this.modalService.dismissAll();
+    this.dialogService.dialogComponentRefMap.forEach((dialog) => dialog.destroy());
+  }
 }

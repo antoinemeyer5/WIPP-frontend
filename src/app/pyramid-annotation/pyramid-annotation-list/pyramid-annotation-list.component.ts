@@ -1,6 +1,8 @@
-import {Component, NgModule, OnInit, ViewChild} from '@angular/core';
+import { Component, NgModule, OnInit, ViewChild } from '@angular/core';
 import {PyramidAnnotation} from '../pyramid-annotation';
-import {MatPaginator, MatSort, MatTable, MatTableDataSource, MatTableModule} from '@angular/material';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
+import { MatTable, MatTableDataSource, MatTableModule } from '@angular/material/table';
 import {PyramidAnnotationService} from '../pyramid-annotation.service';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {catchError, map, switchMap} from 'rxjs/operators';

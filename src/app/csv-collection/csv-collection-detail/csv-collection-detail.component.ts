@@ -1,63 +1,56 @@
-import {AfterViewInit, Component, ElementRef, NgModule, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, NgModule, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Job} from '../../job/job';
 import {ActivatedRoute, Router} from '@angular/router';
-import {NgbModal, NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {JobDetailComponent} from '../../job/job-detail/job-detail.component';
 import {CsvCollectionService} from '../csv-collection.service';
 import {CsvCollection} from '../csv-collection';
 import {AppConfigService} from '../../app-config.service';
 import urljoin from 'url-join';
 import {KeycloakService} from '../../services/keycloak/keycloak.service';
-import {BehaviorSubject, Observable, of as observableOf, Subject} from 'rxjs';
+import {Subject} from 'rxjs';
 import * as Flow from '@flowjs/flow.js';
-import {auditTime, catchError, map, switchMap} from 'rxjs/operators';
-import {BytesPipe, NgMathPipesModule} from 'angular-pipes';
-import {InlineEditorModule} from '@qontu/ngx-inline-editor';
-import {MatPaginator} from '@angular/material';
+import {auditTime, map, switchMap} from 'rxjs/operators';
+import {NgBytesPipeModule} from 'angular-pipes';
+import { MatPaginator } from '@angular/material/paginator';
 import {Csv} from '../csv';
-import {ModalErrorComponent} from '../../modal-error/modal-error.component';
+import {DialogService} from 'primeng/dynamicdialog';
+import {MessageService} from 'primeng/api';
 
 @Component({
   selector: 'app-csv-collection-detail',
   templateUrl: './csv-collection-detail.component.html',
-  styleUrls: ['./csv-collection-detail.component.css']
+  styleUrls: ['./csv-collection-detail.component.css'],
+  providers: [DialogService, MessageService]
 })
 
 @NgModule({
-  imports: [NgbModule, NgMathPipesModule, BytesPipe, InlineEditorModule]
+  imports: [NgBytesPipeModule]
 })
-export class CsvCollectionDetailComponent implements OnInit, AfterViewInit {
+export class CsvCollectionDetailComponent implements OnInit, AfterViewInit, OnDestroy {
 
   csvCollection: CsvCollection = new CsvCollection();
   job: Job = null;
   csvCollectionId = this.route.snapshot.paramMap.get('id');
   plotsUiLink = '';
   uploadOption = 'regular';
-  csv: Observable<Csv[]>;
+  csv: Csv[];
   resultsLengthCsv = 0;
-  pageSize = 5;
-
-  pageSizeOptions: number[] = [10, 25, 50, 100];
-  csvParamsChange: BehaviorSubject<{ index: number, size: number, sort: string }>;
+  pageSize = 10;
 
   $throttleRefresh: Subject<void> = new Subject<void>();
   flowHolder: Flow.IFlow;
-  displayedColumnsCsv: string[] = ['index', 'fileName', 'fileSize', 'actions'];
 
   @ViewChild('browseBtn') browseBtn: ElementRef;
   @ViewChild('csvPaginator') csvPaginator: MatPaginator;
 
   constructor(
     private route: ActivatedRoute,
-    private modalService: NgbModal,
+    private dialogService: DialogService,
+    private messageService: MessageService,
     private router: Router,
     private csvCollectionService: CsvCollectionService,
     private appConfigService: AppConfigService,
     private keycloakService: KeycloakService) {
-    this.csvParamsChange = new BehaviorSubject({
-      index: 0,
-      size: this.pageSize,
-      sort: ''});
   }
 
   ngOnInit() {
@@ -94,23 +87,13 @@ export class CsvCollectionDetailComponent implements OnInit, AfterViewInit {
     return this.getCsvCollection().pipe(
       map(csvCollection => {
         this.csvCollection = csvCollection;
-        this.getCsvFiles();
+        this.getCsvFiles(null);
         if (this.csvCollection.numberImportingCsv !== 0) {
           this.$throttleRefresh.next();
         }
         this.getJob();
         return csvCollection;
       }));
-  }
-
-  csvSortChanged(sort) {
-    // If the user changes the sort order, reset back to the first page.
-    this.csvParamsChange.next({index: 0, size: this.csvParamsChange.value.size, sort: sort.active + ',' + sort.direction});
-  }
-
-  csvPageChanged(page) {
-    this.csvParamsChange.next({index: page.pageIndex, size: page.pageSize, sort: this.csvParamsChange.value.sort});
-    this.pageSize = page.pageSize;
   }
 
   getCsvCollection() {
@@ -132,14 +115,18 @@ export class CsvCollectionDetailComponent implements OnInit, AfterViewInit {
   }
 
   displayJobModal(jobId: string) {
-    const modalRef = this.modalService.open(JobDetailComponent, { size: 'lg', backdrop: 'static' });
-    modalRef.componentInstance.modalReference = modalRef;
-    (modalRef.componentInstance as JobDetailComponent).jobId = jobId;
-    modalRef.result.then((result) => {
+    this.dialogService.open(JobDetailComponent, {
+      header: 'Job detail',
+      position: 'top',
+      width: '50vw',
+      data: {
+        jobId: jobId
+      },
+      breakpoints: {
+        '960px': '75vw',
+        '640px': '90vw'
       }
-      , (reason) => {
-        console.log('dismissed');
-      });
+    });
   }
 
   makePublicCollection(): void {
@@ -147,14 +134,12 @@ export class CsvCollectionDetailComponent implements OnInit, AfterViewInit {
       this.csvCollection).subscribe(csvCollection => {
       this.csvCollection = csvCollection;
     }, error => {
-      const modalRefErr = this.modalService.open(ModalErrorComponent);
-      modalRefErr.componentInstance.title = 'Error while changing Collection visibility to public';
-      modalRefErr.componentInstance.message = error.error;
+      this.messageService.add({ severity: 'error', summary: 'Unable to change visibility to public', detail: error.error });
     });
   }
   initFlow(): void {
     this.flowHolder.assignBrowse([this.browseBtn.nativeElement], false, false, {'accept': '.csv'});
-    
+
     const id = this.route.snapshot.paramMap.get('id');
     const csvUploadUrl = this.csvCollectionService.getCsvUrl(this.csvCollection);
     this.flowHolder.opts.target = csvUploadUrl;
@@ -208,26 +193,19 @@ export class CsvCollectionDetailComponent implements OnInit, AfterViewInit {
     });
   }
 
-  getCsvFiles(): void {
-    const paramsObservable = this.csvParamsChange.asObservable();
-    this.csv = paramsObservable.pipe(
-      switchMap((page) => {
-        const params = {
-          pageIndex: page.index,
-          size: page.size,
-          sort: page.sort
-        };
-        return this.csvCollectionService.getCsvFiles(this.csvCollection, params).pipe(
-          map((paginatedResult) => {
-            this.resultsLengthCsv = paginatedResult.page.totalElements;
-            return paginatedResult.data;
-          }),
-          catchError(() => {
-            return observableOf([]);
-          })
-        );
-      })
-    );
+  getCsvFiles(event): void {
+    const sortField = event?.sortField ? event.sortField : 'fileName,asc';
+    const pageIndex = event ? event.first / event.rows : 0;
+    const pageSize = event ? event.rows : this.pageSize;
+    const params = {
+      pageIndex: pageIndex,
+      size: pageSize,
+      sort: sortField
+    };
+    this.csvCollectionService.getCsvFiles(this.csvCollection, params).subscribe(paginatedResult => {
+      this.resultsLengthCsv = paginatedResult.page.totalElements;
+      this.csv = paginatedResult.data;
+    });
   }
 
   lockCollection(): void {
@@ -264,6 +242,10 @@ export class CsvCollectionDetailComponent implements OnInit, AfterViewInit {
   openDownload(url: string) {
     this.csvCollectionService.startDownload(url).subscribe(downloadUrl =>
       window.location.href = downloadUrl['url']);
+  }
+
+  ngOnDestroy() {
+    this.dialogService.dialogComponentRefMap.forEach((dialog) => dialog.destroy());
   }
 
 }

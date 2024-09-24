@@ -1,52 +1,41 @@
-import {Component, OnInit, Input} from '@angular/core';
-import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import { Component } from '@angular/core';
 import {GenericData} from '../generic-data'
 import {GenericDataService} from '../generic-data.service'
 import {Router} from '@angular/router';
+import {DynamicDialogRef} from 'primeng/dynamicdialog';
+import {MessageService} from 'primeng/api';
 
 @Component({
   selector: 'app-generic-data-new',
   templateUrl: './generic-data-new.component.html',
-  styleUrls: ['./generic-data-new.component.css']
+  styleUrls: ['./generic-data-new.component.css'],
+  providers: [MessageService]
 })
-export class GenericDataNewComponent implements OnInit {
-
-  @Input() modalReference: any;
+export class GenericDataNewComponent {
 
   genericData: GenericData = new GenericData();
 
-  displayAlert = false;
-  alertMessage = '';
-  alertType = '';
-
-  constructor(public activeModal: NgbActiveModal,
-              private modalService: NgbModal,
+  constructor(public modalReference: DynamicDialogRef,
+              private messageService: MessageService,
               private genericDataService: GenericDataService,
               private router: Router) {
   }
 
-  ngOnInit() {
-  }
-
   createCollection() {
-    console.log('createCollection');
     this.genericDataService.createGenericData(this.genericData).subscribe(
       genericData => {
-        this.displayAlertMessage('success', 'Success! Redirecting...');
+        this.messageService.add({ severity: 'success', summary: 'Success', detail: "Collection created. Redirecting..." });
         const genericDataId = genericData ? genericData.id : null;
         setTimeout(() => {
           this.router.navigate(['generic-datas', genericDataId]);
         }, 2000);
       },
       err => {
-        this.displayAlertMessage('danger', 'Could not register Generic Data Collection: ' + err.error.message);
+        this.messageService.add({ severity: 'error', summary: 'Unable to create collection', detail: err.error });
       });
   }
 
-  displayAlertMessage(type, message) {
-    this.alertMessage = message;
-    this.alertType = type;
-    this.displayAlert = true;
+  cancel() {
+    this.modalReference.close();
   }
-
 }

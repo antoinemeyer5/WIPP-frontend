@@ -1,0 +1,30 @@
+<form>
+  <div class="flex flex-column gap-2">
+    <label for="name" class="font-semibold">Experiment name<span style="color: #ee3322"> * </span></label>
+    <input pInputText [(ngModel)]="name" id="name" name="name" class="flex-auto" autocomplete="off" />
+    <span class="p-text-secondary block mb-5">Enter the experiment name (this will be the prefix of all collection names).</span>
+  </div>
+  <div  class="flex flex-column gap-2">
+    <label for="sourceBackendImport" class="font-semibold">Source folder<span style="color: #e32"> * </span></label>
+    <input pInputText [(ngModel)]="sourceBackendImport"
+           id="sourceBackendimport" name="sourceBackendimport" placeholder="Enter the name of the folder to import"
+           class="flex-auto mb-5" autocomplete="off" />
+  </div>
+  <div class="flex flex-column gap-2">
+    <label for="description" class="font-semibold">Description/notes (optional)</label>
+    <textarea type="text"
+              id="description"
+              rows="5"
+              cols="30"
+              class="flex-auto"
+              pInputTextarea
+              [(ngModel)]="description" name="description"
+              placeholder="Enter any text that you would like to have added to the Notes section of each collection">
+      </textarea>
+  </div>
+  <div class="flex justify-content-end gap-2 mt-4">
+    <p-button label="Cancel" severity="secondary" (onClick)="cancel()" />
+    <p-button label="Save" (onClick)="postConfiguration()" [disabled]="!name || !sourceBackendImport" type="submit"/>
+  </div>
+</form>
+<p-toast position="top-center"/>

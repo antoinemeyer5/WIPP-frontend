@@ -1,45 +1,61 @@
-<h3 class="wipp-title">Pyramid Detail</h3>
+<h1 class="wipp-title">
+  {{pyramid.name}}
+  <div style="display: inline-block;">
+    <p-button icon="pi pi-globe" *ngIf="!pyramid.publiclyShared && canEdit()" type="button"
+              pTooltip="Make pyramid public"
+              tooltipPosition="left"
+              [outlined]="true"
+              (click)="makePublicPyramid();">
+    </p-button>
+  </div>
+</h1>
 
-<div>
-  <div class="row">
-    <div class="col-md-9">
-      <dl class="row">
-        <dt class="col-md-4">Name: </dt>
-        <dd class="col-md-8">{{pyramid.name}}</dd>
-
-        <dt class="col-md-4">Creation Date: </dt>
-        <dd class="col-md-8">{{pyramid.creationDate | date}}</dd>
-
-        <dt class="col-md-4">Owner:</dt>
-        <dd class="col-md-8">{{pyramid.owner}}</dd>
-
-        <dt class="col-md-4">Source job: </dt>
-        <dd class="col-md-8" *ngIf="job; else notApplicable">
-          <a (click)="displayJobModal(job.id)"
+<p-fieldset legend="Details" [toggleable]="true">
+  <div class="grid nested-grid">
+    <div class="col-12 md:col-6">
+      <div class="grid">
+        <div class="col-3 py-1 font-semibold">
+          Name:
+        </div>
+        <div class="col-9 py-1">
+          {{pyramid.name}}
+        </div>
+        <div class="col-3 py-1 font-semibold">
+          Creation date:
+        </div>
+        <div class="col-9 py-1">
+          {{pyramid.creationDate | date}}
+        </div>
+        <div class="col-3 py-1 font-semibold">
+          Owner:
+        </div>
+        <div class="col-9 py-1">
+          {{pyramid.owner}}
+        </div>
+        <div class="col-3 py-1 font-semibold">
+          Source:
+        </div>
+        <div class="col-9 py-1">
+          <a *ngIf="job; else not_applicable" (click)="displayJobModal(job.id)"
              class="wipp-link"
-             ngbTooltip="Show Job"
+             pTooltip="Show Job"
              placement="left">
             {{job.name}}
           </a>
-        </dd>
-        <ng-template #notApplicable><a class="not_applicable">N/A</a></ng-template>
-        <dt class="col-md-4">Visibility:</dt>
-        <dd class="col-md-8">
+        </div>
+        <div class="col-3 py-1 font-semibold">
+          Visibility:
+        </div>
+        <div class="col-9 py-1">
           <div *ngIf="pyramid.publiclyShared; else privateData">Public</div>
-        </dd>
-        <ng-template #privateData>Private</ng-template>
-      </dl>
-    </div>
-    <div class="col-md-3 text-right">
-      <button *ngIf="!pyramid.publiclyShared && canEdit()" type="button"
-              ngbTooltip="Make pyramid public"
-              placement="left"
-              class="btn btn-light" (click)="makePublicPyramid();">
-        <span class="fa fa-users"
-              aria-hidden="true"></span>
-      </button>
+          <ng-template #privateData>Private</ng-template>
+        </div>
+      </div>
     </div>
   </div>
-</div>
+</p-fieldset>
+
+<ng-template #not_applicable>N/A</ng-template>
+
 <wippWdzt [manifest]="manifest"></wippWdzt>
 

@@ -5,12 +5,10 @@ import { PyramidAnnotationListComponent } from './pyramid-annotation-list/pyrami
 import {PyramidAnnotationRoutingModule} from './pyramid-annotation-routing.module';
 import { PyramidAnnotationDetailComponent } from './pyramid-annotation-detail/pyramid-annotation-detail.component';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
-import {
-  MatInputModule,
-  MatPaginatorModule,
-  MatSortModule,
-  MatTableModule
-} from '@angular/material';
+import { MatInputModule } from '@angular/material/input';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSortModule } from '@angular/material/sort';
+import { MatTableModule } from '@angular/material/table';
 import {FormsModule} from '@angular/forms';
 
 @NgModule({
@@ -25,7 +23,7 @@ import {FormsModule} from '@angular/forms';
     MatSortModule,
     MatTableModule,
     MatInputModule,
-    NgbModule.forRoot(),
+    NgbModule,
     FormsModule
   ]
 })

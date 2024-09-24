@@ -1,7 +1,6 @@
-import {Component, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {DynamicComponent} from '../../dynamic-content/dynamic.component';
 import {ImagesCollectionService} from '../images-collection.service';
-
 
 @Component({
   selector: 'app-images-collection-template',

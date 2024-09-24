@@ -1,26 +1,3 @@
-.clusters rect {
-  fill: #00ffd0;
-  stroke: #999;
-  stroke-width: 1.5px;
-}
-
-text {
-  font-weight: 300;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serf;
-  font-size: 14px;
-}
-
-/*.node rect {*/
-  /*stroke: #999;*/
-  /*fill: #fff;*/
-  /*stroke-width: 1.5px;*/
-/*}*/
-
-.edgePath path {
-  stroke: #333;
-  stroke-width: 1.5px;
-}
-
 .chart-container {
   overflow: hidden;
 }
@@ -56,4 +33,49 @@ text {
   display: inline;
   font-family: 'Roboto', sans-serif ;
   font-weight: normal
+}
+
+/* Job/task form styling */
+::ng-deep sf-form-object fieldset {
+  min-width: 0;
+  padding: 0;
+  margin: 0;
+  border: 0;
+}
+
+::ng-deep sf-form-object fieldset legend {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  padding: 0;
+  margin-bottom: .5rem;
+  font-size: 1.25rem;
+  line-height: inherit;
+  color: inherit;
+  white-space: normal;
+}
+
+::ng-deep .form-control {
+  display: block;
+  width: 100%;
+  height: calc(1.5em + .75rem + 2px);
+  padding: .375rem .75rem;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #495057;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid #ced4da;
+  border-radius: .25rem;
+  transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+}
+
+::ng-deep .form-group {
+  margin-bottom: 1rem;
+}
+
+::ng-deep label {
+  display: inline-block;
+  margin-bottom: .5rem;
 }

@@ -1,39 +1,32 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {PluginService} from '../plugin.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Plugin} from '../plugin';
-import {animate, state, style, transition, trigger} from '@angular/animations';
-import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {KeycloakService} from '../../services/keycloak/keycloak.service';
-
+import {DialogService} from 'primeng/dynamicdialog';
+import {ConfirmationService} from 'primeng/api';
 
 @Component({
   selector: 'app-plugin-detail',
   templateUrl: './plugin-detail.component.html',
   styleUrls: ['./plugin-detail.component.css'],
-  animations: [
-    trigger('detailExpand', [
-      state('collapsed', style({height: '0px', minHeight: '0'})),
-      state('expanded', style({height: '*'})),
-      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
-    ]),
-  ]
+  providers: [DialogService, ConfirmationService]
 })
 export class PluginDetailComponent implements OnInit, OnDestroy {
 
   constructor(private pluginService: PluginService,
-              private modalService: NgbModal,
+              private dialogService: DialogService,
+              private confirmationService: ConfirmationService,
               private route: ActivatedRoute,
               private router: Router,
               private keycloakService: KeycloakService
-  ) {
-  }
+  ) {}
 
   plugin: Plugin = new Plugin();
-  columnsToDisplayInputs = ['name', 'description', 'type', 'required'];
-  columnsToDisplayOutputs = ['name', 'description', 'type'];
   expandedInput: JSON[] | null;
   manifest: JSON | null;
+  resourceRequirements: any[] = [];
+  showManifest: boolean = false;
 
   ngOnInit() {
     this.getPlugin();
@@ -45,6 +38,7 @@ export class PluginDetailComponent implements OnInit, OnDestroy {
       .subscribe(plugin => {
         this.plugin = plugin;
         this.curateManifest();
+        this.generateResourceRequirementsArray()
       }, error => {
         this.router.navigate(['/404']);
       });
@@ -63,8 +57,47 @@ export class PluginDetailComponent implements OnInit, OnDestroy {
     this.manifest = pluginCopy;
   }
 
-  displayManifest(content) {
-    this.modalService.open(content, {'size': 'lg'});
+  generateResourceRequirementsArray() {
+    let pluginResourceRequirements = this.plugin?.resourceRequirements
+    this.resourceRequirements.push({
+      'name': "ramMin",
+      'description': "Minimum RAM in mebibytes (Mi)",
+      'value': pluginResourceRequirements?.ramMin || 'N/A'
+    });
+    this.resourceRequirements.push({
+      'name': "coresMin",
+      'description': "Minimum number of CPU cores",
+      'value': pluginResourceRequirements?.coresMin || 'N/A'
+    });
+    this.resourceRequirements.push({
+      'name': "cpuAVX",
+      'description': "Advanced Vector Extensions (AVX) CPU capability required",
+      'value': pluginResourceRequirements?.cpuAVX || 'N/A'
+    });
+    this.resourceRequirements.push({
+      'name': "cpuAVX2",
+      'description': "Advanced Vector Extensions 2 (AVX2) CPU capability required",
+      'value': pluginResourceRequirements?.cpuAVX2 || 'N/A'
+    });
+    this.resourceRequirements.push({
+      'name': "gpu",
+      'description': "GPU/accelerator required",
+      'value': pluginResourceRequirements?.gpu || 'N/A'
+    });
+    this.resourceRequirements.push({
+      'name': "cudaRequirements.deviceMemoryMin",
+      'description': "GPU Cuda-related requirements - deviceMemoryMin",
+      'value': pluginResourceRequirements?.cudaRequirements?.deviceMemoryMin || 'N/A'
+    });
+    this.resourceRequirements.push({
+      'name': "cudaRequirements.cudaComputeCapability",
+      'description': "GPU Cuda-related requirements - cudaComputeCapability",
+      'value': pluginResourceRequirements?.cudaRequirements?.cudaComputeCapability || 'N/A'
+    });
+  }
+
+  displayManifest() {
+    this.showManifest = true;
   }
 
   canEdit() {
@@ -73,15 +106,23 @@ export class PluginDetailComponent implements OnInit, OnDestroy {
   }
 
   deletePlugin(): void {
-    if (confirm('Are you sure you want to delete the plugin ' + this.plugin.name + ' v' + this.plugin.version + '?')) {
-      this.pluginService.deletePlugin(this.plugin).subscribe(plugin => {
-        this.router.navigate(['plugins']);
-      });
-    }
+    this.confirmationService.confirm({
+      message: 'Are you sure you want to delete the plugin ' + this.plugin.name + ' v' + this.plugin.version + '?',
+      header: 'Confirmation',
+      icon: 'pi pi-exclamation-triangle',
+      acceptIcon:"none",
+      rejectIcon:"none",
+      rejectButtonStyleClass:"p-button-text",
+      accept: () => {
+        this.pluginService.deletePlugin(this.plugin).subscribe(plugin => {
+          this.router.navigate(['plugins']);
+        });
+      }
+    });
   }
 
   ngOnDestroy() {
-    this.modalService.dismissAll();
+    this.dialogService.dialogComponentRefMap.forEach((dialog) => dialog.destroy());
   }
 
 }
