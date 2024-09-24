@@ -6,7 +6,6 @@ import {CsvCollectionRoutingModule} from './csv-collection-routing.module';
 import { CsvCollectionTemplateComponent } from './csv-collection-template/csv-collection-template.component';
 import { CsvCollectionNewComponent } from './csv-collection-new/csv-collection-new.component';
 import { FormsModule } from '@angular/forms';
-import {NgBytesPipeModule} from 'angular-pipes';
 import {TableModule} from 'primeng/table';
 import {ToastModule} from 'primeng/toast';
 import {ButtonModule} from 'primeng/button';
@@ -14,20 +13,21 @@ import {InputTextModule} from 'primeng/inputtext';
 import {FieldsetModule} from 'primeng/fieldset';
 import {TooltipModule} from 'primeng/tooltip';
 import {ProgressBarModule} from 'primeng/progressbar';
+import {CustomPipesModule} from '../custom-pipes/custom-pipes.module';
 
 @NgModule({
   imports: [
     CommonModule,
     CsvCollectionRoutingModule,
     FormsModule,
-    NgBytesPipeModule,
     TableModule,
     ToastModule,
     ButtonModule,
     InputTextModule,
     FieldsetModule,
     TooltipModule,
-    ProgressBarModule
+    ProgressBarModule,
+    CustomPipesModule
   ],
   declarations: [
     CsvCollectionListComponent,

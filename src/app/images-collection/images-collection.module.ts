@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import {ImagesCollectionRoutingModule} from './images-collection-routing.module';
 import {ImagesCollectionDetailComponent} from './images-collection-detail/images-collection-detail.component';
 import {ImagesCollectionListComponent} from './images-collection-list/images-collection-list.component';
-import {NgBytesPipeModule} from 'angular-pipes';
 import { ImagesCollectionNewComponent } from './images-collection-new/images-collection-new.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {
@@ -29,6 +28,7 @@ import {RadioButtonModule} from 'primeng/radiobutton';
 import {CheckboxModule} from 'primeng/checkbox';
 import {OverlayPanelModule} from 'primeng/overlaypanel';
 import {InputTextareaModule} from 'primeng/inputtextarea';
+import {CustomPipesModule} from '../custom-pipes/custom-pipes.module';
 
 @NgModule({
   imports: [
@@ -55,7 +55,7 @@ import {InputTextareaModule} from 'primeng/inputtextarea';
     RadioButtonModule,
     CheckboxModule,
     OverlayPanelModule,
-    NgBytesPipeModule
+    CustomPipesModule
   ],
   declarations: [
     ImagesCollectionDetailComponent,

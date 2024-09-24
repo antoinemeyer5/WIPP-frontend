@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import { environment} from '../environments/environment';
 import {AppConfigService} from './app-config.service';
 import {KeycloakService} from './services/keycloak/keycloak.service';
-import {Router} from '@angular/router';
+import {NavigationEnd, Router} from '@angular/router';
 import {MenuItem} from 'primeng/api';
 
 @Component({
@@ -21,8 +21,18 @@ export class AppComponent implements OnInit {
 
   items: MenuItem[] | undefined;
 
+  currentRouterUrl = '';
+
   constructor(private appConfigService: AppConfigService, private keycloak: KeycloakService, private router: Router) {
     this.jupyterNotebooksLink = this.appConfigService.getConfig().jupyterNotebooksUrl;
+    this.currentRouterUrl = this.router.url;
+    this.router.events.subscribe(
+      (event: any) => {
+        if (event instanceof NavigationEnd) {
+          this.currentRouterUrl = this.router.url;
+        }
+      }
+    );
   }
 
   ngOnInit() {

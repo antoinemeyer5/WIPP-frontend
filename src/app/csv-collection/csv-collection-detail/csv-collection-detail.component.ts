@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, NgModule, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Job} from '../../job/job';
 import {ActivatedRoute, Router} from '@angular/router';
 import {JobDetailComponent} from '../../job/job-detail/job-detail.component';
@@ -10,7 +10,6 @@ import {KeycloakService} from '../../services/keycloak/keycloak.service';
 import {Subject} from 'rxjs';
 import * as Flow from '@flowjs/flow.js';
 import {auditTime, map, switchMap} from 'rxjs/operators';
-import {NgBytesPipeModule} from 'angular-pipes';
 import { MatPaginator } from '@angular/material/paginator';
 import {Csv} from '../csv';
 import {DialogService} from 'primeng/dynamicdialog';
@@ -21,10 +20,6 @@ import {MessageService} from 'primeng/api';
   templateUrl: './csv-collection-detail.component.html',
   styleUrls: ['./csv-collection-detail.component.css'],
   providers: [DialogService, MessageService]
-})
-
-@NgModule({
-  imports: [NgBytesPipeModule]
 })
 export class CsvCollectionDetailComponent implements OnInit, AfterViewInit, OnDestroy {
 

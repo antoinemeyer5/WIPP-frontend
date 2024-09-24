@@ -31,7 +31,6 @@
     "@types/prismjs": "^1.16.0",
     "@types/url-join": "^4.0.0",
     "@wipp/wdzt": "^1.5.0",
-    "angular-pipes": "^10.0.0",
     "ansi_up": "^4.0.4",
     "bootstrap": "^4.6.0",
     "chart.js": "^4.4.3",

@@ -80,36 +80,34 @@
     <i class="fas fa-caret-down"></i>
   </h4>
 </div>
-<div class="modal-body top20" *ngIf="job && showInputs">
-  <table class="table table-bordered">
-
-    <!--  input id or name line -->
-    <tr *ngFor="let input of plugin.inputs; let i = index">
-      <th *ngIf="job.parameters[input['name']]">
-        <dt>
-          {{input['name']}}
-        </dt>
-      </th>
-      <td *ngIf="job.parameters[input['name']]">
-        <dd class="col-md-8 breakLine" (click)="modalReference.close()">
-          <span *ngIf="!job.parameters[input['name']].includes('{{');then flatInput else linkedInput"></span>
-        </dd>
-      </td>
-      <ng-template #flatInput>
-        <app-dynamic-content type="{{input['type']}}"
-                             idData="{{job.parameters[input['name']]}}"
-                             defaultText="{{job.parameters[input['name']]}}">
-        </app-dynamic-content>
-      </ng-template>
-      <ng-template #linkedInput>
-        <app-dynamic-content type="{{input['type']}}"
-                             idData="{{outputHash[inputOrigins[i]]}}"
-                             defaultText="{{inputOrigins[i]}}">
-        </app-dynamic-content>
-      </ng-template>
-    </tr>
-
-  </table>
+<div class="card" *ngIf="job && showInputs">
+  <div class="p-datatable-gridlines p-datatable">
+    <table class="p-datatable-table">
+      <tbody class="p-datatable-tbody">
+        <!--  input id or name line -->
+        <tr *ngFor="let input of plugin.inputs; let i = index;">
+          <td *ngIf="job.parameters[input['name']]" class="font-semibold">
+            {{input['name']}}
+          </td>
+          <td *ngIf="job.parameters[input['name']]">
+            <span *ngIf="!job.parameters[input['name']].includes('{{');then flatInput else linkedInput"></span>
+          </td>
+          <ng-template #flatInput>
+            <app-dynamic-content type="{{input['type']}}"
+                                 idData="{{job.parameters[input['name']]}}"
+                                 defaultText="{{job.parameters[input['name']]}}">
+            </app-dynamic-content>
+          </ng-template>
+          <ng-template #linkedInput>
+            <app-dynamic-content type="{{input['type']}}"
+                                 idData="{{outputHash[inputOrigins[i]]}}"
+                                 defaultText="{{inputOrigins[i]}}">
+            </app-dynamic-content>
+          </ng-template>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </div>
 
 <!--Output Table -->
@@ -121,24 +119,23 @@
   </h4>
 </div>
 <div class="modal-body top20" *ngIf="job && showOutputs">
-  <table class="table table-bordered">
-
-    <!--  output name line  -->
-    <tr *ngFor="let output of plugin.outputs">
-      <th>
-        <dt>{{output['type']}}
-        </dt>
-      </th>
-      <td>
-        <dd class="col-md-8 breakLine" (click)="modalReference.close()">
-          <app-dynamic-content type="{{output['type']}}"
-                               jobId="{{job.id}}"
-                               idData="{{job.outputParameters[output['name']]}}"
-                               defaultText="{{job.name}}-{{output['name']}}">
-          </app-dynamic-content>
-        </dd>
-      </td>
-    </tr>
-
-  </table>
+  <div class="p-datatable-gridlines p-datatable">
+    <table class="p-datatable-table">
+      <tbody class="p-datatable-tbody">
+        <!--  output name line  -->
+        <tr *ngFor="let output of plugin.outputs">
+          <td class="font-semibold">
+            {{output['type']}}
+          </td>
+          <td>
+            <app-dynamic-content type="{{output['type']}}"
+                                 jobId="{{job.id}}"
+                                 idData="{{job.outputParameters[output['name']]}}"
+                                 defaultText="{{job.name}}-{{output['name']}}">
+            </app-dynamic-content>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </div>
