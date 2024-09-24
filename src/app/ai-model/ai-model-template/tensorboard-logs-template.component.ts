@@ -1,7 +1,7 @@
-import {DynamicComponent} from '../../dynamic-content/dynamic.component';
-import {AiModelService} from '../ai-model.service';
+import { DynamicComponent } from '../../dynamic-content/dynamic.component';
+import { AiModelService } from '../ai-model.service';
 import { Component, OnInit } from '@angular/core';
-import {AppConfigService} from '../../app-config.service';
+import { AppConfigService } from '../../app-config.service';
 import urljoin from 'url-join';
 
 @Component({
@@ -20,10 +20,10 @@ export class TensorboardLogsTemplateComponent extends DynamicComponent implement
   tensorboardLink = '';
 
   ngOnInit() {
-      this.AiModelService.getTensorboardLogsByJob(this.jobId).subscribe(result => {
-        this.text = result.name;
-        this.tensorboardLink = urljoin(this.appConfigService.getConfig().tensorboardUrl,
-          '#scalars&regexInput=' + result.name);
-      });
+    this.AiModelService.getTensorboardLogsByJob(this.jobId).subscribe(result => {
+      this.text = result.name;
+      this.tensorboardLink = urljoin(this.appConfigService.getConfig().tensorboardUrl,
+        '#scalars&regexInput=' + result.name);
+    });
   }
 }
