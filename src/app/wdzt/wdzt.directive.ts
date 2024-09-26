@@ -25,13 +25,14 @@ export class WdztDirective implements AfterViewInit, OnChanges {
       id: id,
       imagesPrefix: 'assets/wdzt/images/',
       OpenSeadragon: {
-        maxZoomPixelRatio: Infinity,
+        //maxZoomPixelRatio: Infinity,
         crossOriginPolicy: 'Anonymous',
         loadTilesWithAjax: true,
-        ajaxHeaders: ajaxHeaders
+        //ajaxHeaders: ajaxHeaders,
+        videoInterval: 1000
       },
       autoAdjustHeight: true,
-      autoAdjustMinHeight: 500
+      autoAdjustMinHeight: 600
     });
   }
 

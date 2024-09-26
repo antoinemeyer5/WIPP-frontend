@@ -1,19 +1,23 @@
-import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {forkJoin, Observable, of} from 'rxjs';
-import {debounceTime, distinctUntilChanged, map, switchMap} from 'rxjs/operators';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {forkJoin, of} from 'rxjs';
+import {map} from 'rxjs/operators';
 import {Visualization} from '../visualization';
-import {NgbModal, NgbTypeahead} from '@ng-bootstrap/ng-bootstrap';
 import {ActivatedRoute, Router} from '@angular/router';
 import {PyramidService} from '../../pyramid/pyramid.service';
 import {PyramidVisualizationService} from '../pyramid-visualization.service';
 import {PyramidVisualizationHelpComponent} from '../pyramid-visualization-help/pyramid-visualization-help.component';
-import {ModalErrorComponent} from '../../modal-error/modal-error.component';
 import {KeycloakService} from '../../services/keycloak/keycloak.service'
+import {ImagesCollectionService} from '../../images-collection/images-collection.service';
+import {MessageService, SelectItem} from 'primeng/api';
+import {ImagesCollection} from '../../images-collection/images-collection';
+import {AutoCompleteCompleteEvent} from 'primeng/autocomplete';
+import {DialogService} from 'primeng/dynamicdialog';
 
 @Component({
   selector: 'app-pyramid-visualization-detail',
   templateUrl: './pyramid-visualization-detail.component.html',
-  styleUrls: ['./pyramid-visualization-detail.component.css']
+  styleUrls: ['./pyramid-visualization-detail.component.css'],
+  providers: [DialogService, MessageService]
 })
 export class PyramidVisualizationDetailComponent implements OnInit, OnDestroy {
 
@@ -24,13 +28,25 @@ export class PyramidVisualizationDetailComponent implements OnInit, OnDestroy {
   layersGroups = [];
   showSettings = false;
   savedStatus = 'saved';
-  @ViewChild('instance') instance: NgbTypeahead;
+
+  colorMapOptions: SelectItem[];
+  colorMapField: string;
+
+  contrastOptions: SelectItem[];
+  contrastField: string;
+
+  invertOptions: SelectItem[];
+  invertField: string;
+
+  imagesCollSuggestions: Array<ImagesCollection>;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private modalService: NgbModal,
+    private dialogService: DialogService,
+    private messageService: MessageService,
     private pyramidService: PyramidService,
+    private imagesCollectionService: ImagesCollectionService,
     private visualizationService: PyramidVisualizationService,
     private keycloakService: KeycloakService
     ) {
@@ -40,6 +56,28 @@ export class PyramidVisualizationDetailComponent implements OnInit, OnDestroy {
     this.visualizationService.getVisualization(this.visualizationId)
       .subscribe(visualization => {
         this.visualization = visualization;
+        this.colorMapOptions = [
+          { label: 'NONE', value: '' },
+          { label: 'GREY', value: 'GREY' },
+          { label: 'JET', value: 'JET' },
+          { label: 'COLD', value: 'COLD' },
+          { label: 'HOT', value: 'HOT' },
+          { label: 'RED', value: 'RED' },
+          { label: 'GREEN', value: 'GREEN' },
+          { label: 'BLUE', value: 'BLUE' }
+        ];
+        this.contrastOptions = [
+          { label: 'NONE', value: '1' },
+          { label: 'STRETCH', value: 'ST' },
+          { label: 'EQUALIZATION', value: 'EQ' },
+          { label: 'x2', value: '2' },
+          { label: 'x10', value: '10' },
+          { label: 'x100', value: '100' }
+        ];
+        this.invertOptions = [
+          { label: 'NO', value: '' },
+          { label: 'YES', value: '&INV' }
+        ];
         this.loadManifest();
       }, error => {
         this.router.navigate(['/404']);
@@ -65,12 +103,23 @@ export class PyramidVisualizationDetailComponent implements OnInit, OnDestroy {
             label: layer.id,
             // TODO : handle metadata (not handled in pyramid building yet)
             // ppm: layer.scalebar.pixelsPerMeter,
-            pyramid: {}
+            pyramid: {},
+            displayConfig: {},
+            filenamePattern: null
           };
-          self.pyramidService.getPyramidFromBaseUrl(layer.baseUrl)
-            .subscribe(function (pyramid) {
-              result.pyramid = pyramid;
-            });
+          if (self.visualization.iiifDataSource === true) {
+            self.imagesCollectionService.getById(layer.imagesCollectionId)
+              .subscribe(function (pyramid) {
+                result.pyramid = pyramid;
+              });
+            result.displayConfig = layer.displayConfig;
+            result.filenamePattern = layer.filenamePattern;
+          } else { // handle backward compatibility with legacy pyramids
+            self.pyramidService.getPyramidFromBaseUrl(layer.baseUrl)
+              .subscribe(function (pyramid) {
+                result.pyramid = pyramid;
+              });
+          }
           return result;
         }),
         newLayer: {}
@@ -89,12 +138,10 @@ export class PyramidVisualizationDetailComponent implements OnInit, OnDestroy {
         this.savedStatus = 'saved';
       }, error => {
         this.savedStatus = 'error';
-        const modalRefErr = this.modalService.open(ModalErrorComponent);
-        modalRefErr.componentInstance.title = 'Cannot save configuration.';
-        modalRefErr.componentInstance.message =
-          'The configuration can not be saved on the server.<br>' +
-          'Your recent modifications won\'t be available when you leave ' +
-          'this page and come back later.';
+        this.messageService.add({ severity: 'error', summary: 'Cannot save configuration',
+          detail: 'The configuration can not be saved on the server.<br>' +
+            'Your recent modifications won\'t be available when you leave ' +
+            'this page and come back later.' });
       });
     });
   }
@@ -120,11 +167,13 @@ export class PyramidVisualizationDetailComponent implements OnInit, OnDestroy {
       return of([]);
     } else {
       return forkJoin(layerGroup.layers.map(layer => {
-        return this.pyramidService.getPyramidManifest(layer.pyramid)
+        console.log(layer);
+        return this.imagesCollectionService.getIiifLayerManifest(layer.pyramid, layer)
           .pipe(map(manifest => {
             const layerManifest = manifest['layersGroups'][0].layers[0];
             layerManifest.id = layer.label;
             layerManifest.name = layer.label;
+            layerManifest.imagesCollectionId = layer.pyramid.id;
             if (layer.ppm) {
               layerManifest.scalebar = {
                 pixelsPerMeter: layer.ppm,
@@ -151,6 +200,12 @@ export class PyramidVisualizationDetailComponent implements OnInit, OnDestroy {
     group.layers.push({
       label: group.newLayer.label,
       pyramid: group.newLayer.pyramid,
+      displayConfig: {
+        contrast : group.newLayer.contrastField,
+        colorMap : group.newLayer.colorMapField,
+        invert : group.newLayer.invertField,
+      },
+      filenamePattern: group.newLayer.filenamePattern
       // ppm: group.newLayer.ppm,
       // acquiredIntensity: group.newLayer.acquiredIntensity
     });
@@ -243,25 +298,26 @@ export class PyramidVisualizationDetailComponent implements OnInit, OnDestroy {
   }
 
   showHelp() {
-    const modalRef = this.modalService.open(PyramidVisualizationHelpComponent, { size: 'lg', backdrop: 'static', keyboard: true });
-    modalRef.componentInstance.modalReference = modalRef;
+    this.dialogService.open(PyramidVisualizationHelpComponent, {
+      header: 'Visualization configuration help',
+      position: 'top',
+      width: '50vw',
+      breakpoints: {
+        '960px': '75vw',
+        '640px': '90vw'
+      }
+    });
   }
 
-  // Typeahead functions for pyramid search
-  filter(term) {
-    return this.pyramidService.getByNameContainingIgnoreCase(null, term).pipe(map(paginatedResult => {
-      return paginatedResult.data;
-    }));
+  // Typeahead function for image collection search
+  search(event: AutoCompleteCompleteEvent) {
+    this.imagesCollectionService.getByNameContainingIgnoreCase(null, event.query).subscribe(paginatedResult => {
+      this.imagesCollSuggestions = paginatedResult.data;
+    });
   }
-  search = (text$: Observable<string>) => text$.pipe(
-    debounceTime(200),
-    distinctUntilChanged(),
-    switchMap(term => this.filter(term))
-  )
-  formatter = (x: {name: string}) => x.name;
 
   ngOnDestroy() {
-    this.modalService.dismissAll();
+    this.dialogService.dialogComponentRefMap.forEach((dialog) => dialog.destroy());
   }
 
   makePublicVisualization(): void {
@@ -271,7 +327,7 @@ export class PyramidVisualizationDetailComponent implements OnInit, OnDestroy {
     });
   }
 
-  canEdit() : boolean {
-    return this.keycloakService.canEdit(this.visualization);
+  canEdit(): boolean {
+    return this.keycloakService.canEdit(this.visualization) && this.visualization.iiifDataSource == true;
   }
 }

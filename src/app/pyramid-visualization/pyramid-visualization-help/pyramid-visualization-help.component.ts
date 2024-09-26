@@ -1,21 +1,12 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-pyramid-visualization-help',
   templateUrl: './pyramid-visualization-help.component.html',
   styleUrls: ['./pyramid-visualization-help.component.css']
 })
-export class PyramidVisualizationHelpComponent implements OnInit {
+export class PyramidVisualizationHelpComponent {
 
-  @Input() modalReference: any;
-  constructor(private activeModal: NgbActiveModal) { }
-
-  ngOnInit() {
-  }
-
-  cancel() {
-    this.modalReference.dismiss();
-  }
+  constructor() { }
 
 }

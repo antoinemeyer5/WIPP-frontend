@@ -1,61 +1,73 @@
-<h3 class="wipp-title">Tensorflow Model Detail</h3>
+<h1 class="wipp-title">
+  {{tensorflowModel.name}}
+  <div style="display: inline-block;">
+    <p-button icon="pi pi-download"
+              (click)="openDownload(tensorflowModel._links.download.href)"
+              pTooltip="Download as zip"
+              tooltipPosition="left"
+              [outlined]="true">
+    </p-button>
+    <p-button icon="pi pi-globe" *ngIf="!tensorflowModel.publiclyShared && canEdit()" type="button"
+              pTooltip="Make collection public"
+              tooltipPosition="left"
+              [outlined]="true"
+              (click)="makePublicTensorflowModel();">
+    </p-button>
+  </div>
+</h1>
 
-<div>
-  <div class="row">
-    <div class="col-md-9">
-      <dl class="row">
-        <dt class="col-md-4">Name: </dt>
-        <dd class="col-md-8">{{tensorflowModel.name}}</dd>
-
-        <dt class="col-md-4">Creation Date: </dt>
-        <dd class="col-md-8">{{tensorflowModel.creationDate | date}}</dd>
-
-        <dt class="col-md-4">Owner:</dt>
-        <dd class="col-md-8">{{tensorflowModel.owner}}</dd>
-
-        <dt class="col-md-4">Training job: </dt>
-        <dd class="col-md-8">
-          <a *ngIf="job; else not_applicable"
-             (click)="displayJobModal(job.id)"
+<p-fieldset legend="Details" [toggleable]="true">
+  <div class="grid nested-grid">
+    <div class="col-12 md:col-6">
+      <div class="grid">
+        <div class="col-3 py-1 font-semibold">
+          Name:
+        </div>
+        <div class="col-9 py-1">
+          {{tensorflowModel.name}}
+        </div>
+        <div class="col-3 py-1 font-semibold">
+          Creation date:
+        </div>
+        <div class="col-9 py-1">
+          {{tensorflowModel.creationDate | date}}
+        </div>
+        <div class="col-3 py-1 font-semibold">
+          Owner:
+        </div>
+        <div class="col-9 py-1">
+          {{tensorflowModel.owner}}
+        </div>
+        <div class="col-3 py-1 font-semibold">
+          Source:
+        </div>
+        <div class="col-9 py-1">
+          <a *ngIf="job; else not_applicable" (click)="displayJobModal(job.id)"
              class="wipp-link"
-             ngbTooltip="Show Job"
+             pTooltip="Show Job"
              placement="left">
             {{job.name}}
           </a>
-        </dd>
-
-        <dt class="col-md-4">Tensorboard Logs: </dt>
-        <dd class="col-md-8">
-          <a  *ngIf="tensorboardLogs; else not_applicable"
-              href={{tensorboardLink}}
-              target="_blank">{{tensorboardLogs.name}}
+        </div>
+        <div class="col-3 py-1 font-semibold">
+          Tensorboard Logs:
+        </div>
+        <div class="col-9 py-1">
+          <a *ngIf="tensorboardLogs; else not_applicable"
+             href={{tensorboardLink}}
+             target="_blank">{{tensorboardLogs.name}}
           </a>
-        </dd>
-        <ng-template #not_applicable>N/A</ng-template>
-        <dt class="col-md-4">Visibility:</dt>
-        <dd class="col-md-8">
+        </div>
+        <div class="col-3 py-1 font-semibold">
+          Visibility:
+        </div>
+        <div class="col-9 py-1">
           <div *ngIf="tensorflowModel.publiclyShared; else privateData">Public</div>
-        </dd>
-        <ng-template #privateData>Private</ng-template>
-      </dl>
-    </div>
-
-    <div class="col-md-3 text-right">
-      <button
-        (click)="openDownload(tensorflowModel._links.download.href)"
-        ngbTooltip="Download as zip"
-        placement="left"
-        class="btn btn-light">
-                  <span
-                    aria-hidden="true"><i class="fa fa-download"></i></span>
-      </button>
-      <button *ngIf="!tensorflowModel.publiclyShared && canEdit()" type="button"
-              ngbTooltip="Make Tensorflow model public"
-              placement="left"
-              class="btn btn-light" (click)="makePublicTensorflowModel();">
-        <span class="fa fa-users"
-              aria-hidden="true"></span>
-      </button>
+          <ng-template #privateData>Private</ng-template>
+        </div>
+      </div>
     </div>
   </div>
-</div>
+</p-fieldset>
+
+<ng-template #not_applicable>N/A</ng-template>

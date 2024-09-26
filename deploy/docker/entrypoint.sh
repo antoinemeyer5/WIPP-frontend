@@ -19,6 +19,10 @@ sed -i \
     -e "s|@KEYCLOAK_URL_VALUE@|${KEYCLOAK_URL}|g" \
     /var/www/frontend/main.*.js
 
+sed -i \
+    -e "s|@IIP_URL_VALUE@|${IIP_URL}|g" \
+    /var/www/frontend/main.*.js
+
 # Update external tools URLs and options in frontend conf
 sed -i \
   -e 's|TENSORBOARD_URL|'"${TENSORBOARD_URL}"'|' \

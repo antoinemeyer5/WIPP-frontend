@@ -1,37 +1,33 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {JobDetailComponent} from '../../job/job-detail/job-detail.component';
-import {catchError, map, startWith, switchMap} from 'rxjs/operators';
 import {StitchingVectorService} from '../stitching-vector.service';
-import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {StitchingVector} from '../stitching-vector';
-import {MatPaginator} from '@angular/material';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Job} from '../../job/job';
-import {merge, of as observableOf} from 'rxjs';
 import {TimeSlice} from '../timeSlice';
 import {KeycloakService} from '../../services/keycloak/keycloak.service';
+import {DialogService} from 'primeng/dynamicdialog';
+import {MessageService} from 'primeng/api';
 
 @Component({
   selector: 'app-stitching-vector-detail',
   templateUrl: './stitching-vector-detail.component.html',
-  styleUrls: ['./stitching-vector-detail.component.css']
+  styleUrls: ['./stitching-vector-detail.component.css'],
+  providers: [DialogService, MessageService]
 })
 export class StitchingVectorDetailComponent implements OnInit {
 
   stitchingVector: StitchingVector = new StitchingVector();
   timeSlices: TimeSlice[] = [];
-  displayedColumnsTimeSlices: string[] = ['sliceNumber', 'errorMessage', 'actions'];
   resultsLength = 0;
   pageSize = 20;
   job: Job = null;
   stitchingVectorId = this.route.snapshot.paramMap.get('id');
 
-  @ViewChild('timeSlicesPaginator') timeSlicesPaginator: MatPaginator;
-
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private modalService: NgbModal,
+    private dialogService: DialogService,
     private stitchingVectorService: StitchingVectorService,
     private keycloakService: KeycloakService
     ) {
@@ -41,32 +37,26 @@ export class StitchingVectorDetailComponent implements OnInit {
     this.stitchingVectorService.getById(this.stitchingVectorId)
       .subscribe(stitchingVector => {
         this.stitchingVector = stitchingVector;
-        this.getTimeSlices();
+        this.getTimeSlices(null);
         this.getJob();
       }, error => {
         this.router.navigate(['/404']);
       });
   }
 
-  getTimeSlices(): void {
-    merge(this.timeSlicesPaginator.page)
-      .pipe(
-        startWith({}),
-        switchMap(() => {
-          const params = {
-            pageIndex: this.timeSlicesPaginator.pageIndex,
-            size: this.pageSize
-          };
-          return this.stitchingVectorService.getTimeSlices(this.stitchingVectorId, params);
-        }),
-        map(paginatedResult => {
-          this.resultsLength = paginatedResult.page.totalElements;
-          return paginatedResult.data;
-        }),
-        catchError(() => {
-          return observableOf([]);
-        })
-      ).subscribe(data => this.timeSlices = data);
+  getTimeSlices(event): void {
+    const sortField = event?.sortField ? event.sortField : 'fileName,asc';
+    const pageIndex = event ? event.first / event.rows : 0;
+    const pageSize = event ? event.rows : this.pageSize;
+    const params = {
+      pageIndex: pageIndex,
+      size: pageSize,
+      sort: sortField
+    };
+    this.stitchingVectorService.getTimeSlices(this.stitchingVectorId, params).subscribe(paginatedResult => {
+      this.resultsLength = paginatedResult.page.totalElements;
+      this.timeSlices = paginatedResult.data;
+    });
   }
 
   getJob() {
@@ -76,14 +66,18 @@ export class StitchingVectorDetailComponent implements OnInit {
   }
 
   displayJobModal(jobId: string) {
-    const modalRef = this.modalService.open(JobDetailComponent, { size: 'lg', backdrop: 'static' });
-    modalRef.componentInstance.modalReference = modalRef;
-    (modalRef.componentInstance as JobDetailComponent).jobId = jobId;
-    modalRef.result.then((result) => {
+    this.dialogService.open(JobDetailComponent, {
+      header: 'Job detail',
+      position: 'top',
+      width: '50vw',
+      data: {
+        jobId: jobId
+      },
+      breakpoints: {
+        '960px': '75vw',
+        '640px': '90vw'
       }
-      , (reason) => {
-        console.log('dismissed');
-      });
+    });
   }
 
   makePublicStitchingVector(): void {
@@ -97,9 +91,18 @@ export class StitchingVectorDetailComponent implements OnInit {
     return this.keycloakService.canEdit(this.stitchingVector);
   }
 
+  openStitchingVectorDownload(timeSlice: string) {
+    this.stitchingVectorService.startStitchingVectorDownload(this.stitchingVector, timeSlice).subscribe(downloadUrl =>
+      window.location.href = downloadUrl['url']);
+  }
+
   openDownload(url: string) {
     this.stitchingVectorService.startDownload(url).subscribe(downloadUrl =>
       window.location.href = downloadUrl['url']);
+  }
+
+  ngOnDestroy() {
+    this.dialogService.dialogComponentRefMap.forEach((dialog) => dialog.destroy());
   }
 
 }

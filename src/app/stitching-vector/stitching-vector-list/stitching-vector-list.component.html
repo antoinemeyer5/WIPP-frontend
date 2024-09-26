@@ -1,77 +1,64 @@
-<h3 class="wipp-title">Stitching Vectors</h3>
-
-<div *ngIf="canCreate()" class="row">
-  <div class="col-md-3">
-    <button class="btn btn-primary wipp-btn wipp-btn-new" (click)="createNew();">
-       <i class="fas fa-plus-circle">
-            <p>New stitching vector</p>
-          </i>
-    </button>
-  </div>
+<h1>Stitching Vectors</h1>
+<div class="card">
+  <p-table #dt
+           [value]="stitchingVectors"
+           [lazy]="true"
+           (onLazyLoad)="getStitchingVectors($event)"
+           dataKey="id"
+           [tableStyle]="{ 'min-width': '75rem' }"
+           [paginator]="true"
+           [rows]="10"
+           [rowsPerPageOptions]="[10, 25, 50]"
+           [totalRecords]="resultsLength"
+           selectionMode="single"
+           [showCurrentPageReport]="true"
+           currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+           [globalFilterFields]="['name']"
+  >
+    <ng-template pTemplate="caption">
+      <div class="flex align-items-center justify-content-between">
+        <p-button
+          label="New"
+          icon="pi pi-plus"
+          (click)="createNew()" />
+        <span class="p-input-icon-left">
+                <i class="pi pi-search"></i>
+                <input
+                  pInputText
+                  type="text"
+                  (input)="dt.filterGlobal($event.target.value, 'contains')"
+                  placeholder="Search..." />
+            </span>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="header">
+      <tr>
+        <th pSortableColumn="name">
+          Name <p-sortIcon field="name" />
+        </th>
+        <th pSortableColumn="creationDate">
+          Creation date <p-sortIcon field="creationDate" />
+        </th>
+        <th pSortableColumn="publiclyShared">
+          Visibility <p-sortIcon field="publiclyShared" />
+        </th>
+        <th pSortableColumn="owner">
+          Owner <p-sortIcon field="owner" />
+        </th>
+        <th pSortableColumn="numberOfTimeSlices">
+          Number of Time Slices <p-sortIcon field="numberOfTimeSlices" />
+        </th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-sv>
+      <tr routerLink="/stitching-vectors/{{sv.id}}" class="p-selectable-row">
+        <td>{{ sv.name }}</td>
+        <td>{{ sv.creationDate | date }}</td>
+        <td><i [class]="sv.publiclyShared ? 'pi pi-globe' : 'pi pi-user'"></i></td>
+        <td>{{ sv.owner }}</td>
+        <td>{{ sv.numberOfTimeSlices }}</td>
+      </tr>
+    </ng-template>
+  </p-table>
 </div>
-
-<table mat-table [dataSource]="stitchingVectors"
-       (matSortChange)="sortChanged($event)"
-       matSort matSortActive="creationDate" matSortDisableClear matSortDirection="asc">
-
-  <!-- Name Column -->
-  <ng-container matColumnDef="name">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
-    <!--<td mat-cell *matCellDef="let row">{{ row.name }}</td>-->
-    <td mat-cell *matCellDef="let row"><a routerLink="/stitching-vectors/{{row.id}}">{{ row.name }}</a></td>
-  </ng-container>
-
-  <!-- Creation date Column -->
-  <ng-container matColumnDef="creationDate">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header>Creation Date</th>
-    <td mat-cell *matCellDef="let row">{{row.creationDate | date}}</td>
-  </ng-container>
-
-  <!-- Owner Column -->
-  <ng-container matColumnDef="owner">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header>
-      Owner
-    </th>
-    <td mat-cell *matCellDef="let row">{{row.owner}}</td>
-  </ng-container>
-
-  <!-- Shared Column -->
-  <ng-container matColumnDef="publiclyShared">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header>Visibility</th>
-    <td mat-cell *matCellDef="let row">
-      <span *ngIf="!row.publiclyShared" class="fa fa-user-lock"
-            aria-hidden="true"></span>
-      <span *ngIf="row.publiclyShared" class="fa fa-users"
-            aria-hidden="true"></span>
-    </td>
-  </ng-container>
-
-  <!-- Number of Time Slices Column -->
-  <ng-container matColumnDef="numberOfTimeSlices">
-    <th mat-header-cell *matHeaderCellDef>Number of Time Slices</th>
-    <td mat-cell *matCellDef="let row">{{row.numberOfTimeSlices}}</td>
-  </ng-container>
-
-  <ng-container matColumnDef="header-row-filter-name">
-    <th mat-header-cell *matHeaderCellDef
-        [style.text-align]="center"
-        [attr.colspan]="1">
-      <mat-form-field class="filter" floatLabel="never">
-        <mat-label>Search by name</mat-label>
-        <input matInput (keyup)="applyFilterByName($event.target.value)">
-      </mat-form-field>
-    </th>
-  </ng-container>
-
-  <ng-container matColumnDef="header-row-blank">
-    <th mat-header-cell *matHeaderCellDef
-        [style.text-align]="center"
-        [attr.colspan]="4"></th>
-  </ng-container>
-
-  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-  <tr mat-header-row *matHeaderRowDef="['header-row-filter-name', 'header-row-blank']"></tr>
-  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-</table>
-
-<mat-paginator (page)="pageChanged($event)" [length]="resultsLength" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions"></mat-paginator>
+<p-toast position="top-center" [life]="5000"/>

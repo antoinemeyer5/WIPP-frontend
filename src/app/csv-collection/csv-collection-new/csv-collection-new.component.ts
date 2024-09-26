@@ -1,51 +1,42 @@
-import {Component, ElementRef, OnInit, ViewChild, Input} from '@angular/core';
-import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import { Component } from '@angular/core';
 import {CsvCollection} from '../csv-collection';
 import {CsvCollectionService} from '../csv-collection.service';
 import {Router} from '@angular/router';
+import {DynamicDialogRef} from 'primeng/dynamicdialog';
+import {MessageService} from 'primeng/api';
 
 @Component({
   selector: 'app-csv-collection-new',
   templateUrl: './csv-collection-new.component.html',
-  styleUrls: ['./csv-collection-new.component.css']
+  styleUrls: ['./csv-collection-new.component.css'],
+  providers: [MessageService]
 })
 
-export class CsvCollectionNewComponent implements OnInit {
-
-  @Input() modalReference: any;
+export class CsvCollectionNewComponent {
 
   csvCollection: CsvCollection = new CsvCollection();
 
-  displayAlert = false;
-  alertMessage = '';
-  alertType = '';
-
-  constructor(public activeModal: NgbActiveModal,
-              private modalService: NgbModal,
+  constructor(public modalReference: DynamicDialogRef,
+              private messageService: MessageService,
               private csvCollectionService: CsvCollectionService,
               private router: Router) {
-  }
-
-  ngOnInit() {
   }
 
   createCollection() {
     this.csvCollectionService.createCsvCollection(this.csvCollection).subscribe(
       csvCollection => {
-        this.displayAlertMessage('success', 'Success! Redirecting...');
+        this.messageService.add({ severity: 'success', summary: 'Success', detail: "Collection created. Redirecting..." });
         const csvCollectionId = csvCollection ? csvCollection.id : null;
         setTimeout(() => {
           this.router.navigate(['csv-collections', csvCollectionId]);
         }, 2000);
       },
       err => {
-        this.displayAlertMessage('danger', 'Could not register csvCollection: ' + err.error);
+        this.messageService.add({ severity: 'error', summary: 'Unable to create collection', detail: err.error });
       });
   }
 
-  displayAlertMessage(type, message) {
-    this.alertMessage = message;
-    this.alertType = type;
-    this.displayAlert = true;
+  cancel() {
+    this.modalReference.close();
   }
 }

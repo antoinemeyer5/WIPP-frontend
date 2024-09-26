@@ -6,6 +6,7 @@ export class ImagesCollection {
   sourceCatalog: string;
   sourceBackendImport: string;
   importMethod: ImagesCollectionImportMethod;
+  format: ImagesCollectionFormat;
   locked: boolean;
   numberOfImages: number;
   imagesTotalSize: number;
@@ -31,4 +32,10 @@ export enum ImagesCollectionImportMethod {
   JOB,
   CATALOG,
   BACKEND_IMPORT
+}
+
+export enum ImagesCollectionFormat {
+  OMETIFF,
+  OMEZARR,
+  RAW
 }

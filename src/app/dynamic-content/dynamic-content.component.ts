@@ -1,16 +1,22 @@
 import {
+  AfterViewInit,
   Component,
-  ComponentFactoryResolver,
   ComponentRef,
   Input,
   OnDestroy,
-  OnInit,
-  Type,
   ViewChild,
   ViewContainerRef
 } from '@angular/core';
 import {UnknownDynamicComponent} from './unknown-dynamic.component';
 import {DynamicComponent} from './dynamic.component';
+import {ImagesCollectionTemplateComponent} from '../images-collection/images-collection-template/images-collection-template.component';
+import {StitchingVectorTemplateComponent} from '../stitching-vector/stitching-vector-template/stitching-vector-template.component';
+import {PyramidTemplateComponent} from '../pyramid/pyramid-template/pyramid-template.component';
+import {TensorflowModelTemplateComponent} from '../tensorflow-model/tensorflow-model-template/tensorflow-model-template.component';
+import {TensorboardLogsTemplateComponent} from '../tensorflow-model/tensorflow-model-template/tensorboard-logs-template.component';
+import {CsvCollectionTemplateComponent} from '../csv-collection/csv-collection-template/csv-collection-template.component';
+import {NotebookTemplateComponent} from '../notebook/notebook-template/notebook-template.component';
+import {GenericDataTemplateComponent} from '../generic-data/generic-data-template/generic-data-template.component';
 
 @Component({
   selector: 'app-dynamic-content',
@@ -19,12 +25,11 @@ import {DynamicComponent} from './dynamic.component';
     '</div>\n',
   styleUrls: ['./dynamic-content.component.css']
 })
-export class DynamicContentComponent implements OnInit, OnDestroy {
-  @ViewChild('container', { read: ViewContainerRef })
-  container: ViewContainerRef;
+export class DynamicContentComponent implements OnDestroy, AfterViewInit {
+  @ViewChild('container', { read: ViewContainerRef }) container: ViewContainerRef;
 
   @Input()
-  type: string
+  type: string;
 
   @Input()
   idData: string;
@@ -40,22 +45,48 @@ export class DynamicContentComponent implements OnInit, OnDestroy {
 
   private componentRef: ComponentRef<{}>;
 
-  constructor(private componentFactoryResolver: ComponentFactoryResolver) {}
+  constructor() {}
 
-  ngOnInit() {
+  ngAfterViewInit() {
 
-    const factories = Array.from(this.componentFactoryResolver['_factories'].keys());
-    let factoryClass = <Type<any>>factories.find(
-      (x: any) => x.key === (this.type.toLocaleLowerCase() + 'templatecomponent'));
-    if (!factoryClass || !this.idData) {
-      factoryClass = UnknownDynamicComponent; }
-
-    const factory = this.componentFactoryResolver.resolveComponentFactory(factoryClass);
-    this.componentRef = this.container.createComponent(factory);
+    let dynamicComponent;
+    switch(this.type.toLocaleLowerCase()) {
+      case "collection":
+        dynamicComponent = ImagesCollectionTemplateComponent;
+        break;
+      case "stitchingvector":
+        dynamicComponent = StitchingVectorTemplateComponent;
+        break;
+      case "pyramid":
+        dynamicComponent = PyramidTemplateComponent;
+        break;
+      case "tensorflowmodel":
+        dynamicComponent = TensorflowModelTemplateComponent;
+        break;
+      case "tensorboardlogs":
+        dynamicComponent = TensorboardLogsTemplateComponent;
+        break;
+      case "csvcollection":
+        dynamicComponent = CsvCollectionTemplateComponent;
+        break;
+      case "notebook":
+        dynamicComponent = NotebookTemplateComponent;
+        break;
+      case "genericdata":
+        dynamicComponent = GenericDataTemplateComponent;
+        break;
+      default:
+        dynamicComponent = UnknownDynamicComponent;
+    }
+    this.componentRef = this.container.createComponent(dynamicComponent, {});
     const instance = <DynamicComponent> this.componentRef.instance;
     instance.defaultText = this.defaultText;
     instance.jobId = this.jobId;
     instance.idData = this.idData;
+    this.componentRef.changeDetectorRef.detectChanges();
+    this.componentRef.onDestroy(()=> {
+      this.componentRef.changeDetectorRef.detach();
+    })
   }
 
   ngOnDestroy() {

@@ -1,0 +1,63 @@
+<h1 class="wipp-title">Quickview Dashboard</h1>
+
+<div class="grid">
+<p-card header="Latest Images Collections" class="col">
+  <p-table [value]="imagesCollections" selectionMode="single">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Name</th>
+        <th>Creation date</th>
+        <th>Status</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-coll>
+      <tr routerLink="/images-collection/{{coll.id}}" class="p-selectable-row">
+        <td>{{coll.name}}</td>
+        <td>{{ coll.creationDate | date }}</td>
+        <td><i [class]="getIconByImgCollStatus(coll)['piClass']"
+               [style]="getIconByImgCollStatus(coll)['colorStyle']"></i></td>
+      </tr>
+    </ng-template>
+  </p-table>
+</p-card>
+
+<p-card class="col" header="Latest Visualizations">
+  <p-table [value]="visualizations" selectionMode="single">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Name</th>
+        <th>Creation date</th>
+        <th>Visibility</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-vis>
+      <tr routerLink="/pyramid-visualizations/{{vis.id}}" class="p-selectable-row">
+        <td>{{vis.name}}</td>
+        <td>{{ vis.creationDate | date }}</td>
+        <td><i [class]="getIconByVizVisibility(vis.publiclyShared)"></i></td>
+      </tr>
+    </ng-template>
+  </p-table>
+</p-card>
+
+<p-card header="Latest Workflows" class="col">
+  <p-table [value]="workflows" selectionMode="single">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Name</th>
+        <th>Creation date</th>
+        <th>Status</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-wf>
+      <tr routerLink="/workflows/detail/{{wf.id}}" class="p-selectable-row">
+        <td>{{wf.name}}</td>
+        <td>{{ wf.creationDate | date }}</td>
+        <td><i [class]="getIconByWorkflowStatus(wf)['piClass']"
+               [style]="getIconByWorkflowStatus(wf)['colorStyle']"></i></td>
+      </tr>
+    </ng-template>
+  </p-table>
+</p-card>
+</div>
+

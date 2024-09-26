@@ -1,5 +1,4 @@
 #logo {
-  /*background-color: rgb(249,249,249);*/
   height: 120px;}
 
 #logo img {
@@ -46,16 +45,18 @@ a:not([href]).dropdown-toggle:hover {
   left: auto;
 }
 
-.main-container {
-  width: 98%;
-  min-height: 100vh;
+.wipp-container {
+  min-height: 80vh;
+  padding-left: 2rem;
+  padding-right: 2rem;
+  padding-bottom: 2rem;
+
+  margin-bottom: 30px;
 }
 
-body {
-  position: relative;
-  margin: 0;
-  padding-bottom: 6rem;
-  min-height: 100%;
+.container {
+  width: 98%;
+  min-height: 100vh;
 }
 
 footer {
@@ -66,7 +67,5 @@ footer {
   text-align: right;
   z-index: 10;
   margin-top: 10px;
-  color: #555;
   border-top: 1px solid #e7e7e7;
 }
-

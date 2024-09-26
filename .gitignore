@@ -41,3 +41,6 @@ Thumbs.db
 # Config Files
 src/assets/config/config.json
 .env
+
+# Angular cache
+/.angular/cache

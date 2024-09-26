@@ -1,10 +1,11 @@
-import {Component, Input, OnInit} from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 import {Job} from '../job';
 import {JobService} from '../job.service';
 import {Plugin} from '../../plugin/plugin';
 import 'rxjs-compat/add/operator/map';
 import {Workflow} from '../../workflow/workflow';
+import {DialogService, DynamicDialogComponent, DynamicDialogRef} from 'primeng/dynamicdialog';
 
 export interface IdHash {
   [nameId: string]: string;
@@ -18,7 +19,7 @@ export interface IdHash {
 
 export class JobDetailComponent implements OnInit {
 
-  @Input() modalReference: any;
+  instance: DynamicDialogComponent | undefined;
 
   jobId: string;
   job: Job;
@@ -29,12 +30,17 @@ export class JobDetailComponent implements OnInit {
   workflow: Workflow;
   outputHash: IdHash = {};
 
-  constructor(private activeModal: NgbActiveModal,
+  constructor(public modalReference: DynamicDialogRef,
+              private dialogService: DialogService,
               private jobService: JobService) {
+    this.instance = this.dialogService.getInstance(this.modalReference);
   }
 
   ngOnInit() {
-    this.getJob();
+    if (this.instance && this.instance.data) {
+      this.jobId = this.instance.data['jobId'];
+      this.getJob();
+    }
   }
 
   getJob() {

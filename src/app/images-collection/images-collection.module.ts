@@ -3,47 +3,66 @@ import { CommonModule } from '@angular/common';
 import {ImagesCollectionRoutingModule} from './images-collection-routing.module';
 import {ImagesCollectionDetailComponent} from './images-collection-detail/images-collection-detail.component';
 import {ImagesCollectionListComponent} from './images-collection-list/images-collection-list.component';
-import {NgMathPipesModule} from 'angular-pipes';
-import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
-import {
-  MatPaginatorModule,
-  MatProgressSpinnerModule,
-  MatSortModule,
-  MatTableModule,
-  MatCheckboxModule,
-  MatLabel, MatFormFieldModule, MatInputModule, MatRadioModule
-} from '@angular/material';
 import { ImagesCollectionNewComponent } from './images-collection-new/images-collection-new.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {InlineEditorModule} from '@qontu/ngx-inline-editor';
 import {
   ImagesCollectionTemplateComponent
 } from './images-collection-template/images-collection-template.component';
+import {DataViewModule} from 'primeng/dataview';
+import {DropdownModule} from 'primeng/dropdown';
+import { ImagesCollectionBatchImportComponent } from './images-collection-batch-import/images-collection-batch-import.component';
+import {TableModule} from 'primeng/table';
+import {ToolbarModule} from 'primeng/toolbar';
+import {ButtonModule} from 'primeng/button';
+import {SplitButtonModule} from 'primeng/splitbutton';
+import {InputTextModule} from 'primeng/inputtext';
+import {CardModule} from 'primeng/card';
+import {TooltipModule} from 'primeng/tooltip';
+import {FieldsetModule} from 'primeng/fieldset';
+import {SkeletonModule} from 'primeng/skeleton';
+import {ProgressBarModule} from 'primeng/progressbar';
+import {ToastModule} from 'primeng/toast';
+import {DialogModule} from 'primeng/dialog';
+import {ButtonGroupModule} from 'primeng/buttongroup';
+import {RadioButtonModule} from 'primeng/radiobutton';
+import {CheckboxModule} from 'primeng/checkbox';
+import {OverlayPanelModule} from 'primeng/overlaypanel';
+import {InputTextareaModule} from 'primeng/inputtextarea';
+import {CustomPipesModule} from '../custom-pipes/custom-pipes.module';
 
 @NgModule({
   imports: [
     CommonModule,
-    NgbModule.forRoot(),
-    NgMathPipesModule,
     ImagesCollectionRoutingModule,
-    MatProgressSpinnerModule,
-    MatPaginatorModule,
-    MatTableModule,
-    MatSortModule,
     FormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatRadioModule,
     ReactiveFormsModule,
-    InlineEditorModule,
-    MatCheckboxModule
+    DataViewModule,
+    DropdownModule,
+    TableModule,
+    ToolbarModule,
+    ButtonModule,
+    SplitButtonModule,
+    ButtonGroupModule,
+    InputTextModule,
+    InputTextareaModule,
+    CardModule,
+    TooltipModule,
+    FieldsetModule,
+    SkeletonModule,
+    ProgressBarModule,
+    ToastModule,
+    DialogModule,
+    RadioButtonModule,
+    CheckboxModule,
+    OverlayPanelModule,
+    CustomPipesModule
   ],
-  entryComponents: [ImagesCollectionNewComponent],
   declarations: [
     ImagesCollectionDetailComponent,
     ImagesCollectionListComponent,
     ImagesCollectionNewComponent,
-    ImagesCollectionTemplateComponent
+    ImagesCollectionTemplateComponent,
+    ImagesCollectionBatchImportComponent
   ]
 })
 export class ImagesCollectionModule { }

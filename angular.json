@@ -21,22 +21,31 @@
             "assets": [
               "src/favicon.ico",
               "src/assets",
-              { "glob": "**/*", "input": "node_modules/@wipp/wdzt/build/deps/images", "output": "./assets/wdzt/images" }
+//              { "glob": "**/*", "input": "node_modules/@wipp/wdzt/build/deps/images", "output": "./assets/wdzt/images",
+              { "glob": "**/*", "input": "libs/wdzt/images", "output": "./assets/wdzt/images"}
             ],
             "styles": [
               {
                 "input": "node_modules/@angular/material/prebuilt-themes/indigo-pink.css"
               },
-              "node_modules/@wipp/wdzt/build/deps/wdzt-deps.css",
+//              "node_modules/@wipp/wdzt/build/deps/wdzt-deps.css",
+              "libs/wdzt/wdzt-deps.css",
               "node_modules/prismjs/themes/prism.css",
               "src/styles.css"
             ],
             "scripts": [
-              "node_modules/@wipp/wdzt/build/deps/wdzt-deps.js",
+              "libs/wdzt/wdzt-deps.js",
               "node_modules/notebookjs/notebook.js",
               "node_modules/keycloak-js/dist/keycloak.js"
 
-            ]
+            ],
+            "aot": false,
+            "vendorChunk": true,
+            "extractLicenses": false,
+            "buildOptimizer": false,
+            "sourceMap": true,
+            "optimization": false,
+            "namedChunks": true
           },
           "configurations": {
             "production": {
@@ -49,30 +58,30 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "aot": true,
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true
             }
-          }
+          },
+          "defaultConfiguration": ""
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "WIPP-frontend:build"
+            "buildTarget": "WIPP-frontend:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "WIPP-frontend:build:production"
+              "buildTarget": "WIPP-frontend:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "WIPP-frontend:build"
+            "buildTarget": "WIPP-frontend:build"
           }
         },
         "test": {
@@ -136,6 +145,5 @@
         }
       }
     }
-  },
-  "defaultProject": "WIPP-frontend"
+  }
 }

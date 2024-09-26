@@ -1,24 +1,18 @@
 import { BrowserModule } from '@angular/platform-browser';
 import {APP_INITIALIZER, NgModule} from '@angular/core';
 import { AppComponent } from './app.component';
-
 import { PageNotFoundComponent } from './not-found/not-found.component';
 import { AppRoutingModule } from './app-routing.module';
 import { ImagesCollectionModule } from './images-collection/images-collection.module';
 import { PluginModule } from './plugin/plugin.module';
 import {HttpClientModule} from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import {MatTableModule} from '@angular/material/table';
-import {MatInputModule, MatPaginatorModule, MatProgressSpinnerModule, MatSortModule} from '@angular/material';
 import {FormsModule} from '@angular/forms';
 import {WorkflowModule} from './workflow/workflow.module';
-import {MatCheckboxModule} from '@angular/material/checkbox';
-import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {StitchingVectorModule} from './stitching-vector/stitching-vector.module';
 import {PyramidModule} from './pyramid/pyramid.module';
 import {TensorflowModelModule} from './tensorflow-model/tensorflow-model.module';
 import {CsvCollectionModule} from './csv-collection/csv-collection.module';
-import {UnknownDynamicComponent } from './dynamic-content/unknown-dynamic.component';
 import {NotebookModule} from './notebook/notebook.module';
 import {AppConfigService} from './app-config.service';
 import {appInitializerFactory} from './app-init-factory';
@@ -27,24 +21,30 @@ import { KeycloakInterceptorService} from './services/keycloak/keycloak.intercep
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import {PyramidVisualizationModule} from './pyramid-visualization/pyramid-visualization.module';
 import { ForbiddenAccessComponent } from './forbidden-access/forbidden-access.component';
-import {PyramidAnnotationModule} from './pyramid-annotation/pyramid-annotation.module';
 import { GenericDataModule } from './generic-data/generic-data.module';
 import {ConfirmDialogService} from './confirm-dialog/confirm-dialog.service';
 import {ConfirmDialogModule} from './confirm-dialog/confirm-dialog.module';
+import {HomeModule} from './home/home.module';
+import {MenubarModule} from 'primeng/menubar';
+import {DynamicDialogModule} from 'primeng/dynamicdialog';
+import {AutoFocusModule} from 'primeng/autofocus';
+import {RouteReuseStrategy, RouterModule} from '@angular/router';
+import {AppRouteReuseStrategy} from './app-route-reuse-strategy';
+import {MenuModule} from 'primeng/menu';
 
 @NgModule({
   declarations: [
     AppComponent,
     PageNotFoundComponent,
-    UnknownDynamicComponent,
     ForbiddenAccessComponent
   ],
   imports: [
+    RouterModule,
     BrowserModule,
     HttpClientModule,
+    HomeModule,
     ImagesCollectionModule,
     StitchingVectorModule,
-    PyramidAnnotationModule,
     PyramidModule,
     PyramidVisualizationModule,
     TensorflowModelModule,
@@ -56,14 +56,11 @@ import {ConfirmDialogModule} from './confirm-dialog/confirm-dialog.module';
     ConfirmDialogModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-    MatInputModule,
-    MatTableModule,
-    MatPaginatorModule,
-    MatSortModule,
-    MatProgressSpinnerModule,
     FormsModule,
-    MatCheckboxModule,
-    NgbModule.forRoot()
+    MenuModule,
+    MenubarModule,
+    DynamicDialogModule,
+    AutoFocusModule
   ],
   providers: [
     AppConfigService,
@@ -79,7 +76,8 @@ import {ConfirmDialogModule} from './confirm-dialog/confirm-dialog.module';
       multi: true
     },
     KeycloakService,
-    ConfirmDialogService
+    ConfirmDialogService,
+    {provide: RouteReuseStrategy, useClass: AppRouteReuseStrategy}
   ],
   bootstrap: [AppComponent]
 })
